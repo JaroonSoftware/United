@@ -3,9 +3,8 @@ import React from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { Menu, MenuItem } from "react-pro-sidebar";
 import { Badge, Flex } from "antd";
-import logo from "../../assets/images/logo_nsf.png";
+import logo from "../../assets/images/logo-united.jpg";
 import nav from "../../nav";
-
 import { Authenticate } from '../../service/Authenticate.service.js'; 
 // import { useAppDispatch } from '../../store/store';
 const Sidenav = () => {
@@ -40,7 +39,7 @@ const Sidenav = () => {
     <>
       <Flex vertical className="brand width-100" justify='center' align='center' >
         <img src={logo} alt="9star logo" style={{width:100, height:100}}  />
-        <span>VEERA DRYCUTTING</span>
+        <span>United</span>
       </Flex>
       <hr />
 

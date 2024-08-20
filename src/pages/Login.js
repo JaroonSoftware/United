@@ -4,7 +4,7 @@ import { React, useEffect, useState } from "react";
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { Layout, Button, Typography, Card, Form, Input, Space, Flex, Modal } from "antd";
 import { message } from "antd";
-import logo4 from "../assets/images/logo.png";
+import logo4 from "../assets/images/logo.jpg";
 import SystemService from "../service/System.service";
 import { Authenticate } from "../service/Authenticate.service";
 
@@ -98,7 +98,7 @@ const Login = () => {
 
         <Header>
           <div className="header-col header-brand">
-            <h5>VEERA DRYCUTTING</h5>
+            <h5>U N I T E D</h5>
           </div>
         </Header>
 
