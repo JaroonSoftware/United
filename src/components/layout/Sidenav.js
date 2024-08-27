@@ -3,7 +3,7 @@ import React from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { Menu, MenuItem } from "react-pro-sidebar";
 import { Badge, Flex } from "antd";
-import logo from "../../assets/images/logo-united.jpg";
+import logo from "../../assets/images/logo.png";
 import nav from "../../nav";
 import { Authenticate } from '../../service/Authenticate.service.js'; 
 // import { useAppDispatch } from '../../store/store';
@@ -38,7 +38,7 @@ const Sidenav = () => {
   return (
     <>
       <Flex vertical className="brand width-100" justify='center' align='center' >
-        <img src={logo} alt="9star logo" style={{width:100, height:100}}  />
+        <img src={logo} alt="9star logo" style={{width:150, height:100}}  />
         <span>United</span>
       </Flex>
       <hr />
