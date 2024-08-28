@@ -24,7 +24,7 @@ const InputThaiAddress = CreateInput();
 const customerservice = Customerservice();
 // const opservice = OptionService();
 const from = "/customers";
-const ItemsManage = () => {
+const CustomerManage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -422,4 +422,4 @@ const ItemsManage = () => {
   );
 };
 
-export default ItemsManage;
+export default CustomerManage;

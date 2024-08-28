@@ -17,7 +17,7 @@ const mngConfig = {
   action: "create",
   code: null,
 };
-const ItemsAccess = () => {
+const CustomerAccess = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [accessData, setAccessData] = useState([]);
@@ -247,4 +247,4 @@ const ItemsAccess = () => {
   );
 };
 
-export default ItemsAccess;
+export default CustomerAccess;

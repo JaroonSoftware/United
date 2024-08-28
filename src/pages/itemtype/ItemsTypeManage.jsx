@@ -12,7 +12,7 @@ import Itemtypservice from "../../service/Itemstype.Service";
 const itemtypeservice = Itemtypservice();
 // const opservice = OptionService();
 const from = "/itemtype";
-const ItemsManage = () => {
+const ItemsTypeManage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { config } = location.state || { config: null };
@@ -158,4 +158,4 @@ const ItemsManage = () => {
   );
 };
 
-export default ItemsManage;
+export default ItemsTypeManage;

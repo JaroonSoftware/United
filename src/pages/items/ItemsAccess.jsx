@@ -230,7 +230,7 @@ const ItemsAccess = () => {
         size="middle"
         style={{ display: "flex", position: "relative" }}
       >
-        <Card>
+        <Card >
           {FormSearch}
           <br></br>
           <Row gutter={[8, 8]} className="m-0">
