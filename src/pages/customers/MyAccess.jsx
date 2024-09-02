@@ -2,31 +2,32 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, message } from "antd";
-import { Collapse, Form, Flex, Row, Col, Space } from "antd";
+import { Collapse, Form, Flex, Row, Col, Space, Select } from "antd";
 import { Input, Button, Table, Typography } from "antd";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons";
 import { MdOutlineLibraryAdd } from "react-icons/md";
-import { accessColumn } from "./unit.model";
-import Unitservice from "../../service/Unit.service";
-
-const unitservice = Unitservice();
+import { accessColumn } from "./model";
+import Customerservice from "../../service/Customer.Service";
+import { PROVINCE_OPTIONS } from "../../utils/util";
+const customerservice = Customerservice();
 const mngConfig = {
   title: "",
   textOk: null,
-  textCancel: null,
+  textCancel: null, 
   action: "create",
   code: null,
 };
-const UnitAccess = () => {
+const CustomerAccess = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [accessData, setAccessData] = useState([]);
   const [activeSearch, setActiveSearch] = useState([]);
-
+  const filterOption = (input, option) =>
+    (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
   const handleSearch = () => {
     form.validateFields().then((v) => {
       const data = { ...v };
-      unitservice
+      customerservice
         .search(data, { ignoreLoading: Object.keys(data).length !== 0 })
         .then((res) => {
           const { data } = res.data;
@@ -51,7 +52,7 @@ const UnitAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "เพิ่มหน่วยสินค้า",
+          title: "เพิ่มลูกค้า",
           action: "create",
         },
       },
@@ -65,9 +66,9 @@ const UnitAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "แก้ไขหน่วยสินค้า",
+          title: "แก้ไขข้อมูลลูกค้า",
           action: "edit",
-          code: data?.unitcode,
+          code: data?.cuscode,
         },
       },
       replace: true,
@@ -79,24 +80,12 @@ const UnitAccess = () => {
     newWindow.location.href = `/dln-print/${data.dncode}`;
   };
 
-  const handleDelete = (data) => {
-    // startLoading();
-    // ctmService.deleted(data?.dncode).then( _ => {
-    //     const tmp = accessData.filter( d => d.dncode !== data?.dncode );
-    //     setAccessData([...tmp]);
-    // })
-    // .catch(err => {
-    //     console.log(err);
-    //     message.error("Request error!");
-    // });
-  };
-
   useEffect(() => {
     getData({});
   }, []);
 
   const getData = (data) => {
-    unitservice
+    customerservice
       .search(data)
       .then((res) => {
         const { data } = res.data;
@@ -124,13 +113,47 @@ const UnitAccess = () => {
             <>
               <Form form={form} layout="vertical" autoComplete="off">
                 <Row gutter={[8, 8]}>
-                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                  <Col xs={24} sm={6} md={6} lg={6} xl={6}>
                     <Form.Item
-                      label="ชื่อหน่วยสินค้า"
-                      name="unitname"
+                      label="รหัสลูกค้า"
+                      name="cuscode"
                       onChange={handleSearch}
                     >
-                      <Input placeholder="กรอกชื่อหน่วยสินค้า" />
+                      <Input placeholder="กรอกรหัสลูกค้า" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={6} md={6} lg={8} xl={6}>
+                    <Form.Item
+                      label="ชื่อลูกค้า"
+                      name="cusname"
+                      onChange={handleSearch}
+                    >
+                      <Input placeholder="กรอกชื่อลูกค้า" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={6} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      label="จังหวัด"
+                      name="province"
+                      onChange={handleSearch}
+                    >
+                      <Select
+                        size="large"
+                        showSearch
+                        filterOption={filterOption}
+                        placeholder="เลือกจังหวัด"
+                        onChange={handleSearch}
+                        options={PROVINCE_OPTIONS}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={6} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      label="เบอร์โทร"
+                      name="tel"
+                      onChange={handleSearch}
+                    >
+                      <Input placeholder="กรอกเบอร์โทรลูกค้า" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -170,14 +193,14 @@ const UnitAccess = () => {
       ]}
     />
   );
-  const column = accessColumn({ handleEdit, handleDelete, handleView });
+  const column = accessColumn({ handleEdit, handleView });
 
   const TitleTable = (
     <Flex className="width-100" align="center">
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายการหน่วยสินค้า
+            รายชื่อลูกค้า
           </Typography.Title>
         </Flex>
       </Col>
@@ -191,7 +214,7 @@ const UnitAccess = () => {
               hangleAdd();
             }}
           >
-            เพิ่มหน่วยสินค้า
+            เพิ่มลูกค้า
           </Button>
         </Flex>
       </Col>
@@ -212,7 +235,7 @@ const UnitAccess = () => {
               <Table
                 title={() => TitleTable}
                 size="small"
-                rowKey="unitcode"
+                rowKey="cuscode"
                 columns={column}
                 dataSource={accessData}
               />
@@ -224,4 +247,4 @@ const UnitAccess = () => {
   );
 };
 
-export default UnitAccess;
+export default CustomerAccess;

@@ -14,7 +14,7 @@ import {
 import { Row, Col, Space, Upload } from "antd";
 import { SaveFilled } from "@ant-design/icons";
 import { ButtonBack, uploadButton } from "../../components/button";
-import { Items } from "./items.model";
+import { Items } from "./model";
 import { useLocation, useNavigate } from "react-router";
 import { delay, BACKEND_URL_MAIN } from "../../utils/util";
 import Swal from "sweetalert2";

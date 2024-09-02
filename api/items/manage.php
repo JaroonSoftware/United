@@ -98,9 +98,23 @@ try {
         }
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        $sql2 = "SELECT * FROM `items_img` ";
+        $sql2 .= " where stcode = :code ";
+        $stmt2 = $conn->prepare($sql2);
+        if (!$stmt2->execute(['code' => $code])) {
+            $error = $conn->errorInfo();
+            http_response_code(404);
+            throw new PDOException("Geting data error => $error");
+        }
+
+        $dataFile = array();
+        while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+            $dataFile[] = $row2;
+        }
+
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array("data" => $res));
+        echo json_encode(array("data" => $res,"file" => $dataFile));
     }
 } catch (PDOException $e) {
     $conn->rollback();

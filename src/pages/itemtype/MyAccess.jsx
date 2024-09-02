@@ -2,32 +2,31 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, message } from "antd";
-import { Collapse, Form, Flex, Row, Col, Space, Select } from "antd";
+import { Collapse, Form, Flex, Row, Col, Space } from "antd";
 import { Input, Button, Table, Typography } from "antd";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons";
 import { MdOutlineLibraryAdd } from "react-icons/md";
-import { accessColumn } from "./customer.model";
-import Customerservice from "../../service/Customer.Service";
-import { PROVINCE_OPTIONS } from "../../utils/util";
-const customerservice = Customerservice();
+import { accessColumn } from "./model";
+import ItemTypeService from "../../service/Itemstype.Service";
+
+const itemtypeservice = ItemTypeService();
 const mngConfig = {
   title: "",
   textOk: null,
-  textCancel: null, 
+  textCancel: null,
   action: "create",
   code: null,
 };
-const CustomerAccess = () => {
+const ItemsAccess = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [accessData, setAccessData] = useState([]);
   const [activeSearch, setActiveSearch] = useState([]);
-  const filterOption = (input, option) =>
-    (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
   const handleSearch = () => {
     form.validateFields().then((v) => {
       const data = { ...v };
-      customerservice
+      itemtypeservice
         .search(data, { ignoreLoading: Object.keys(data).length !== 0 })
         .then((res) => {
           const { data } = res.data;
@@ -52,7 +51,7 @@ const CustomerAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "เพิ่มลูกค้า",
+          title: "เพิ่มประเภทสินค้า",
           action: "create",
         },
       },
@@ -66,9 +65,9 @@ const CustomerAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "แก้ไขข้อมูลลูกค้า",
+          title: "แก้ไขข้อมูลประเภทสินค้า",
           action: "edit",
-          code: data?.cuscode,
+          code: data?.typecode,
         },
       },
       replace: true,
@@ -80,12 +79,24 @@ const CustomerAccess = () => {
     newWindow.location.href = `/dln-print/${data.dncode}`;
   };
 
+  const handleDelete = (data) => {
+    // startLoading();
+    // ctmService.deleted(data?.dncode).then( _ => {
+    //     const tmp = accessData.filter( d => d.dncode !== data?.dncode );
+    //     setAccessData([...tmp]);
+    // })
+    // .catch(err => {
+    //     console.log(err);
+    //     message.error("Request error!");
+    // });
+  };
+
   useEffect(() => {
     getData({});
   }, []);
 
   const getData = (data) => {
-    customerservice
+    itemtypeservice
       .search(data)
       .then((res) => {
         const { data } = res.data;
@@ -113,47 +124,13 @@ const CustomerAccess = () => {
             <>
               <Form form={form} layout="vertical" autoComplete="off">
                 <Row gutter={[8, 8]}>
-                  <Col xs={24} sm={6} md={6} lg={6} xl={6}>
+                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Form.Item
-                      label="รหัสลูกค้า"
-                      name="cuscode"
+                      label="ชื่อประเภทสินค้า"
+                      name="typename"
                       onChange={handleSearch}
                     >
-                      <Input placeholder="กรอกรหัสลูกค้า" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={6} md={6} lg={8} xl={6}>
-                    <Form.Item
-                      label="ชื่อลูกค้า"
-                      name="cusname"
-                      onChange={handleSearch}
-                    >
-                      <Input placeholder="กรอกชื่อลูกค้า" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={6} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      label="จังหวัด"
-                      name="province"
-                      onChange={handleSearch}
-                    >
-                      <Select
-                        size="large"
-                        showSearch
-                        filterOption={filterOption}
-                        placeholder="เลือกจังหวัด"
-                        onChange={handleSearch}
-                        options={PROVINCE_OPTIONS}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={6} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      label="เบอร์โทร"
-                      name="tel"
-                      onChange={handleSearch}
-                    >
-                      <Input placeholder="กรอกเบอร์โทรลูกค้า" />
+                      <Input placeholder="กรอกชื่อประเภทสินค้า" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -193,14 +170,14 @@ const CustomerAccess = () => {
       ]}
     />
   );
-  const column = accessColumn({ handleEdit, handleView });
+  const column = accessColumn({ handleEdit, handleDelete, handleView });
 
   const TitleTable = (
     <Flex className="width-100" align="center">
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายชื่อลูกค้า
+            รายการประเภทสินค้า
           </Typography.Title>
         </Flex>
       </Col>
@@ -214,7 +191,7 @@ const CustomerAccess = () => {
               hangleAdd();
             }}
           >
-            เพิ่มลูกค้า
+            เพิ่มประเภทสินค้า
           </Button>
         </Flex>
       </Col>
@@ -235,7 +212,7 @@ const CustomerAccess = () => {
               <Table
                 title={() => TitleTable}
                 size="small"
-                rowKey="cuscode"
+                rowKey="typecode"
                 columns={column}
                 dataSource={accessData}
               />
@@ -247,4 +224,4 @@ const CustomerAccess = () => {
   );
 };
 
-export default CustomerAccess;
+export default ItemsAccess;

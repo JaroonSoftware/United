@@ -6,7 +6,7 @@ import { Collapse, Form, Flex, Row, Col, Space, Select } from "antd";
 import { Input, Button, Table, Typography } from "antd";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons";
 import { MdOutlineLibraryAdd } from "react-icons/md";
-import { accessColumn } from "./items.model";
+import { accessColumn } from "./model";
 import OptionService from "../../service/Options.service";
 // import dayjs from 'dayjs';
 import Itemservice from "../../service/Items.Service";

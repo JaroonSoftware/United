@@ -5,11 +5,11 @@ import { Card, message } from "antd";
 import { Collapse, Form, Flex, Row, Col, Space } from "antd";
 import { Input, Button, Table, Typography } from "antd";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons";
-import { MdGroupAdd } from "react-icons/md";
-import { accessColumn } from "./users.model";
-import UserService from "../../service/User.service";
+import { MdOutlineLibraryAdd } from "react-icons/md";
+import { accessColumn } from "./model";
+import Unitservice from "../../service/Unit.service";
 
-const userService = UserService();
+const unitservice = Unitservice();
 const mngConfig = {
   title: "",
   textOk: null,
@@ -17,7 +17,7 @@ const mngConfig = {
   action: "create",
   code: null,
 };
-const UsersAccess = () => {
+const UnitAccess = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [accessData, setAccessData] = useState([]);
@@ -26,17 +26,17 @@ const UsersAccess = () => {
   const handleSearch = () => {
     form.validateFields().then((v) => {
       const data = { ...v };
-      userService
-      .search(data, { ignoreLoading: Object.keys(data).length !== 0 })
-      .then((res) => {
-        const { data } = res.data;
+      unitservice
+        .search(data, { ignoreLoading: Object.keys(data).length !== 0 })
+        .then((res) => {
+          const { data } = res.data;
 
-        setAccessData(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        message.error("Request error!");
-      });
+          setAccessData(data);
+        })
+        .catch((err) => {
+          console.log(err);
+          message.error("Request error!");
+        });
     });
   };
 
@@ -51,9 +51,8 @@ const UsersAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "เพิ่มผู้ใช้",
+          title: "เพิ่มหน่วยสินค้า",
           action: "create",
-          acname: "เพิ่มผู้ใช้ใหม่",
         },
       },
       replace: true,
@@ -66,10 +65,9 @@ const UsersAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "แก้ไขผู้ใช้",
+          title: "แก้ไขหน่วยสินค้า",
           action: "edit",
-          acname: "แก้ใขข้อมูลผู้ใช้",
-          code: data?.code,
+          code: data?.unitcode,
         },
       },
       replace: true,
@@ -80,6 +78,7 @@ const UsersAccess = () => {
     const newWindow = window.open("", "_blank");
     newWindow.location.href = `/dln-print/${data.dncode}`;
   };
+
   const handleDelete = (data) => {
     // startLoading();
     // ctmService.deleted(data?.dncode).then( _ => {
@@ -97,7 +96,7 @@ const UsersAccess = () => {
   }, []);
 
   const getData = (data) => {
-    userService
+    unitservice
       .search(data)
       .then((res) => {
         const { data } = res.data;
@@ -125,40 +124,13 @@ const UsersAccess = () => {
             <>
               <Form form={form} layout="vertical" autoComplete="off">
                 <Row gutter={[8, 8]}>
-                  <Col xs={24} sm={8} md={8} lg={8} xl={6}>
+                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Form.Item
-                      label="Username"
-                      name="username"
+                      label="ชื่อหน่วยสินค้า"
+                      name="unitname"
                       onChange={handleSearch}
                     >
-                      <Input placeholder="ใส่ Username" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={8} md={8} lg={8} xl={6}>
-                    <Form.Item
-                      label="ชื่อ"
-                      name="firstname"
-                      onChange={handleSearch}
-                    >
-                      <Input placeholder="ใส่ชื่อจริง" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={8} md={8} lg={8} xl={6}>
-                    <Form.Item
-                      label="นามสกุล"
-                      name="lastname"
-                      onChange={handleSearch}
-                    >
-                      <Input placeholder="ใส่นามสกุล" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={8} md={8} lg={8} xl={6}>
-                    <Form.Item
-                      label="เบอร์โทร"
-                      name="tel"
-                      onChange={handleSearch}
-                    >
-                      <Input placeholder="ใส่เบอร์โทร" />
+                      <Input placeholder="กรอกชื่อหน่วยสินค้า" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -199,12 +171,13 @@ const UsersAccess = () => {
     />
   );
   const column = accessColumn({ handleEdit, handleDelete, handleView });
+
   const TitleTable = (
     <Flex className="width-100" align="center">
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายชื่อผู้ใช้
+            รายการหน่วยสินค้า
           </Typography.Title>
         </Flex>
       </Col>
@@ -213,19 +186,19 @@ const UsersAccess = () => {
           <Button
             size="small"
             className="bn-action bn-center bn-primary-outline justify-center"
-            icon={<MdGroupAdd style={{ fontSize: ".9rem" }} />}
+            icon={<MdOutlineLibraryAdd style={{ fontSize: ".9rem" }} />}
             onClick={() => {
               hangleAdd();
             }}
           >
-            เพิ่มผู้ใช้
+            เพิ่มหน่วยสินค้า
           </Button>
         </Flex>
       </Col>
     </Flex>
   );
   return (
-    <div className="User-access">
+    <div className="item-access">
       <Space
         direction="vertical"
         size="middle"
@@ -239,10 +212,9 @@ const UsersAccess = () => {
               <Table
                 title={() => TitleTable}
                 size="small"
-                rowKey="cuscode"
+                rowKey="unitcode"
                 columns={column}
                 dataSource={accessData}
-                
               />
             </Col>
           </Row>
@@ -252,4 +224,4 @@ const UsersAccess = () => {
   );
 };
 
-export default UsersAccess;
+export default UnitAccess;
