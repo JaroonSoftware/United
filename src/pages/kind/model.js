@@ -7,18 +7,18 @@ import { EditOutlined } from "@ant-design/icons";
 export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
   {
     title: "รหัสประเภทสินค้า",
-    key: "type_code",
-    dataIndex: "type_code",
+    key: "kind_code",
+    dataIndex: "kind_code",
     align: "left",
     hidden: true,
-    sorter: (a, b) => (a?.type_code || "").localeCompare(b?.type_code || ""),
+    sorter: (a, b) => (a?.kind_code || "").localeCompare(b?.kind_code || ""),
   },
   {
     title: "ชื่อสินค้า",
-    dataIndex: "type_name",
-    key: "type_name",
+    dataIndex: "kind_name",
+    key: "kind_name",
     width: "60%",
-    sorter: (a, b) => (a?.type_name || "").localeCompare(b?.type_name || ""),
+    sorter: (a, b) => (a?.kind_name || "").localeCompare(b?.kind_name || ""),
   },
   {
     title: "สถานะ",

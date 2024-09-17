@@ -7,12 +7,12 @@ import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router";
 import { delay } from "../../utils/util";
 // import OptionService from '../../service/Options.service';
-import Itemtypservice from "../../service/Itemstype.Service";
+import BrandsService from "../../service/Brand.Service";
 
-const itemtypeservice = Itemtypservice();
+const brandservice = BrandsService();
 // const opservice = OptionService();
-const from = "/itemtype";
-const ItemsTypeManage = () => {
+const from = "/brand";
+const KindManage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { config } = location.state || { config: null };
@@ -34,7 +34,7 @@ const ItemsTypeManage = () => {
     };
   }, []);
   const getsupData = (v) => {
-    itemtypeservice
+    brandservice
       .get(v)
       .then(async (res) => {
         const { data } = res.data;
@@ -57,8 +57,8 @@ const ItemsTypeManage = () => {
       const source = { ...formDetail, ...v };
       const actions =
         config?.action !== "create"
-          ? itemtypeservice.update(source)
-          : itemtypeservice.create(source);
+          ? brandservice.update(source)
+          : brandservice.create(source);
 
       actions
         .then(async (r) => {
@@ -79,11 +79,11 @@ const ItemsTypeManage = () => {
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
       <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={8}>
         <Form.Item
-          label="ชื่อประเภทสินค้า"
-          name="type_name"
+          label="ชื่อยี่ห้อสินค้า"
+          name="brand_name"
           rules={[{ required: true, message: "โปรดกรอกข้อมูล" }]}
         >
-          <Input placeholder="กรอกชื่อประเภทสินค้า" />
+          <Input placeholder="กรอกชื่อยี่ห้อสินค้า" />
         </Form.Item>
       </Col>
       <Col
@@ -113,7 +113,7 @@ const ItemsTypeManage = () => {
           />
         </Form.Item>
       </Col>
-      <Form.Item name="type_code">
+      <Form.Item name="brand_code">
         <Input type="hidden" disabled />
       </Form.Item>
     </Row>
@@ -158,4 +158,4 @@ const ItemsTypeManage = () => {
   );
 };
 
-export default ItemsTypeManage;
+export default KindManage;

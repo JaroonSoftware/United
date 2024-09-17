@@ -7,9 +7,9 @@ import { Input, Button, Table, Typography } from "antd";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons";
 import { MdOutlineLibraryAdd } from "react-icons/md";
 import { accessColumn } from "./model";
-import ItemTypeService from "../../service/Itemstype.Service";
+import BrandsService from "../../service/Brand.Service";
 
-const itemtypeservice = ItemTypeService();
+const brandservice = BrandsService();
 const mngConfig = {
   title: "",
   textOk: null,
@@ -17,7 +17,7 @@ const mngConfig = {
   action: "create",
   code: null,
 };
-const ItemsAccess = () => {
+const KindAccess = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [accessData, setAccessData] = useState([]);
@@ -26,7 +26,7 @@ const ItemsAccess = () => {
   const handleSearch = () => {
     form.validateFields().then((v) => {
       const data = { ...v };
-      itemtypeservice
+      brandservice
         .search(data, { ignoreLoading: Object.keys(data).length !== 0 })
         .then((res) => {
           const { data } = res.data;
@@ -51,7 +51,7 @@ const ItemsAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "เพิ่มประเภทสินค้า",
+          title: "เพิ่มยี่ห้อสินค้า",
           action: "create",
         },
       },
@@ -65,9 +65,9 @@ const ItemsAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "แก้ไขข้อมูลประเภทสินค้า",
+          title: "แก้ไขข้อมูลยี่ห้อสินค้า",
           action: "edit",
-          code: data?.type_code,
+          code: data?.brand_code,
         },
       },
       replace: true,
@@ -96,7 +96,7 @@ const ItemsAccess = () => {
   }, []);
 
   const getData = (data) => {
-    itemtypeservice
+    brandservice
       .search(data)
       .then((res) => {
         const { data } = res.data;
@@ -126,11 +126,11 @@ const ItemsAccess = () => {
                 <Row gutter={[8, 8]}>
                   <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Form.Item
-                      label="ชื่อประเภทสินค้า"
-                      name="type_name"
+                      label="ชื่อยี่ห้อสินค้า"
+                      name="brand_name"
                       onChange={handleSearch}
                     >
-                      <Input placeholder="กรอกชื่อประเภทสินค้า" />
+                      <Input placeholder="กรอกชื่อยี่ห้อสินค้า" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -177,7 +177,7 @@ const ItemsAccess = () => {
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายการประเภทสินค้า
+            รายการยี่ห้อสินค้า
           </Typography.Title>
         </Flex>
       </Col>
@@ -191,7 +191,7 @@ const ItemsAccess = () => {
               hangleAdd();
             }}
           >
-            เพิ่มประเภทสินค้า
+            เพิ่มยี่ห้อสินค้า
           </Button>
         </Flex>
       </Col>
@@ -212,7 +212,7 @@ const ItemsAccess = () => {
               <Table
                 title={() => TitleTable}
                 size="small"
-                rowKey="type_code"
+                rowKey="brand_code"
                 columns={column}
                 dataSource={accessData}
               />
@@ -224,4 +224,4 @@ const ItemsAccess = () => {
   );
 };
 
-export default ItemsAccess;
+export default KindAccess;
