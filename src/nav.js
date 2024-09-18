@@ -2,6 +2,7 @@ import { FileTextFilled, ReconciliationFilled,FileDoneOutlined } from "@ant-desi
 import { PiCodepenLogoBold } from "react-icons/pi";
 import { FaTag } from "react-icons/fa";
 import { IoLogoModelS } from "react-icons/io";
+import { MdFormatShapes } from "react-icons/md";
 import { TbReportMoney } from "react-icons/tb";
 import { RiTeamFill } from "react-icons/ri";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -56,6 +57,11 @@ let _nav = [
     title: "ชนิดสินค้า",
     icon: <PiCodepenLogoBold className="nav-ico" />,
     to: "/kind",
+  },
+  {
+    title: "แบบ",
+    icon: <MdFormatShapes className="nav-ico" />,
+    to: "/carmodel",
   },
   {
     title: "ยี่ห้อ",

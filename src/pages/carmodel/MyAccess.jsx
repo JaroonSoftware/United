@@ -2,16 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, message } from "antd";
-import { Collapse, Form, Flex, Row, Col, Space, Select } from "antd";
+import { Collapse, Form, Flex, Row, Col, Space } from "antd";
 import { Input, Button, Table, Typography } from "antd";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons";
 import { MdOutlineLibraryAdd } from "react-icons/md";
 import { accessColumn } from "./model";
-import OptionService from "../../service/Options.service";
-// import dayjs from 'dayjs';
-import Itemservice from "../../service/Items.Service";
-const opService = OptionService();
-const itemservice = Itemservice();
+import CarModelsService from "../../service/CarModel.Service";
+
+const carmodelservice = CarModelsService();
 const mngConfig = {
   title: "",
   textOk: null,
@@ -19,16 +17,16 @@ const mngConfig = {
   action: "create",
   code: null,
 };
-const ItemsAccess = () => {
+const ModelAccess = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [accessData, setAccessData] = useState([]);
   const [activeSearch, setActiveSearch] = useState([]);
-  const [optionType, setOptionType] = useState([]);
+
   const handleSearch = () => {
     form.validateFields().then((v) => {
       const data = { ...v };
-      itemservice
+      carmodelservice
         .search(data, { ignoreLoading: Object.keys(data).length !== 0 })
         .then((res) => {
           const { data } = res.data;
@@ -53,7 +51,7 @@ const ItemsAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "เพิ่มสินค้า",
+          title: "เพิ่มแบบ",
           action: "create",
         },
       },
@@ -67,9 +65,9 @@ const ItemsAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "แก้ไขข้อมูลสินค้า",
+          title: "แก้ไขข้อมูลแบบ",
           action: "edit",
-          code: data?.stcode,
+          code: data?.car_model_code,
         },
       },
       replace: true,
@@ -94,18 +92,21 @@ const ItemsAccess = () => {
   };
 
   useEffect(() => {
-    GetItemsType();
-    getData();
-   
+    getData({});
   }, []);
-  const GetItemsType = () => {
-    opService.optionsItemstype().then((res) => {
-      let { data } = res.data;
-      setOptionType(data);
-    });
-  };
-  const getData = () => {
-    handleSearch();
+
+  const getData = (data) => {
+    carmodelservice
+      .search(data)
+      .then((res) => {
+        const { data } = res.data;
+
+        setAccessData(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        message.error("Request error!");
+      });
   };
   const FormSearch = (
     <Collapse
@@ -125,38 +126,11 @@ const ItemsAccess = () => {
                 <Row gutter={[8, 8]}>
                   <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Form.Item
-                      label="รหัสสินค้า"
-                      name="stcode"
+                      label="ชื่อแบบ"
+                      name="car_model_name"
                       onChange={handleSearch}
                     >
-                      <Input placeholder="กรอกรหัสสินค้า" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                    <Form.Item
-                      label="ชื่อสินค้า"
-                      name="stname"
-                      onChange={handleSearch}
-                    >
-                      <Input placeholder="กรอกชื่อสินค้า" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                    <Form.Item
-                      label="ประเภทสินค้า"
-                      name="type_code"
-                      onChange={handleSearch}
-                    >
-                      <Select
-                        size="large"
-                        showSearch
-                        placeholder="เลือกประเภทสินค้า"
-                        onChange={handleSearch}
-                        options={optionType.map((item) => ({
-                          value: item.type_code,
-                          label: item.type_name,
-                        }))}
-                      />
+                      <Input placeholder="กรอกชื่อแบบ" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -203,7 +177,7 @@ const ItemsAccess = () => {
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายการสินค้า
+            รายการแบบ
           </Typography.Title>
         </Flex>
       </Col>
@@ -217,7 +191,7 @@ const ItemsAccess = () => {
               hangleAdd();
             }}
           >
-            เพิ่มสินค้า
+            เพิ่มแบบ
           </Button>
         </Flex>
       </Col>
@@ -230,7 +204,7 @@ const ItemsAccess = () => {
         size="middle"
         style={{ display: "flex", position: "relative" }}
       >
-        <Card >
+        <Card>
           {FormSearch}
           <br></br>
           <Row gutter={[8, 8]} className="m-0">
@@ -238,7 +212,7 @@ const ItemsAccess = () => {
               <Table
                 title={() => TitleTable}
                 size="small"
-                rowKey="stcode"
+                rowKey="car_model_code"
                 columns={column}
                 dataSource={accessData}
               />
@@ -250,4 +224,4 @@ const ItemsAccess = () => {
   );
 };
 
-export default ItemsAccess;
+export default ModelAccess;

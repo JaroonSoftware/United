@@ -18,21 +18,18 @@ try {
 
         // var_dump($_POST);
 
-        $sql = "INSERT INTO items (stcode, stname,type_code,kind_code,car_model_code,unit,remark, price,created_by,created_date) 
-        values (:stcode,:stname,:type_code,:kind_code,:car_model_code,:unit,:remark,:price,:action_user,:action_date)";
+        $sql = "INSERT INTO car_model (car_model_code,car_model_name,brand_code,model_code,year,created_by,created_date) 
+        values (:car_model_code,:car_model_name,:brand_code,:model_code,:year,:action_user,:action_date)";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
 
-        $stmt->bindParam(":stcode", $stcode, PDO::PARAM_STR);
-        $stmt->bindParam(":stname", $stname, PDO::PARAM_STR);
-        $stmt->bindParam(":type_code", $type_code, PDO::PARAM_STR);
-        $stmt->bindParam(":kind_code", $kind_code, PDO::PARAM_STR);
         $stmt->bindParam(":car_model_code", $car_model_code, PDO::PARAM_STR);
-        $stmt->bindParam(":unit", $unit, PDO::PARAM_STR);
-        $stmt->bindParam(":remark", $remark, PDO::PARAM_STR);
-        $stmt->bindParam(":price", $price, PDO::PARAM_STR);
+        $stmt->bindParam(":car_model_name", $car_model_name, PDO::PARAM_STR);
+        $stmt->bindParam(":brand_code", $brand_code, PDO::PARAM_STR);
+        $stmt->bindParam(":model_code", $model_code, PDO::PARAM_STR);
+        $stmt->bindParam(":year", $year, PDO::PARAM_STR);
         $stmt->bindParam(":action_date", $action_date, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
 
@@ -52,34 +49,29 @@ try {
         // var_dump($_POST);
 
         $sql = "
-        update items 
+        update car_model 
         set
-        stname = :stname,
-        type_code = :type_code,
-        kind_code = :kind_code,
         car_model_code = :car_model_code,
-        unit = :unit,
-        remark = :remark,
-        price = :price,
+        car_model_name = :car_model_name,
+        brand_code = :brand_code,
+        model_code = :model_code,
+        year = :year,
         active_status = :active_status,
         updated_date = CURRENT_TIMESTAMP(),
         updated_by = :action_user
-        where stcode = :stcode";
+        where car_model_code = :car_model_code";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
 
-        $stmt->bindParam(":stname", $stname, PDO::PARAM_STR);
-        $stmt->bindParam(":type_code", $type_code, PDO::PARAM_STR);
-        $stmt->bindParam(":kind_code", $kind_code, PDO::PARAM_STR);
-        $stmt->bindParam(":car_model_code", $car_model_code, PDO::PARAM_STR);
-        $stmt->bindParam(":unit", $unit, PDO::PARAM_STR);
-        $stmt->bindParam(":price", $price, PDO::PARAM_STR);
-        $stmt->bindParam(":remark", $remark, PDO::PARAM_STR);
+        $stmt->bindParam(":car_model_name", $car_model_name, PDO::PARAM_STR);
         $stmt->bindParam(":active_status", $active_status, PDO::PARAM_STR);
+        $stmt->bindParam(":brand_code", $brand_code, PDO::PARAM_STR);
+        $stmt->bindParam(":model_code", $model_code, PDO::PARAM_STR);
+        $stmt->bindParam(":year", $year, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-        $stmt->bindParam(":stcode", $stcode, PDO::PARAM_STR);
+        $stmt->bindParam(":car_model_code", $car_model_code, PDO::PARAM_STR);
 
         if (!$stmt->execute()) {
             $error = $conn->errorInfo();
@@ -93,8 +85,8 @@ try {
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
         $sql = " SELECT a.* ";
-        $sql .= " FROM `items` as a ";
-        $sql .= " where stcode = :code";
+        $sql .= " FROM `car_model` as a ";
+        $sql .= " where car_model_code = :code";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt->execute(['code' => $code])) {
@@ -104,23 +96,9 @@ try {
         }
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql2 = "SELECT * FROM `items_img` ";
-        $sql2 .= " where stcode = :code ";
-        $stmt2 = $conn->prepare($sql2);
-        if (!$stmt2->execute(['code' => $code])) {
-            $error = $conn->errorInfo();
-            http_response_code(404);
-            throw new PDOException("Geting data error => $error");
-        }
-
-        $dataFile = array();
-        while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-            $dataFile[] = $row2;
-        }
-
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array("data" => $res,"file" => $dataFile));
+        echo json_encode(array("data" => $res));
     }
 } catch (PDOException $e) {
     $conn->rollback();

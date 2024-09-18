@@ -11,17 +11,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     extract($_POST, EXTR_OVERWRITE, "_");
 
 
-    $stcode = !empty($stcode) ? "and a.stcode like '%$stcode%'" : "";
-    $stname = !empty($stname) ? "and a.stname like '%$stname%'" : "";
-    $type_code = !empty($type_code) ? "and a.type_code like '%$type_code%'" : "";
-    
+    $car_model_code = !empty($car_model_code) ? "and a.car_model_code like '%$car_model_code%'" : "";
+    $car_model_name = !empty($car_model_name) ? "and a.car_model_name like '%$car_model_name%'" : "";
+    $brand_code = !empty($brand_code) ? "and a.brand_code like '%$brand_code%'" : "";
+    $model_code = !empty($model_code) ? "and a.model_code like '%$model_code%'" : "";
+
     try {
-        $sql = "SELECT a.stcode, a.stname, b.type_name, a.price, a.car_model_code ,a.active_status FROM `items` as a
-        left outer join `items_type` as b on (a.type_code=b.type_code)   
-        where 1 = 1   
-        $stcode
-        $stname
-        $type_code
+        $sql = "SELECT a.car_model_code, a.car_model_name, a.year, b.brand_name, c.model_name, a.active_status FROM `car_model` as a     
+        left outer join `brand` as b on (a.brand_code=b.brand_code)   
+        left outer join `model_table` as c on (a.model_code=c.model_code)   
+        where 1 = 1
+        $car_model_code
+        $car_model_name
+        $brand_code
         order by a.created_date desc";
 
         $stmt = $conn->prepare($sql);
@@ -30,7 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         http_response_code(200);
         echo json_encode(array("data" => $res));
-        // echo json_encode(array("data" => $res,"sql" => $sql));
     } catch (mysqli_sql_exception $e) {
         http_response_code(400);
         echo json_encode(array('status' => '0', 'message' => $e->getMessage()));
