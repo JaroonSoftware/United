@@ -11,14 +11,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     extract($_POST, EXTR_OVERWRITE, "_");
 
 
-    $type_code = !empty($type_code) ? "and a.type_code like '%$type_code%'" : "";
-    $type_name = !empty($type_name) ? "and a.type_name like '%$type_name%'" : "";
+    $car_model_code = !empty($car_model_code) ? "and a.car_model_code like '%$car_model_code%'" : "";
+    $car_model_name = !empty($car_model_name) ? "and a.car_model_name like '%$car_model_name%'" : "";
+    $brand_code = !empty($brand_code) ? "and a.brand_code like '%$brand_code%'" : "";
+    $model_code = !empty($model_code) ? "and a.model_code like '%$model_code%'" : "";
 
     try {
-        $sql = "SELECT a.type_code, a.type_name, a.active_status FROM `items_type` as a     
+        $sql = "SELECT a.car_model_code, a.car_model_name, a.year, b.brand_name, c.model_name, a.active_status FROM `car_model` as a     
+        left outer join `brand` as b on (a.brand_code=b.brand_code)   
+        left outer join `model_table` as c on (a.model_code=c.model_code)   
         where 1 = 1
-        $type_code
-        $type_name
+        $car_model_code
+        $car_model_name
+        $brand_code
         order by a.created_date desc";
 
         $stmt = $conn->prepare($sql);

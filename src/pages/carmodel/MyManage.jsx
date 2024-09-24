@@ -6,14 +6,16 @@ import { SaveFilled } from "@ant-design/icons";
 import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router";
 import { delay } from "../../utils/util";
-// import OptionService from '../../service/Options.service';
-import Itemtypservice from "../../service/Itemstype.Service";
+import OptionService from "../../service/Options.service";
+import CarModelsService from "../../service/CarModel.Service";
 
-const itemtypeservice = Itemtypservice();
-// const opservice = OptionService();
-const from = "/itemtype";
-const ItemsTypeManage = () => {
+const carmodelservice = CarModelsService();
+const opservice = OptionService();
+const from = "/carmodel";
+const KindManage = () => {
   const navigate = useNavigate();
+  const [optionBrand, setOptionBrand] = useState([]);
+  const [optionModel, setOptionModel] = useState([]);
   const location = useLocation();
   const { config } = location.state || { config: null };
   const [form] = Form.useForm();
@@ -24,6 +26,8 @@ const ItemsTypeManage = () => {
 
   useEffect(() => {
     // setLoading(true);
+    GetBrand();
+    GetModel();
     if (config?.action !== "create") {
       getsupData(config.code);
     }
@@ -33,8 +37,24 @@ const ItemsTypeManage = () => {
       form.resetFields();
     };
   }, []);
+  const filterOption = (input, option) =>
+    (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
+  const GetBrand = () => {
+    opservice.optionsBrand().then((res) => {
+      let { data } = res.data;
+      setOptionBrand(data);
+    });
+  };
+
+  const GetModel = () => {
+    opservice.optionsModel().then((res) => {
+      let { data } = res.data;
+      setOptionModel(data);
+    });
+  };
   const getsupData = (v) => {
-    itemtypeservice
+    carmodelservice
       .get(v)
       .then(async (res) => {
         const { data } = res.data;
@@ -57,8 +77,8 @@ const ItemsTypeManage = () => {
       const source = { ...formDetail, ...v };
       const actions =
         config?.action !== "create"
-          ? itemtypeservice.update(source)
-          : itemtypeservice.create(source);
+          ? carmodelservice.update(source)
+          : carmodelservice.create(source);
 
       actions
         .then(async (r) => {
@@ -79,13 +99,46 @@ const ItemsTypeManage = () => {
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
       <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={8}>
         <Form.Item
-          label="ชื่อประเภทสินค้า"
-          name="type_name"
+          label="ชื่อแบบ"
+          name="car_model_name"
           rules={[{ required: true, message: "โปรดกรอกข้อมูล" }]}
         >
-          <Input placeholder="กรอกชื่อประเภทสินค้า" />
+          <Input placeholder="กรอกชื่อแบบ" />
         </Form.Item>
       </Col>
+      <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+        <Form.Item label="ยี่ห้อสินค้า" name="brand_code">
+          <Select
+            size="large"
+            showSearch
+            filterOption={filterOption}
+            placeholder="เลือกยี่ห้อสินค้า"
+            options={optionBrand.map((item) => ({
+              value: item.brand_code,
+              label: item.brand_name,
+            }))}
+          />
+        </Form.Item>
+      </Col>
+      <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+        <Form.Item label="รุ่นรถ" name="model_code">
+          <Select
+            size="large"
+            showSearch
+            filterOption={filterOption}
+            placeholder="เลือกรุ่นรถ"
+            options={optionModel.map((item) => ({
+              value: item.model_code,
+              label: item.model_name,
+            }))}
+          />
+        </Form.Item>
+      </Col>
+      <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+          <Form.Item label="ปี" name="year">
+            <Input placeholder="กรอกปี" />
+          </Form.Item>
+        </Col>
       <Col
         xs={24}
         sm={24}
@@ -113,7 +166,7 @@ const ItemsTypeManage = () => {
           />
         </Form.Item>
       </Col>
-      <Form.Item name="type_code">
+      <Form.Item name="car_model_code">
         <Input type="hidden" disabled />
       </Form.Item>
     </Row>
@@ -158,4 +211,4 @@ const ItemsTypeManage = () => {
   );
 };
 
-export default ItemsTypeManage;
+export default KindManage;

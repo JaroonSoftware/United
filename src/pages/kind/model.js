@@ -6,41 +6,26 @@ import { EditOutlined } from "@ant-design/icons";
 
 export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
   {
-    title: "รหัสสินค้า",
-    key: "stcode",
-    dataIndex: "stcode",
+    title: "รหัสประเภทสินค้า",
+    key: "kind_code",
+    dataIndex: "kind_code",
     align: "left",
-    width: "15%",
-    sorter: (a, b) => (a?.stcode || "").localeCompare(b?.stcode || ""),
+    hidden: true,
+    sorter: (a, b) => (a?.kind_code || "").localeCompare(b?.kind_code || ""),
   },
   {
     title: "ชื่อสินค้า",
-    dataIndex: "stname",
-    key: "stname",
-    width: "35%",
-    sorter: (a, b) => (a?.stname || "").localeCompare(b?.stname || ""),
-  },
-  {
-    title: "แบบ",
-    dataIndex: "type_name",
-    key: "type_name",
-    sorter: (a, b) => (a?.type_name || "").localeCompare(b?.type_name || ""),
-    width: "15%",
-  },
- 
-  {
-    title: "ราคาขาย",
-    dataIndex: "price",
-    key: "price",
-    sorter: (a, b) => (a?.price || "").localeCompare(b?.price || ""),
-    width: "10%",
+    dataIndex: "kind_name",
+    key: "kind_name",
+    width: "60%",
+    sorter: (a, b) => (a?.kind_name || "").localeCompare(b?.kind_name || ""),
   },
   {
     title: "สถานะ",
     dataIndex: "active_status",
-    key: "status",
-    width: "10%",
-    sorter: (a, b) => (a?.status || "").localeCompare(b?.status || ""),
+    key: "active_status",
+    width: "20%",
+    sorter: (a, b) => (a?.active_status || "").localeCompare(b?.active_status || ""),
     render: (data) => (
       <div>
         {data === "Y" ? (
@@ -54,7 +39,7 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
   {
     title: "Action",
     key: "operation",
-    width: "5%",
+    width: "10%",
     fixed: "right",
     render: (text, record) => (
       <Space>

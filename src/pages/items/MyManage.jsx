@@ -43,6 +43,8 @@ const ItemsManage = () => {
   const [formDetail, setFormDetail] = useState(Items);
   const [optionUnit, setOptionUnit] = useState([]);
   const [optionType, setOptionType] = useState([]);
+  const [optionKind, setOptionsKind] = useState([]);
+  const [optionCarmodel, setOptionsCarmodel] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [previewImage, setPreviewImage] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -52,7 +54,8 @@ const ItemsManage = () => {
     // setLoading(true);
     GetItemsUnit();
     GetItemsType();
-
+    GetItemsKind();
+    GetCarmodel();
     if (config?.action !== "create") {
       getsupData(config.code);
     }
@@ -67,6 +70,20 @@ const ItemsManage = () => {
     opService.optionsItemstype().then((res) => {
       let { data } = res.data;
       setOptionType(data);
+    });
+  };
+
+  const GetItemsKind = () => {
+    opService.optionsKind().then((res) => {
+      let { data } = res.data;
+      setOptionsKind(data);
+    });
+  };
+
+  const GetCarmodel = () => {
+    opService.optionsCarmodel().then((res) => {
+      let { data } = res.data;
+      setOptionsCarmodel(data);
     });
   };
 
@@ -160,7 +177,7 @@ const ItemsManage = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
         try {
@@ -168,12 +185,12 @@ const ItemsManage = () => {
           formData_Del.append("img_id", file.img_id);
           formData_Del.append("file", file);
           formData_Del.append("uid", file.uid);
-          
+
           const actions =
             config?.action !== "create"
               ? itemservice.deletePicUpdate(formData_Del)
               : itemservice.deletePic(formData_Del);
-    
+
           actions.then(async (res) => {
             //debugger
             let { status, data } = res;
@@ -188,7 +205,7 @@ const ItemsManage = () => {
         }
       }
     });
-    
+
     // console.log(fileList);
   };
 
@@ -303,15 +320,45 @@ const ItemsManage = () => {
           </Form.Item>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-          <Form.Item label="ประเภทสินค้า" name="typecode">
+          <Form.Item label="แบบสินค้า" name="car_model_code">
+            <Select
+              size="large"
+              showSearch
+              filterOption={filterOption}
+              placeholder="เลือกแบบสินค้า"
+              options={optionCarmodel.map((item) => ({
+                value: item.car_model_code,
+                label: item.car_model_name,
+              }))}
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+          <Form.Item label="ประเภทสินค้า" name="type_code">
             <Select
               size="large"
               showSearch
               filterOption={filterOption}
               placeholder="เลือกประเภทสินค้า"
               options={optionType.map((item) => ({
-                value: item.typecode,
-                label: item.typename,
+                value: item.type_code,
+                label: item.type_name,
+              }))}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
+        <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+          <Form.Item label="ชนิดสินค้า" name="kind_code">
+            <Select
+              size="large"
+              showSearch
+              filterOption={filterOption}
+              placeholder="เลือกชนิดสินค้า"
+              options={optionKind.map((item) => ({
+                value: item.kind_code,
+                label: item.kind_name,
               }))}
             />
           </Form.Item>
@@ -319,33 +366,6 @@ const ItemsManage = () => {
         <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
           <Form.Item label="ราคาขาย" name="price">
             <Input placeholder="กรอกราคาขาย" />
-          </Form.Item>
-        </Col>        
-      </Row>
-      <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
-        <Col xs={24} sm={24} md={4} lg={4} xl={4}>
-          รูปสินค้า
-          <Form.Item
-            name="prod_img"
-            getValueFromEvent={(event) => {
-              return event?.fileList;
-            }}
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "กรุณาอัพโหลดรูปสินค้า!",
-            //   },
-            // ]}
-          >
-            <Upload
-              {...propsAdd}
-              fileList={fileList}
-              listType="picture-card"
-              onPreview={handlePreview}
-              onRemove={onRemove}
-            >
-              {fileList.length >= 1 ? null : uploadButton}
-            </Upload>
           </Form.Item>
         </Col>
         <Col
@@ -375,6 +395,31 @@ const ItemsManage = () => {
                 },
               ]}
             />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={4} lg={4} xl={4}>
+          รูปสินค้า
+          <Form.Item
+            name="prod_img"
+            getValueFromEvent={(event) => {
+              return event?.fileList;
+            }}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: "กรุณาอัพโหลดรูปสินค้า!",
+            //   },
+            // ]}
+          >
+            <Upload
+              {...propsAdd}
+              fileList={fileList}
+              listType="picture-card"
+              onPreview={handlePreview}
+              onRemove={onRemove}
+            >
+              {fileList.length >= 1 ? null : uploadButton}
+            </Upload>
           </Form.Item>
         </Col>
       </Row>

@@ -5,12 +5,12 @@ $conn = $db->connect();
 
 if ($_SERVER["REQUEST_METHOD"] == "GET"){
     extract($_GET, EXTR_OVERWRITE, "_"); 
-    // $type_code = !empty($type) ? "and i.type_code = '$type'" : "";
+    // $car_model_code = !empty($type) ? "and i.car_model_code = '$type'" : "";
     try { 
         $res = null;
         
-        $sql = "SELECT type_code,type_name,active_status FROM items_type where active_status = 'Y'";
-            // $type_code
+        $sql = "SELECT car_model_code,car_model_name,active_status FROM car_model where active_status = 'Y'";
+            // $car_model_code
             $stmt = $conn->prepare($sql); 
             $stmt->execute();
             $res = $stmt->fetchAll(PDO::FETCH_ASSOC); 

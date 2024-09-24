@@ -1,4 +1,8 @@
 import { FileTextFilled, ReconciliationFilled,FileDoneOutlined } from "@ant-design/icons";
+import { PiCodepenLogoBold } from "react-icons/pi";
+import { FaTag } from "react-icons/fa";
+import { IoLogoModelS } from "react-icons/io";
+import { MdFormatShapes } from "react-icons/md";
 import { TbReportMoney } from "react-icons/tb";
 import { RiTeamFill } from "react-icons/ri";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -48,6 +52,26 @@ let _nav = [
     title: "ประเภทสินค้า",
     icon: <TiThLarge className="nav-ico" />,
     to: "/itemtype",
+  },
+  {
+    title: "ชนิดสินค้า",
+    icon: <PiCodepenLogoBold className="nav-ico" />,
+    to: "/kind",
+  },
+  {
+    title: "แบบ",
+    icon: <MdFormatShapes className="nav-ico" />,
+    to: "/carmodel",
+  },
+  {
+    title: "ยี่ห้อ",
+    icon: <FaTag className="nav-ico" />,
+    to: "/brand",
+  },
+  {
+    title: "รุ่น",
+    icon: <IoLogoModelS className="nav-ico" />,
+    to: "/model",
   },
   {
     title: "หน่วยสินค้า",

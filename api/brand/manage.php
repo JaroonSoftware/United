@@ -18,21 +18,15 @@ try {
 
         // var_dump($_POST);
 
-        $sql = "INSERT INTO items (stcode, stname,type_code,kind_code,car_model_code,unit,remark, price,created_by,created_date) 
-        values (:stcode,:stname,:type_code,:kind_code,:car_model_code,:unit,:remark,:price,:action_user,:action_date)";
+        $sql = "INSERT INTO brand (brand_code, brand_name,created_by,created_date) 
+        values (:brand_code,:brand_name,:action_user,:action_date)";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
 
-        $stmt->bindParam(":stcode", $stcode, PDO::PARAM_STR);
-        $stmt->bindParam(":stname", $stname, PDO::PARAM_STR);
-        $stmt->bindParam(":type_code", $type_code, PDO::PARAM_STR);
-        $stmt->bindParam(":kind_code", $kind_code, PDO::PARAM_STR);
-        $stmt->bindParam(":car_model_code", $car_model_code, PDO::PARAM_STR);
-        $stmt->bindParam(":unit", $unit, PDO::PARAM_STR);
-        $stmt->bindParam(":remark", $remark, PDO::PARAM_STR);
-        $stmt->bindParam(":price", $price, PDO::PARAM_STR);
+        $stmt->bindParam(":brand_code", $brand_code, PDO::PARAM_STR);
+        $stmt->bindParam(":brand_name", $brand_name, PDO::PARAM_STR);
         $stmt->bindParam(":action_date", $action_date, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
 
@@ -52,34 +46,23 @@ try {
         // var_dump($_POST);
 
         $sql = "
-        update items 
+        update brand 
         set
-        stname = :stname,
-        type_code = :type_code,
-        kind_code = :kind_code,
-        car_model_code = :car_model_code,
-        unit = :unit,
-        remark = :remark,
-        price = :price,
+        brand_code = :brand_code,
+        brand_name = :brand_name,
         active_status = :active_status,
         updated_date = CURRENT_TIMESTAMP(),
         updated_by = :action_user
-        where stcode = :stcode";
+        where brand_code = :brand_code";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
 
-        $stmt->bindParam(":stname", $stname, PDO::PARAM_STR);
-        $stmt->bindParam(":type_code", $type_code, PDO::PARAM_STR);
-        $stmt->bindParam(":kind_code", $kind_code, PDO::PARAM_STR);
-        $stmt->bindParam(":car_model_code", $car_model_code, PDO::PARAM_STR);
-        $stmt->bindParam(":unit", $unit, PDO::PARAM_STR);
-        $stmt->bindParam(":price", $price, PDO::PARAM_STR);
-        $stmt->bindParam(":remark", $remark, PDO::PARAM_STR);
+        $stmt->bindParam(":brand_name", $brand_name, PDO::PARAM_STR);
         $stmt->bindParam(":active_status", $active_status, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-        $stmt->bindParam(":stcode", $stcode, PDO::PARAM_STR);
+        $stmt->bindParam(":brand_code", $brand_code, PDO::PARAM_STR);
 
         if (!$stmt->execute()) {
             $error = $conn->errorInfo();
@@ -93,8 +76,8 @@ try {
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
         $sql = " SELECT a.* ";
-        $sql .= " FROM `items` as a ";
-        $sql .= " where stcode = :code";
+        $sql .= " FROM `brand` as a ";
+        $sql .= " where brand_code = :code";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt->execute(['code' => $code])) {
@@ -104,23 +87,9 @@ try {
         }
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql2 = "SELECT * FROM `items_img` ";
-        $sql2 .= " where stcode = :code ";
-        $stmt2 = $conn->prepare($sql2);
-        if (!$stmt2->execute(['code' => $code])) {
-            $error = $conn->errorInfo();
-            http_response_code(404);
-            throw new PDOException("Geting data error => $error");
-        }
-
-        $dataFile = array();
-        while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-            $dataFile[] = $row2;
-        }
-
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array("data" => $res,"file" => $dataFile));
+        echo json_encode(array("data" => $res));
     }
 } catch (PDOException $e) {
     $conn->rollback();
