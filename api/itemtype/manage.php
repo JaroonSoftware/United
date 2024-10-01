@@ -18,15 +18,15 @@ try {
 
         // var_dump($_POST);
 
-        $sql = "INSERT INTO items_type (type_code, type_name,created_by,created_date) 
-        values (:type_code,:type_name,:action_user,:action_date)";
+        $sql = "INSERT INTO itemtype (typecode, typename,created_by,created_date) 
+        values (:typecode,:typename,:action_user,:action_date)";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
 
-        $stmt->bindParam(":type_code", $type_code, PDO::PARAM_STR);
-        $stmt->bindParam(":type_name", $type_name, PDO::PARAM_STR);
+        $stmt->bindParam(":typecode", $typecode, PDO::PARAM_STR);
+        $stmt->bindParam(":typename", $typename, PDO::PARAM_STR);
         $stmt->bindParam(":action_date", $action_date, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
 
@@ -46,23 +46,23 @@ try {
         // var_dump($_POST);
 
         $sql = "
-        update items_type 
+        update itemtype 
         set
-        type_code = :type_code,
-        type_name = :type_name,
+        typecode = :typecode,
+        typename = :typename,
         active_status = :active_status,
         updated_date = CURRENT_TIMESTAMP(),
         updated_by = :action_user
-        where type_code = :type_code";
+        where typecode = :typecode";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
 
-        $stmt->bindParam(":type_name", $type_name, PDO::PARAM_STR);
+        $stmt->bindParam(":typename", $typename, PDO::PARAM_STR);
         $stmt->bindParam(":active_status", $active_status, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-        $stmt->bindParam(":type_code", $type_code, PDO::PARAM_STR);
+        $stmt->bindParam(":typecode", $typecode, PDO::PARAM_STR);
 
         if (!$stmt->execute()) {
             $error = $conn->errorInfo();
@@ -76,8 +76,8 @@ try {
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
         $sql = " SELECT a.* ";
-        $sql .= " FROM `items_type` as a ";
-        $sql .= " where type_code = :code";
+        $sql .= " FROM `itemtype` as a ";
+        $sql .= " where typecode = :code";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt->execute(['code' => $code])) {

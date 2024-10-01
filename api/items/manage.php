@@ -18,8 +18,8 @@ try {
 
         // var_dump($_POST);
 
-        $sql = "INSERT INTO items (stcode, stname,type_code,kind_code,car_model_code,unit,remark, price,created_by,created_date) 
-        values (:stcode,:stname,:type_code,:kind_code,:car_model_code,:unit,:remark,:price,:action_user,:action_date)";
+        $sql = "INSERT INTO items (stcode, stname,stnameEN,typecode,brand_code,supcode,unit,st_add_on,min,remark,member_price,wholesale_price,price,buyprice,created_by,created_date) 
+        values (:stcode,:stname,:stnameEN,:typecode,:brand_code,:supcode,:unit,:st_add_on,:min,:remark,:member_price,:wholesale_price,:price,:buyprice,:action_user,:action_date)";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
@@ -27,12 +27,18 @@ try {
 
         $stmt->bindParam(":stcode", $stcode, PDO::PARAM_STR);
         $stmt->bindParam(":stname", $stname, PDO::PARAM_STR);
-        $stmt->bindParam(":type_code", $type_code, PDO::PARAM_STR);
-        $stmt->bindParam(":kind_code", $kind_code, PDO::PARAM_STR);
-        $stmt->bindParam(":car_model_code", $car_model_code, PDO::PARAM_STR);
+        $stmt->bindParam(":stnameEN", $stnameEN, PDO::PARAM_STR);
+        $stmt->bindParam(":typecode", $typecode, PDO::PARAM_STR);
+        $stmt->bindParam(":supcode", $supcode, PDO::PARAM_STR);
+        $stmt->bindParam(":brand_code", $brand_code, PDO::PARAM_STR);
         $stmt->bindParam(":unit", $unit, PDO::PARAM_STR);
+        $stmt->bindParam(":min", $min, PDO::PARAM_STR);
+        $stmt->bindParam(":st_add_on", $st_add_on, PDO::PARAM_STR);
         $stmt->bindParam(":remark", $remark, PDO::PARAM_STR);
+        $stmt->bindParam(":member_price", $member_price, PDO::PARAM_STR);
         $stmt->bindParam(":price", $price, PDO::PARAM_STR);
+        $stmt->bindParam(":wholesale_price", $wholesale_price, PDO::PARAM_STR);
+        $stmt->bindParam(":buyprice", $buyprice, PDO::PARAM_STR);
         $stmt->bindParam(":action_date", $action_date, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
 
@@ -41,6 +47,23 @@ try {
             throw new PDOException("Insert data error => $error");
             die;
         }
+
+        $sql = "INSERT INTO items_stock (stcode,price,amtprice,qty,places,created_by,created_date) 
+        values (:stcode,0,0,0,'1',:action_user,:action_date)";
+
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+
+        $stmt->bindParam(":stcode", $stcode, PDO::PARAM_STR);
+        $stmt->bindParam(":action_date", $action_date, PDO::PARAM_STR);
+        $stmt->bindParam(":action_user", $action_user, PDO::PARAM_STR);
+
+        if (!$stmt->execute()) {
+            $error = $conn->errorInfo();
+            throw new PDOException("Insert data error => $error");
+            die;
+        }        
 
         $conn->commit();
         http_response_code(200);
@@ -55,12 +78,18 @@ try {
         update items 
         set
         stname = :stname,
-        type_code = :type_code,
-        kind_code = :kind_code,
-        car_model_code = :car_model_code,
+        stnameEN = :stnameEN,
+        typecode = :typecode,
+        brand_code = :brand_code,
+        supcode = :supcode,
         unit = :unit,
+        min = :min,
+        st_add_on = :st_add_on,
+        member_price = :member_price,
+        wholesale_price = :wholesale_price,
         remark = :remark,
         price = :price,
+        buyprice = :buyprice,
         active_status = :active_status,
         updated_date = CURRENT_TIMESTAMP(),
         updated_by = :action_user
@@ -71,11 +100,17 @@ try {
 
 
         $stmt->bindParam(":stname", $stname, PDO::PARAM_STR);
-        $stmt->bindParam(":type_code", $type_code, PDO::PARAM_STR);
-        $stmt->bindParam(":kind_code", $kind_code, PDO::PARAM_STR);
-        $stmt->bindParam(":car_model_code", $car_model_code, PDO::PARAM_STR);
+        $stmt->bindParam(":stnameEN", $stnameEN, PDO::PARAM_STR);
+        $stmt->bindParam(":typecode", $typecode, PDO::PARAM_STR);
+        $stmt->bindParam(":brand_code", $brand_code, PDO::PARAM_STR);
+        $stmt->bindParam(":supcode", $supcode, PDO::PARAM_STR);
         $stmt->bindParam(":unit", $unit, PDO::PARAM_STR);
+        $stmt->bindParam(":min", $min, PDO::PARAM_STR);
+        $stmt->bindParam(":member_price", $member_price, PDO::PARAM_STR);
         $stmt->bindParam(":price", $price, PDO::PARAM_STR);
+        $stmt->bindParam(":wholesale_price", $wholesale_price, PDO::PARAM_STR);
+        $stmt->bindParam(":buyprice", $buyprice, PDO::PARAM_STR);
+        $stmt->bindParam(":st_add_on", $st_add_on, PDO::PARAM_STR);
         $stmt->bindParam(":remark", $remark, PDO::PARAM_STR);
         $stmt->bindParam(":active_status", $active_status, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);

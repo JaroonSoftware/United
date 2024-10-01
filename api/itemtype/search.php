@@ -11,14 +11,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     extract($_POST, EXTR_OVERWRITE, "_");
 
 
-    $type_code = !empty($type_code) ? "and a.type_code like '%$type_code%'" : "";
-    $type_name = !empty($type_name) ? "and a.type_name like '%$type_name%'" : "";
+    $typecode = !empty($typecode) ? "and a.typecode like '%$typecode%'" : "";
+    $typename = !empty($typename) ? "and a.typename like '%$typename%'" : "";
 
     try {
-        $sql = "SELECT a.type_code, a.type_name, a.active_status FROM `items_type` as a     
+        $sql = "SELECT a.typecode, a.typename, a.active_status FROM `itemtype` as a     
         where 1 = 1
-        $type_code
-        $type_name
+        $typecode
+        $typename
         order by a.created_date desc";
 
         $stmt = $conn->prepare($sql);

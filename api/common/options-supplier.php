@@ -1,20 +1,16 @@
 <?php 
+ob_start();
 include_once(dirname(__FILE__, 2)."/onload.php");
 $db = new DbConnect;
 $conn = $db->connect(); 
+http_response_code(400);
+if ($_SERVER["REQUEST_METHOD"] == "GET"){ 
+    try {  
+        $sql = "SELECT `supcode`, `supname`, `prename`, `idno`, `road`, `subdistrict`, `district`, `province`, `zipcode`, `tel`, `contact`, `fax`, `taxnumber`, `email` FROM `supplier` where active_status='Y'  ";
 
-if ($_SERVER["REQUEST_METHOD"] == "GET"){
-    extract($_GET, EXTR_OVERWRITE, "_"); 
-    // $type_code = !empty($type) ? "and i.typecode = '$type'" : "";
-    try { 
-        $res = null;
-        
-        $sql = "SELECT typecode,typename,active_status FROM itemtype where active_status = 'Y'";
-            // $type_code
-            $stmt = $conn->prepare($sql); 
-            $stmt->execute();
-            $res = $stmt->fetchAll(PDO::FETCH_ASSOC); 
-        
+        $stmt = $conn->prepare($sql); 
+        $stmt->execute();
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);  
 
         http_response_code(200);
         echo json_encode(array("data"=>$res));
@@ -26,13 +22,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
         http_response_code(400);
         echo json_encode(array('status' => '0', 'message' => $e->getMessage()));
     } finally{
-        // Ignore
-        
+        $conn = null;
     }    
 } else {
     http_response_code(400);
     echo json_encode(array('status' => '0', 'message' => 'request method fail.'));
 }
-
+ob_end_flush(); 
 exit;
 ?>
