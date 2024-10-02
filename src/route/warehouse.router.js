@@ -11,6 +11,10 @@ import { SO, SOAccess, SOManage } from "../pages/so";
 
 import { Receipt, ReceiptAccess, ReceiptManage } from "../pages/receipt";
 
+import { PurchaseOrder, PurchaseOrderAccess, PurchaseOrderManage } from "../pages/purchase-order";
+
+import { GoodsReceipt, GoodsReceiptAccess, GoodsReceiptManage } from "../pages/goods-receipt";
+
 export const WarehouseRouter = (
   <>
     <Route path="/quotation/" exact element={<Quotation />}>
@@ -27,5 +31,16 @@ export const WarehouseRouter = (
       <Route index element={<ReceiptAccess />} />
       <Route path="manage/:action" element={<ReceiptManage />} />
     </Route>
+
+    <Route path="/purchase-order/" exact element={<PurchaseOrder />}>
+      <Route index element={<PurchaseOrderAccess />} />
+      <Route path="manage/:action" element={<PurchaseOrderManage />} />
+    </Route>
+
+    <Route path="/goods-receipt/" exact element={<GoodsReceipt />}>
+      <Route index element={<GoodsReceiptAccess />} />
+      <Route path="manage/:action" element={<GoodsReceiptManage />} />
+    </Route>
+
   </>
 );

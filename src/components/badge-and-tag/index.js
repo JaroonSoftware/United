@@ -4,6 +4,7 @@ import BadgeSampleRequestStatus from "./badge-sample-request-status/BadgeSampleR
 import TagSamplePreparationApproveStatus from "./tags-sample-preparation-approve-status/TagSamplePreparationApproveStatus"
 import TagItemTypes from "./tags-item-type/TagItemTypes"
 import TagActiveStatus from "./tags-active-status/TagActiveStatus"
+import TagPurchaseOrderStatus from "./tags-purchase-order-status/TagPurchaseOrderStatus"
 
 
 export { 
@@ -13,4 +14,5 @@ export {
     TagSamplePreparationApproveStatus, 
     TagItemTypes,
     TagActiveStatus,
+    TagPurchaseOrderStatus
 }

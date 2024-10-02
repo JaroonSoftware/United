@@ -35,6 +35,16 @@ let _nav = [
     type: "group",
   }, 
   {
+    title: "ใบสั่งซื้อ",
+    icon: <FileTextFilled className="nav-ico" />, 
+    to: "/purchase-order",
+  },
+  {
+    title: "ใบรับสินค้า",
+    icon: <FileDoneOutlined className="nav-ico"/>, 
+    to: "/goods-receipt",
+  }, 
+  {
     title: "ข้อมูลผู้ขาย",
     icon: <BsShop className="nav-ico" />,
     to: "/supplier",
@@ -88,17 +98,6 @@ let _nav = [
     title: "กำลังปรับปรุง",
     type: "group",
   },
-  
-  {
-    title: "ใบสั่งซื้อ",
-    icon: <FileTextFilled className="nav-ico" />, 
-    to: "/purchase-order",
-  },
-  {
-    title: "ใบรับสินค้า",
-    icon: <FileDoneOutlined className="nav-ico"/>, 
-    to: "/goods-receipt",
-  }, 
   {
     title: "ใบเสนอราคา",
     icon: <FileTextFilled className="nav-ico" />,

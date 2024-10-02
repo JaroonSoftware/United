@@ -1,7 +1,10 @@
 import { Badge, Space } from "antd";
-import { Button } from "antd";
+import { Button,Image } from "antd";
 // import { PrinterOutlined, QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import { EditOutlined } from "@ant-design/icons";
+import { 
+  BACKEND_URL_MAIN,
+ } from '../../utils/util';
 // import dayjs from 'dayjs';
 
 export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
@@ -10,36 +13,49 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
     key: "stcode",
     dataIndex: "stcode",
     align: "left",
-    width: "15%",
+    width: 110,
     sorter: (a, b) => (a?.stcode || "").localeCompare(b?.stcode || ""),
+  },
+  {
+    title: "รูปประกอบ",
+    dataIndex: "file",
+    key: "file",
+    width: 120,
+    align: "center",
+    render: (im, rec) => 
+      {
+        const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/Logo-AI.png`
+        );
+        return <>
+        <Image
+      style={{ borderRadius: 10 }}
+      preview={false}
+      height={75}
+      alt={`Image ${rec.file_name}`}
+      src={`${BACKEND_URL_MAIN}` + img}
+    />
+    </>
+    },
   },
   {
     title: "ชื่อสินค้า",
     dataIndex: "stname",
     key: "stname",
-    width: "35%",
+    width: "40%",
     sorter: (a, b) => (a?.stname || "").localeCompare(b?.stname || ""),
   },
   {
-    title: "แบบ",
-    dataIndex: "type_name",
-    key: "type_name",
-    sorter: (a, b) => (a?.type_name || "").localeCompare(b?.type_name || ""),
-    width: "15%",
-  },
- 
-  {
-    title: "ราคาขาย",
-    dataIndex: "price",
-    key: "price",
-    sorter: (a, b) => (a?.price || "").localeCompare(b?.price || ""),
-    width: "10%",
+    title: "จำนวนในสต๊อก",
+    dataIndex: "qty",
+    key: "typename",
+    sorter: (a, b) => (a?.typename || "").localeCompare(b?.typename || ""),
+    width: 140,
   },
   {
     title: "สถานะ",
     dataIndex: "active_status",
     key: "status",
-    width: "10%",
+    width: 120,
     sorter: (a, b) => (a?.status || "").localeCompare(b?.status || ""),
     render: (data) => (
       <div>
@@ -54,7 +70,7 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
   {
     title: "Action",
     key: "operation",
-    width: "5%",
+    width: "60px",
     fixed: "right",
     render: (text, record) => (
       <Space>
@@ -79,6 +95,7 @@ export const Items = {
   id: null,
   stcode: null,
   stname: null,
+  supcode: null,
   prename: null,
   idno: null,
   road: null,
