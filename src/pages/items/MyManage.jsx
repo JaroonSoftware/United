@@ -10,12 +10,10 @@ import {
   Card,
   Select,
   Modal,
-  InputNumber,
 } from "antd";
 import { Row, Col, Space, Upload } from "antd";
 import { SaveFilled } from "@ant-design/icons";
 import { ButtonBack, uploadButton } from "../../components/button";
-import { SearchOutlined } from "@ant-design/icons";
 import { Items } from "./model";
 import { useLocation, useNavigate } from "react-router";
 import { delay, BACKEND_URL_MAIN } from "../../utils/util";
@@ -23,7 +21,7 @@ import Swal from "sweetalert2";
 // import OptionService from '../../service/Options.service';
 import Itemservice from "../../service/Items.Service";
 import OptionService from "../../service/Options.service";
-import ModalSupplier from "../../components/modal/supplier/ModalSupplier";
+
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -45,17 +43,19 @@ const ItemsManage = () => {
   const [formDetail, setFormDetail] = useState(Items);
   const [optionUnit, setOptionUnit] = useState([]);
   const [optionType, setOptionType] = useState([]);
-  const [optionsBrand, setOptionBrand] = useState([]);
+  const [optionKind, setOptionsKind] = useState([]);
+  const [optionCarmodel, setOptionsCarmodel] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [previewImage, setPreviewImage] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewTitle, setPreviewTitle] = useState("");
-  const [openSupplier, setOpenSupplier] = useState(false);
+
   useEffect(() => {
     // setLoading(true);
     GetItemsUnit();
     GetItemsType();
-    GetBrand();
+    GetItemsKind();
+    GetCarmodel();
     if (config?.action !== "create") {
       getsupData(config.code);
     }
@@ -73,10 +73,17 @@ const ItemsManage = () => {
     });
   };
 
-  const GetBrand = () => {
-    opService.optionsBrand().then((res) => {
+  const GetItemsKind = () => {
+    opService.optionsKind().then((res) => {
       let { data } = res.data;
-      setOptionBrand(data);
+      setOptionsKind(data);
+    });
+  };
+
+  const GetCarmodel = () => {
+    opService.optionsCarmodel().then((res) => {
+      let { data } = res.data;
+      setOptionsCarmodel(data);
     });
   };
 
@@ -229,28 +236,7 @@ const ItemsManage = () => {
     setFileList(newFileList);
     //message.success(`File deleted successfully`);
   };
-  const handleChoosedSupplier = (val) => {
-    // console.log(val)
-    const fvalue = form.getFieldsValue();
-    const addr = [
-      !!val?.idno ? `${val.idno} ` : "",
-      !!val?.road ? `${val?.road} ` : "",
-      !!val?.subdistrict ? `${val.subdistrict} ` : "",
-      !!val?.district ? `${val.district} ` : "",
-      !!val?.province ? `${val.province} ` : "",
-      !!val?.zipcode ? `${val.zipcode} ` : "",
-      !!val?.country ? `(${val.country})` : "",
-    ];
-    const supplier = {
-      ...val,
-      address: addr.join(""),
-      contact: val.contact,
-      tel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
-    };
-    // console.log(val.contact)
-    setFormDetail((state) => ({ ...state, ...supplier }));
-    form.setFieldsValue({ ...fvalue, ...supplier });
-  };
+
   const propsAdd = {
     customRequest: async ({ file, onSuccess, onError }) => {
       if (
@@ -319,11 +305,6 @@ const ItemsManage = () => {
             <Input placeholder="กรอกชื่อสินค้า" />
           </Form.Item>
         </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={8}>
-          <Form.Item label="ชื่อสินค้า EN" name="stnameEN">
-            <Input placeholder="กรอกชื่อสินค้า" />
-          </Form.Item>
-        </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
           <Form.Item label="หน่วยสินค้า" name="unit">
             <Select
@@ -338,127 +319,55 @@ const ItemsManage = () => {
             />
           </Form.Item>
         </Col>
-      </Row>
-      <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
         <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-          <Form.Item label="ประเภทสินค้า" name="typecode">
+          <Form.Item label="แบบสินค้า" name="car_model_code">
+            <Select
+              size="large"
+              showSearch
+              filterOption={filterOption}
+              placeholder="เลือกแบบสินค้า"
+              options={optionCarmodel.map((item) => ({
+                value: item.car_model_code,
+                label: item.car_model_name,
+              }))}
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+          <Form.Item label="ประเภทสินค้า" name="type_code">
             <Select
               size="large"
               showSearch
               filterOption={filterOption}
               placeholder="เลือกประเภทสินค้า"
               options={optionType.map((item) => ({
-                value: item.typecode,
-                label: item.typename,
+                value: item.type_code,
+                label: item.type_name,
               }))}
             />
           </Form.Item>
         </Col>
+      </Row>
+      <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
         <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-          <Form.Item label="ยี่ห้อสินค้า" name="brand_code">
+          <Form.Item label="ชนิดสินค้า" name="kind_code">
             <Select
               size="large"
               showSearch
               filterOption={filterOption}
-              placeholder="เลือกยี่ห้อสินค้า"
-              options={optionsBrand.map((item) => ({
-                value: item.brand_code,
-                label: item.brand_name,
+              placeholder="เลือกชนิดสินค้า"
+              options={optionKind.map((item) => ({
+                value: item.kind_code,
+                label: item.kind_name,
               }))}
             />
           </Form.Item>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-          <Form.Item label="ราคาขายปลีก" name="price">
-            <Input placeholder="กรอกราคาขายปลีก" />
+          <Form.Item label="ราคาขาย" name="price">
+            <Input placeholder="กรอกราคาขาย" />
           </Form.Item>
         </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-          <Form.Item label="ราคาขายส่ง" name="wholesale_price">
-            <Input placeholder="กรอกราคาขายส่ง" />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-          <Form.Item label="ราคาซื้อ" name="buyprice">
-            <Input placeholder="กรอกราคาซื้อ" />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-          <Form.Item label="สต๊อกขั้นต่ำ" name="min">
-            <InputNumber
-              style={{
-                width: "100%",
-              }}
-              size="large"
-              min={5}
-              placeholder="กรอกสต๊อกขั้นต่ำ"
-            />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
-        <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-          <Form.Item label="ราคาสมาชิก" name="member_price">
-            <Input placeholder="กรอกราคาสมาชิก" />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={8} lg={8}>
-          <Form.Item
-            name="supcode"
-            htmlFor="supcode-1"
-            label="จากผู้ขาย"
-            className="!mb-1"
-            rules={[{ required: true, message: "Missing Supplier Code" }]}
-          >
-            <Space.Compact style={{ width: "100%" }}>
-              <Input
-                readOnly
-                placeholder="เลือก ผู้ขาย"
-                id="supcode-1"
-                value={formDetail.supcode}
-                className="!bg-white"
-              />
-              <Button
-                type="primary"
-                icon={<SearchOutlined />}
-                onClick={() => setOpenSupplier(true)}
-                style={{ minWidth: 40 }}
-              ></Button>
-            </Space.Compact>
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={8}>
-          <Form.Item label="ข้อมูลส่วนเสริม สินค้า" name="st_add_on">
-            <Input.TextArea placeholder="ข้อมูลส่วนเสริม" rows={3} />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={4} lg={4} xl={4}>
-          รูปสินค้า
-          <Form.Item
-            name="prod_img"
-            getValueFromEvent={(event) => {
-              return event?.fileList;
-            }}
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: "กรุณาอัพโหลดรูปสินค้า!",
-            //   },
-            // ]}
-          >
-            <Upload
-              {...propsAdd}
-              fileList={fileList}
-              listType="picture-card"
-              onPreview={handlePreview}
-              onRemove={onRemove}
-            >
-              {fileList.length >= 1 ? null : uploadButton}
-            </Upload>
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
         <Col
           xs={24}
           sm={24}
@@ -486,6 +395,31 @@ const ItemsManage = () => {
                 },
               ]}
             />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={4} lg={4} xl={4}>
+          รูปสินค้า
+          <Form.Item
+            name="prod_img"
+            getValueFromEvent={(event) => {
+              return event?.fileList;
+            }}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: "กรุณาอัพโหลดรูปสินค้า!",
+            //   },
+            // ]}
+          >
+            <Upload
+              {...propsAdd}
+              fileList={fileList}
+              listType="picture-card"
+              onPreview={handlePreview}
+              onRemove={onRemove}
+            >
+              {fileList.length >= 1 ? null : uploadButton}
+            </Upload>
           </Form.Item>
         </Col>
       </Row>
@@ -548,15 +482,6 @@ const ItemsManage = () => {
         </Form>
         {SectionBottom}
       </Space>
-      {openSupplier && (
-        <ModalSupplier
-          show={openSupplier}
-          close={() => setOpenSupplier(false)}
-          values={(v) => {
-            handleChoosedSupplier(v);
-          }}
-        ></ModalSupplier>
-      )}
     </div>
   );
 };

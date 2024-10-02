@@ -5,11 +5,11 @@ $conn = $db->connect();
 
 if ($_SERVER["REQUEST_METHOD"] == "GET"){
     extract($_GET, EXTR_OVERWRITE, "_"); 
-    // $type_code = !empty($type) ? "and i.typecode = '$type'" : "";
+    // $type_code = !empty($type) ? "and i.type_code = '$type'" : "";
     try { 
         $res = null;
         
-        $sql = "SELECT typecode,typename,active_status FROM itemtype where active_status = 'Y'";
+        $sql = "SELECT type_code,type_name,active_status FROM items_type where active_status = 'Y'";
             // $type_code
             $stmt = $conn->prepare($sql); 
             $stmt->execute();

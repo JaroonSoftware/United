@@ -6,7 +6,7 @@ $conn = $db->connect();
 
 if ($_SERVER["REQUEST_METHOD"] == "GET"){
     extract($_GET, EXTR_OVERWRITE, "_"); 
-    $type_code = !empty($type) ? "and i.typecode = '$type'" : "";
+    // $type_code = !empty($type) ? "and i.typecode = '$type'" : "";
     try {  
         $sql = "SELECT number as cuscode FROM `cuscode` ";
         $stmt = $conn->prepare($sql);

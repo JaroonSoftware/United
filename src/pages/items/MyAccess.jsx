@@ -144,7 +144,7 @@ const ItemsAccess = () => {
                   <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Form.Item
                       label="ประเภทสินค้า"
-                      name="type_code"
+                      name="typecode"
                       onChange={handleSearch}
                     >
                       <Select
@@ -153,8 +153,8 @@ const ItemsAccess = () => {
                         placeholder="เลือกประเภทสินค้า"
                         onChange={handleSearch}
                         options={optionType.map((item) => ({
-                          value: item.type_code,
-                          label: item.type_name,
+                          value: item.typecode,
+                          label: item.typename,
                         }))}
                       />
                     </Form.Item>
