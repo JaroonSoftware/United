@@ -42,6 +42,10 @@ try {
             die;
         }
 
+        $sql = "INSERT INTO items_stock (stcode,price,amtprice,qty,places,created_by,created_date) 
+        values (:stcode,0,0,0,'1',:action_user,:action_date)";
+
+
         $conn->commit();
         http_response_code(200);
         echo json_encode(array("data" => array("id" => "ok")));
@@ -120,7 +124,7 @@ try {
 
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array("data" => $res,"file" => $dataFile));
+        echo json_encode(array("data" => $res, "file" => $dataFile));
     }
 } catch (PDOException $e) {
     $conn->rollback();
