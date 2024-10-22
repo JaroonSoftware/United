@@ -108,7 +108,7 @@ let _nav = [
     title: "ใบขายสินค้า",
     icon: <ReconciliationFilled className="nav-ico" />, 
     // to: "/sales-order",    
-    to: "/1",
+    to: "/so",
   },
   {
     title: "ใบเสร็จรับเงิน",
