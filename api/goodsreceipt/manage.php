@@ -66,94 +66,71 @@ try {
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();
                 throw new PDOException("Insert data error => $error");
+                die;
             }
-        }
 
-        $sql = "
-            update items_stock 
-            set
-            price= price + :price*:qty,qty= qty+:qty,amtprice= price/qty ,
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where stcode = :stcode";
+            $sql = "update podetail set recamount = recamount+:qty where pocode = :pocode and stcode = :stcode";
 
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+            $stmt3 = $conn->prepare($sql);
+            if (!$stmt3) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
-        foreach ($detail as $ind => $val) {
-            $val = (object)$val;
-            $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
-            $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
-            $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
+            $stmt3->bindParam(":qty", $val->qty, PDO::PARAM_STR);
+            $stmt3->bindParam(":pocode", $val->pocode, PDO::PARAM_STR);
+            $stmt3->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
 
-            if (!$stmt->execute()) {
+            if (!$stmt3->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
+
+            $strSQL = "SELECT count(code) as count FROM `podetail` where pocode = :pocode and qty>recamount ";
+            $stmt5 = $conn->prepare($strSQL);
+            if (!$stmt5) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt5->bindParam(":pocode", $val->pocode, PDO::PARAM_STR);
+
+            if (!$stmt5->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
+
+            $res = $stmt5->fetch(PDO::FETCH_ASSOC);
+            extract($res, EXTR_OVERWRITE, "_");
+            if ($count == 0) {
+
+                $sql = "
+                update pomaster 
+                set
+                doc_status = 'รับของครบแล้ว',
+                updated_date = CURRENT_TIMESTAMP(),
+                updated_by = :action_user
+                where pocode = :pocode";
+            } else {
+                $sql = "
+                update pomaster 
+                set
+                doc_status = 'ยังรับของไม่ครบ',
+                updated_date = CURRENT_TIMESTAMP(),
+                updated_by = :action_user
+                where pocode = :pocode";
+            }
+
+            $stmt4 = $conn->prepare($sql);
+            if (!$stmt4) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt4->bindParam(":action_user", $action_user, PDO::PARAM_INT);
+            $stmt4->bindParam(":pocode", $val->pocode, PDO::PARAM_STR);
+
+            if (!$stmt4->execute()) {
                 $error = $conn->errorInfo();
                 throw new PDOException("Insert data error => $error");
                 die;
             }
         }
 
-        foreach ($detail as $ind => $val) {
-            $val = (object)$val;
 
-            if ($val->qty_buy == ($val->qty + $val->recamount)) {
-                $sql = "
-            update pomaster 
-            set
-            doc_status = 'รับของครบแล้ว',
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where pocode = :pocode";
-
-                $stmt = $conn->prepare($sql);
-                if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-                $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-                $stmt->bindParam(":pocode", $val->pocode, PDO::PARAM_STR);
-
-                if (!$stmt->execute()) {
-                    $error = $conn->errorInfo();
-                    throw new PDOException("Insert data error => $error");
-                    die;
-                }
-            } else {
-                $sql = "
-            update pomaster 
-            set
-            doc_status = 'ยังรับของไม่ครบ',
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where pocode = :pocode";
-
-                $stmt = $conn->prepare($sql);
-                if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-                $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-                $stmt->bindParam(":pocode", $val->pocode, PDO::PARAM_STR);
-
-                if (!$stmt->execute()) {
-                    $error = $conn->errorInfo();
-                    throw new PDOException("Insert data error => $error");
-                    die;
-                }
-            }
-
-            $sql = "update podetail set
-            recamount = recamount+:qty
-            where pocode = :pocode";
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-
-            $stmt->bindParam(":qty", $val->qty, PDO::PARAM_STR);
-            $stmt->bindParam(":pocode", $val->pocode, PDO::PARAM_STR);
-
-            if (!$stmt->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-            }
-        }
 
         $conn->commit();
         http_response_code(200);
@@ -264,7 +241,7 @@ try {
         }
         $header = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.grcode,a.stcode, a.price, a.unit, a.qty ,i.stname ";
+        $sql = "SELECT a.grcode,a.stcode,a.pocode, a.price, a.unit, a.qty ,i.stname ";
         $sql .= " FROM `grdetail` as a inner join `items` as i on (a.stcode=i.stcode)  ";
         $sql .= " where a.grcode = :code";
 
@@ -274,49 +251,11 @@ try {
             http_response_code(404);
             throw new PDOException("Geting data error => $error");
         }
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $dataArray = array();
-        //$dataFile = array();
-        foreach ($data as $row) {
-            $nestedObject = new stdClass();
-            $nestedObject->pocode = $row['pocode'];
-            $nestedObject->stcode = $row['stcode'];
-            $nestedObject->stname = $row['stname'];
-            $nestedObject->price = $row['price'];
-            $nestedObject->unit = $row['unit'];
-            $nestedObject->qty = $row['qty'];         
-            //echo $row['prod_id'];
-            $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
-            $stmt2->execute();
-            if ($stmt2->rowCount() > 0) {
-                $dataFile = array();
-                while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-                    // $dataFile[] = $row2['file_name'];
-                    $nestedObject->img_id = $row2['img_id'];
-                    $nestedObject->uid = $row2['uid'];
-                    // $nestedObject->name = $row2['name'];
-                    $nestedObject->file_name = $row2['file_name'];
-                }
-            } else {
-                $nestedObject->file = [];
-                $nestedObject->file_name = null;
-            }
-            $dataArray[] = $nestedObject;
-        }
-
-        $apiResponse = array(
-            "status" => "1",
-            "message" => "Get Product E-commerce",
-            "header" => $header,
-            "detail" => $dataArray,
-            // "sql" => $sql,
-            
-        );
+        $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $conn->commit();
         http_response_code(200);
-        echo json_encode($apiResponse);
+        echo json_encode(array('status' => 1, 'data' => array("header" => $header, "detail" => $detail)));
     }
 } catch (PDOException $e) {
     $conn->rollback();
