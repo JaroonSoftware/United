@@ -22,7 +22,7 @@ export const WarehouseRouter = (
       <Route path="manage/:action" element={<QuotationManage />} />
     </Route>
 
-    <Route path="/so/" exact element={<SO />}>
+    <Route path="/sales-order/" exact element={<SO />}>
       <Route index element={<SOAccess />} />
       <Route path="manage/:action" element={<SOManage />} />
     </Route>

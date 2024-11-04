@@ -45,15 +45,7 @@ try {
             die;
         }
 
-        $sql2 = " update options set pocode = pocode+1 WHERE year= '".date("Y")."' ";        
-
-        $stmt2 = $conn->prepare($sql2);
-        if(!$stmt2) throw new PDOException("Insert data error => {$conn->errorInfo()}"); 
-        if(!$stmt2->execute()) {
-            $error = $conn->errorInfo();
-            throw new PDOException("Insert data error => $error");
-            die;
-        }
+        update_pocode($conn);
 
         $code = $conn->lastInsertId();
         // var_dump($master); exit;
@@ -71,7 +63,7 @@ try {
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
             $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
             $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);            
-            $stmt->bindParam(":discount", $val->discount, PDO::PARAM_INT);
+            $stmt->bindParam(":discount", $val->discount, PDO::PARAM_STR);
             
             if(!$stmt->execute()) {
                 $error = $conn->errorInfo();
@@ -147,7 +139,7 @@ try {
             $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
             $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
-            $stmt->bindParam(":discount", $val->discount, PDO::PARAM_INT);
+            $stmt->bindParam(":discount", $val->discount, PDO::PARAM_STR);
             $stmt->bindParam(":recamount", $val->recamount, PDO::PARAM_INT);
             
             if(!$stmt->execute()) {
@@ -183,7 +175,7 @@ try {
     } else  if($_SERVER["REQUEST_METHOD"] == "GET"){
         $code = $_GET["code"]; 
         $sql = " SELECT a.pocode,a.podate,a.supcode,c.prename,c.supname,CONCAT(COALESCE(c.idno, '') ,' ', COALESCE(c.road, ''),' ', COALESCE(c.subdistrict, ''),' ', COALESCE(c.district, ''),' ',COALESCE(c.zipcode, '') ) as address
-        ,c.zipcode,c.contact,c.tel,c.fax,a.deldate,a.payment,a.poqua,a.total_price,a.vat,a.grand_total_price,a.remark ";
+        ,c.zipcode,c.contact,c.tel,c.fax,a.deldate,a.payment,a.poqua,a.total_price,a.vat,a.grand_total_price,a.remark,a.doc_status ";
         $sql .= " FROM `pomaster` as a ";
         $sql .= " left outer join `supplier` as c on (a.supcode)=(c.supcode)";
         $sql .= " where a.pocode = :code";
@@ -216,7 +208,8 @@ try {
             $nestedObject->stname = $row['stname'];
             $nestedObject->price = $row['price'];
             $nestedObject->unit = $row['unit'];
-            $nestedObject->qty = $row['qty'];         
+            $nestedObject->qty = $row['qty']; 
+            $nestedObject->discount = $row['discount'];         
             //echo $row['prod_id'];
             $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
             $stmt2->execute();

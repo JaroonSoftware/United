@@ -18,19 +18,19 @@ try {
         extract($_POST, EXTR_OVERWRITE, "_");
 
         // var_dump($_POST);
-        $sql = "insert qtmaster (`qtcode`, `qtdate`, `cuscode`,
-        `payment`, `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
-        values (:qtcode,:qtdate,:cuscode,:payment,:total_price,:vat,:grand_total_price,
+        $sql = "insert somaster (`socode`,`qtcode`, `sodate`, `cuscode`,
+       `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
+        values (:socode,:qtcode,:sodate,:cuscode,:total_price,:vat,:grand_total_price,
         :remark,:action_user,:action_user)";
 
         $stmt = $conn->prepare($sql);
         if(!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}"); 
 
         $header = (object)$header;  
+        $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR);
         $stmt->bindParam(":qtcode", $header->qtcode, PDO::PARAM_STR);
-        $stmt->bindParam(":qtdate", $header->qtdate, PDO::PARAM_STR);
+        $stmt->bindParam(":sodate", $header->sodate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
-        $stmt->bindParam(":payment", $header->payment, PDO::PARAM_STR);
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
         $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
         $stmt->bindParam(":grand_total_price", $header->grand_total_price, PDO::PARAM_STR); 
@@ -43,28 +43,20 @@ try {
             die;
         }
 
-        $sql2 = " update options set qtcode = qtcode+1 WHERE year= '".date("Y")."' ";        
-
-        $stmt2 = $conn->prepare($sql2);
-        if(!$stmt2) throw new PDOException("Insert data error => {$conn->errorInfo()}"); 
-        if(!$stmt2->execute()) {
-            $error = $conn->errorInfo();
-            throw new PDOException("Insert data error => $error");
-            die;
-        }
+        update_socode($conn);
 
         $code = $conn->lastInsertId();
         // var_dump($master); exit;
         
-        $sql = "insert into qtdetail (qtcode,stcode,qty,price,unit,discount)
-        values (:qtcode,:stcode,:qty,:price,:unit,:discount)";
+        $sql = "insert into sodetail (socode,stcode,qty,price,unit,discount)
+        values (:socode,:stcode,:qty,:price,:unit,:discount)";
         $stmt = $conn->prepare($sql);
         if(!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
        // $detail = $detail;  
         foreach( $detail as $ind => $val){
             $val = (object)$val;
-            $stmt->bindParam(":qtcode", $header->qtcode, PDO::PARAM_STR);
+            $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
             $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
@@ -87,8 +79,9 @@ try {
         extract($_PUT, EXTR_OVERWRITE, "_");
         // var_dump($_POST);
         $sql = "
-        update qtmaster 
+        update somaster 
         set
+        qtcode = :qtcode,
         cuscode = :cuscode,
         payment = :payment,
         total_price = :total_price,
@@ -97,7 +90,7 @@ try {
         remark = :remark,
         updated_date = CURRENT_TIMESTAMP(),
         updated_by = :action_user
-        where qtcode = :qtcode";
+        where socode = :socode";
 
         $stmt = $conn->prepare($sql);
         if(!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}"); 
@@ -112,6 +105,7 @@ try {
         $stmt->bindParam(":remark", $header->remark, PDO::PARAM_STR); 
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);  
         $stmt->bindParam(":qtcode", $header->qtcode, PDO::PARAM_STR); 
+        $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR); 
 
         if(!$stmt->execute()) {
             $error = $conn->errorInfo();
@@ -119,22 +113,22 @@ try {
             die;
         }
 
-        $sql = "delete from qtdetail where qtcode = :qtcode";
+        $sql = "delete from sodetail where socode = :socode";
         $stmt = $conn->prepare($sql);
-        if (!$stmt->execute([ 'qtcode' => $header->qtcode ])){
+        if (!$stmt->execute([ 'socode' => $header->socode ])){
             $error = $conn->errorInfo();
             throw new PDOException("Remove data error => $error");
         }
 
-        $sql = "insert into qtdetail (qtcode,stcode,unit,qty,price,discount)
-        values (:qtcode,:stcode,:unit,:qty,:price,:discount)";
+        $sql = "insert into sodetail (socode,stcode,unit,qty,price,discount)
+        values (:socode,:stcode,:unit,:qty,:price,:discount)";
         $stmt = $conn->prepare($sql);
         if(!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
        // $detail = $detail;  
         foreach( $detail as $ind => $val){
             $val = (object)$val;
-            $stmt->bindParam(":qtcode", $header->qtcode, PDO::PARAM_STR);
+            $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
@@ -174,9 +168,9 @@ try {
         $code = $_GET["code"]; 
         $sql = "SELECT a.qtcode,a.qtdate,a.cuscode,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
         ,c.zipcode,c.contact,c.tel,c.fax,a.payment,a.total_price,a.vat,a.grand_total_price,a.remark ";
-        $sql .= " FROM `qtmaster` as a ";
+        $sql .= " FROM `somaster` as a ";
         $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";
-        $sql .= " where a.qtcode = :code";
+        $sql .= " where a.socode = :code";
 
         $stmt = $conn->prepare($sql); 
         if (!$stmt->execute([ 'code' => $code ])){
@@ -186,9 +180,9 @@ try {
         }
         $header = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.qtcode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname ";
-        $sql .= " FROM `qtdetail` as a inner join `items` as i on (a.stcode=i.stcode)  ";        
-        $sql .= " where a.qtcode = :code";
+        $sql = "SELECT a.socode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname ";
+        $sql .= " FROM `sodetail` as a inner join `items` as i on (a.stcode=i.stcode)  ";        
+        $sql .= " where a.socode = :code";
         
         $stmt = $conn->prepare($sql); 
         if (!$stmt->execute([ 'code' => $code ])){

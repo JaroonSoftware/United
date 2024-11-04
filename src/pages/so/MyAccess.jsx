@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import SOService from '../../service/SO.service';
 
 
-const soService = SOService(); 
+const soservice = SOService(); 
 const mngConfig = {title:"", textOk:null, textCancel:null, action:"create", code:null};
 
 const RangePicker = DatePicker.RangePicker;
@@ -23,7 +23,8 @@ const MyAccess = () => {
 
     const [accessData, setAccessData] = useState([]);
     const [activeSearch, setActiveSearch] = useState([]);
-
+ 
+    let loading = false;
     
     const CollapseItemSearch = (
         <>  
@@ -43,11 +44,11 @@ const MyAccess = () => {
                     <Input placeholder='Enter First Name or Last Name.' />
                 </Form.Item>
             </Col>
-            {/* <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+            <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                 <Form.Item label='Product' name='stname'>
                     <Input placeholder='Enter Product Name.' />
                 </Form.Item>                            
-            </Col> */}
+            </Col>
             <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                 <Form.Item label='Customer Code' name='cuscode'>
                     <Input placeholder='Enter Customer Code.' />
@@ -66,7 +67,7 @@ const MyAccess = () => {
           <Col xs={24} sm={8} md={12} lg={12} xl={12}>
               <Flex justify='flex-end' gap={8}>
                   <Button type="primary" size='small' className='bn-action' icon={<SearchOutlined />} onClick={() => handleSearch()}>
-                      Searchd
+                      Search
                   </Button>
                   <Button type="primary" size='small' className='bn-action' danger icon={<ClearOutlined />} onClick={() => handleClear()}>
                       Clear
@@ -94,28 +95,21 @@ const MyAccess = () => {
         />         
     );
 
-    const handleSearch = () => {
-
-        form.validateFields().then((v) => {
-            const data = { ...v };
+    const handleSearch = (load = false) => {
+        loading = load;
+        form.validateFields().then( v => {
+            const data = {...v}; 
             if( !!data?.sodate ) {
-                const arr = data?.sodate.map( m => dayjs(m).format("YYYY-MM-DD") )
+                const arr = data?.quotdate.map( m => dayjs(m).format("YYYY-MM-DD") )
                 const [sodate_form, sodate_to] = arr; 
                 //data.created_date = arr
                 Object.assign(data, {sodate_form, sodate_to});
             }
-            setTimeout( () => 
-                soService.search(data, { ignoreLoading: Object.keys(data).length !== 0}).then( res => {
-                    const {data} = res.data;
-        
-                    setAccessData(data);
-                }).catch( err => {
-                    console.log(err);
-                    message.error("Request error!");
-                })
-                , 80);
-      
-          });
+
+            setTimeout( () => getData(data), 80);
+        }).catch( err => {
+            console.warn(err);
+        })
     }
 
     const handleClear = () => {
@@ -133,29 +127,24 @@ const MyAccess = () => {
         navigate("manage/edit", { state: { config: {...mngConfig, title:"แก้ไขใบขายสินค้า", action:"edit", code:data?.socode} }, replace:true } );
     }; 
 
-    const handleDelete = (data) => { 
-        // startLoading();
-        soService.deleted(data?.quotcode).then( _ => {
-            const tmp = accessData.filter( d => d.quotcode !== data?.quotcode );
+    const handlePrintsData = (code) => { 
+        const url = `/pickup-list-print/${code}`;
+        const newWindow = window.open('', url, url);
+        newWindow.location.href = url;
+      }
+    
 
-            setAccessData([...tmp]); 
-        })
-        .catch(err => {
+    const column = accessColumn( {handleEdit, handlePrintsData });
+
+    const getData = (data) => {
+        soservice.search(data, { ignoreLoading: loading}).then( res => {
+            const {data} = res.data;
+
+            setAccessData(data);
+        }).catch( err => {
             console.log(err);
             message.error("Request error!");
         });
-    }; 
-
-    const handlePrint = (recode) => {
-        const newWindow = window.open('', '_blank');
-        newWindow.location.href = `/quo-print/${recode.qtcode}`;
-      };
-    
-
-    const column = accessColumn( {handleEdit, handleDelete, handlePrint });
-
-    const getData = (data) => {
-        handleSearch()
     }
 
     const init = async () => {

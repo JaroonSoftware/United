@@ -101,25 +101,19 @@ let _nav = [
   {
     title: "ใบเสนอราคา",
     icon: <FileTextFilled className="nav-ico" />,
-    to: "/1",
-    // to: "/quotation",
+    // to: "/1",
+    to: "/quotation",
   },
   {
     title: "ใบขายสินค้า",
     icon: <ReconciliationFilled className="nav-ico" />, 
-    // to: "/sales-order",    
-    to: "/so",
+    to: "/sales-order",    
   },
   {
     title: "ใบเสร็จรับเงิน",
     icon: <TbReportMoney className="nav-ico" />,
     to: "/1",
     // to: "/receipt",
-  },
-  {
-    title: "ใบขายสินค้า",
-    icon: <ReconciliationFilled className="nav-ico" />, 
-    to: "/sales-order",
   },
 ];
 

@@ -1,13 +1,21 @@
-import { Button, Popconfirm, Space } from "antd"; 
+import { Button, Space } from "antd"; 
 import "../../assets/styles/banks.css"
-// import { Typography } from "antd"; 
+import { Typography } from "antd"; 
 // import { Popconfirm, Button } from "antd";
-import { Tooltip } from "antd";
+import { Tooltip,Image } from "antd";
 // import { EditOutlined, QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons"; 
 import { EditableRow, EditableCell } from "../../components/table/TableEditAble";
+import { TagQuotationStatus } from "../../components/badge-and-tag";
+
 import dayjs from 'dayjs';
-import { DeleteOutlined, EditOutlined, PrinterOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { comma } from '../../utils/util';
+import { EditOutlined,PrinterOutlined } from "@ant-design/icons";
+// import { EditOutlined, PrinterOutlined } from "@ant-design/icons";
+import { comma,BACKEND_URL_MAIN } from '../../utils/util';
+
+/** export component for edit table */
+export const componentsEditable = {
+  body: { row: EditableRow, cell: EditableCell },
+};
 
 const calTotalDiscount = (rec) => {
   const total =  Number(rec?.qty ||  0) * Number(rec?.price ||  0);
@@ -15,15 +23,11 @@ const calTotalDiscount = (rec) => {
 
   return total * discount;
 }
-/** export component for edit table */
-export const componentsEditable = {
-  body: { row: EditableRow, cell: EditableCell },
-};
 
 /** get sample column */
-export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrint}) => [
+export const accessColumn = ({handleEdit, handleDelete, handlePrint}) => [
   {
-    title: "รหัสใบเสนอราคา",
+    title: "เลขที่ใบเสนอราคา",
     key: "qtcode",
     dataIndex: "qtcode",
     align: "left",
@@ -55,6 +59,15 @@ export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrint}
     },
     render: (v) => <Tooltip placement="topLeft" title={v}>{v}</Tooltip>, 
   },
+  {
+    title: "สถานะ",
+    dataIndex: "doc_status",
+    key: "doc_status", 
+    width: '13%',
+    sorter: (a, b) => a.doc_status.localeCompare(b.doc_status),
+    sortDirections: ["descend", "ascend"],
+    render: (data) => <TagQuotationStatus result={data} />,
+  },
   { 
     title: "จัดทำโดย",
     dataIndex: "created_name",
@@ -80,29 +93,13 @@ export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrint}
           onClick={(e) => handleEdit(record) }
           size="small"
         />
-
-        <Popconfirm 
-          placement="topRight"
-          title="Sure to delete?"  
-          description="Are you sure to delete this packaging?"
-          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-          onConfirm={() => handleDelete(record)}
-        >
-          <Button
-            icon={<DeleteOutlined />}
-            danger
-            style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
-            size="small"
-          />
-        </Popconfirm>
         <Button
           icon={<PrinterOutlined />} 
           className='bn-warning-outline'
           style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-          onClick={(e) => handlePrint(record) }
+          onClick={(e) => handlePrint(record.qtcode) }
           size="small"
-        />        
-        {/* <ButtonAttachFiles code={record.srcode} refs='Sample Request' showExpire={true} /> */}
+        />       
       </Space>
     ),
   }, 
@@ -117,6 +114,30 @@ export const productColumn = ({handleRemove},optionsItems) => [
     render: (im, rc, index) => <>{index + 1}</>,
   },
   {
+    title: "ยี่ห้อ/รูปประกอบ",
+    dataIndex: "file",
+    key: "file",
+    width: 120,
+    align: "center",
+    render: (im, rec) => 
+      {
+        const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/Logo-AI.png`
+        );
+        return <>
+        <Typography.Text>
+        {rec.brand_name}<br></br>
+        </Typography.Text>
+        <Image
+      style={{ borderRadius: 10 }}
+      preview={false}
+      height={75}
+      alt={`Image ${rec.file_name}`}
+      src={`${BACKEND_URL_MAIN}` + img}
+    />
+    </>
+    },
+  },
+  {
     title: "รหัสสินค้า",
     dataIndex: "stcode",
     key: "stcode",
@@ -124,12 +145,14 @@ export const productColumn = ({handleRemove},optionsItems) => [
     align: "left",
   },
   {
-    title: "ชื่อสินค้า",
+    title: "ชื่อรายละเอียด",
     dataIndex: "purdetail",
     key: "purdetail", 
     align: "left", 
-    render: (_, rec) => rec.stname,
-  },
+    render: (_, rec) => <Typography.Text>
+    {rec.stnameEN}<br></br>{rec.st_add_on}
+    </Typography.Text>,
+  }, 
   {
     title: "จำนวน",
     dataIndex: "qty",
@@ -143,17 +166,17 @@ export const productColumn = ({handleRemove},optionsItems) => [
     render: (_, rec) => <>{ comma( Number(rec?.qty ||  0),  2, 2 )}</>,
   },
   {
-    title: "ราคาขาย",
+    title: "ราคาต่อหน่วย",
     dataIndex: "price",
     key: "price", 
-    width: "8%",
+    width: "10%",
     align: "right",
     className: "!pe-3",
     editable: true,
     required: true,
     type:'number',
     render: (_, rec) => <>{ comma( Number(rec?.price ||  0),  2, 2 )}</>,
-  },
+  }, 
   {
     title: "หน่วยสินค้า",
     dataIndex: "unit",
@@ -171,7 +194,7 @@ export const productColumn = ({handleRemove},optionsItems) => [
     title: "ส่วนลด(%)",
     dataIndex: "discount",
     key: "discount",
-    width: "10%",
+    width: "7%",
     align: "right",
     className: "!pe-3",
     editable: true,
@@ -186,7 +209,7 @@ export const productColumn = ({handleRemove},optionsItems) => [
     align: "right",
     className: "!pe-3",
     render: (_, rec) => <>{ comma( calTotalDiscount(rec),  2, 2 )}</>,
-  },
+  },  
   {
     title: "ตัวเลือก",
     align: "center",
@@ -241,7 +264,6 @@ export const quotationDetailForm = {
   stcode : null,
   stname : null,  
   discount : 0,
-  qty : 0,
   price : 0,
   unit: null,
 }
