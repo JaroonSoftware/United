@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $nestedObject = new stdClass();
                 $nestedObject->stcode = $row['stcode'];
                 $nestedObject->stname = $row['stname'];
-                $nestedObject->price = $row['buyprice'];
+                $nestedObject->price = $row['price'];
                 $nestedObject->unit = $row['unit'];
                 $nestedObject->qty = $row['qty'];
                 $nestedObject->active_status = $row['active_status'];
@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             FROM podetail a 
             inner join pomaster b on (a.pocode=b.pocode)
             inner join items i on (a.stcode=i.stcode)
-            where b.supcode= '$supcode' and b.active_status = 'Y' and b.doc_status != 'รับของครบแล้ว' "; 
+            where b.supcode= '$supcode' and b.active_status = 'Y' and b.doc_status != 'รับของครบแล้ว' and a.qty>IF(a.recamount IS NULL,0,a.recamount) "; 
 
             $stmt = $conn->prepare($sql); 
             $stmt->execute();

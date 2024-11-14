@@ -6,7 +6,7 @@ import { Card } from 'antd';
 import { Collapse, Form, Flex, Row, Col, Space } from 'antd';
 import { Input, Button, Table, message, DatePicker, Typography } from 'antd';
 import { SearchOutlined, ClearOutlined, FileAddOutlined } from '@ant-design/icons'; 
-import { accessColumn } from "./quotation.model";
+import { accessColumn } from "./model";
 
 import dayjs from 'dayjs';
 import QuotationService from '../../service/Quotation.service';
@@ -28,32 +28,27 @@ const QuotationAccess = () => {
         <>  
         <Row gutter={[8,8]}> 
             <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                <Form.Item label='รหัสใบเสนอราคา' name='qtcode'>
-                    <Input placeholder='กรอกรหัสใบเสนอราคา' />
+                <Form.Item label='เลขที่ใบเสนอราคา' name='qtcode'>
+                <Input placeholder='กรอกเลขที่ใบรับสินค้า' />
                 </Form.Item>                            
             </Col>
             <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                <Form.Item label='วันที่ใบเสนอราคา' name='qtdate'>
+                <Form.Item label='วันที่ใบเสร็จรับเงิน' name='qtdate'>
                     <RangePicker placeholder={['เริ่มวันที่', 'ถึงวันที่']} style={{width:'100%', height:40}}  />
                 </Form.Item>
             </Col> 
             <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                <Form.Item label='ร้องขอโดย' name='created_by'>
-                    <Input placeholder='กรอก ชื่อ-นามสกุล ผู้ร้องขอ' />
+                <Form.Item label='จัดทำโดย' name='created_by'>
+                    <Input placeholder='กรอก ชื่อ-นามสกุล ผู้จัดทำ' />
                 </Form.Item>
             </Col>
-            {/* <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                <Form.Item label='ชื่อสินค้า' name='stname'>
-                    <Input placeholder='Enter Product Name.' />
-                </Form.Item>                            
-            </Col> */}
             <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                 <Form.Item label='รหัสลูกค้า' name='cuscode'>
                     <Input placeholder='กรอกรหัสลูกค้า' />
                 </Form.Item>                            
             </Col>
             <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                <Form.Item label='ชื่อลูกค้า' name='cusname'>
+                <Form.Item label='ชื่อลุูกค้า' name='cusname'>
                     <Input placeholder='กรอกชื่อลูกค้า' />
                 </Form.Item>                            
             </Col>
@@ -63,15 +58,28 @@ const QuotationAccess = () => {
               {/* Ignore */}
           </Col>
           <Col xs={24} sm={8} md={12} lg={12} xl={12}>
-              <Flex justify='flex-end' gap={8}>
-                  <Button type="primary" size='small' className='bn-action' icon={<SearchOutlined />} onClick={() => handleSearch()}>
-                      ค้นหา
-                  </Button>
-                  <Button type="primary" size='small' className='bn-action' danger icon={<ClearOutlined />} onClick={() => handleClear()}>
-                      ล้าง
-                  </Button>
-              </Flex>
-          </Col>
+          <Flex justify="flex-end" gap={8}>
+            <Button
+              type="primary"
+              size="small"
+              className="bn-action"
+              danger
+              icon={<ClearOutlined />}
+              onClick={() => handleClear()}
+            >
+              ล้าง
+            </Button>
+            <Button
+              type="primary"
+              size="small"
+              className="bn-action"
+              icon={<SearchOutlined />}
+              onClick={() => handleSearch()}
+            >
+              ค้นหา
+            </Button>
+          </Flex>
+        </Col>
         </Row> 
         </>
     )
@@ -145,13 +153,15 @@ const QuotationAccess = () => {
         });
     }; 
 
-    const handlePrint = (recode) => {
-        const newWindow = window.open('', '_blank');
-        newWindow.location.href = `/quo-print/${recode.qtcode}`;
-      };
+    const handlePrint = (code) => { 
+        const url = `/quo-print/${code}`;
+        const newWindow = window.open('', url, url);
+        newWindow.location.href = url;
+      }
     
 
     const column = accessColumn( {handleEdit, handleDelete, handlePrint });
+    // const column = accessColumn( {handleEdit, handlePrint });
 
     const getData = (data) => {
         handleSearch()
