@@ -6,7 +6,7 @@ const API_URL = {
   API_GETCODE: `/goodsreceipt/get-doc-code.php`, 
 };
   
-const QuotationService = () => { 
+const GoodReceiptService = () => { 
   
   const create = (parm = {}) => api.post(`${API_URL.API_MANAGE}`, parm);
   const update = (parm = {}) => api.put(`${API_URL.API_MANAGE}`, parm);
@@ -30,4 +30,4 @@ const QuotationService = () => {
   };
 };
 
-export default QuotationService;
+export default GoodReceiptService;

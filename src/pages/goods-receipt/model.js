@@ -28,10 +28,10 @@ export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrint}
   },
   {
     title: "วันที่ใบรับสินค้า",
-    dataIndex: "qtdate",
-    key: "qtdate",
+    dataIndex: "grdate",
+    key: "grdate",
     width: 140,
-    sorter: (a, b) => (a.qtdate).localeCompare(b.qtdate),
+    sorter: (a, b) => (a.grdate).localeCompare(b.grdate),
     render: (v) => dayjs(v).format("DD/MM/YYYY"),
   },
   {

@@ -676,6 +676,7 @@ function PurchaseOrderManage() {
         <ModalItems
           show={openProduct}
           close={() => setOpenProduct(false)}
+          supcode={form.getFieldValue("supcode")}
           values={(v) => {
             handleItemsChoosed(v);
           }}

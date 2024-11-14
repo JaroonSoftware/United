@@ -69,6 +69,20 @@ try {
                 die;
             }
 
+            $sql2 = "UPDATE items_stock SET qty= qty+:qty,price= price + (:price*:qty)-((:price*:qty)*:discount/100) ,amtprice= price/qty ,updated_date = CURRENT_TIMESTAMP() where stcode =:stcode ";
+            $stmt2 = $conn->prepare($sql2);
+            if (!$stmt2) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt2->bindParam(":price", $val->price, PDO::PARAM_STR);
+            $stmt2->bindParam(":qty", $val->qty, PDO::PARAM_STR);
+            $stmt2->bindParam(":discount", $val->discount, PDO::PARAM_STR);
+            $stmt2->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
+
+            if (!$stmt2->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
             $sql = "update podetail set recamount = recamount+:qty where pocode = :pocode and stcode = :stcode";
 
             $stmt3 = $conn->prepare($sql);
@@ -253,9 +267,46 @@ try {
         }
         $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+         $dataArray = array();
+        //$dataFile = array();
+        foreach ($detail as $row) {
+            $nestedObject = new stdClass();
+            $nestedObject->stcode = $row['stcode'];
+            $nestedObject->stname = $row['stname'];
+            $nestedObject->price = $row['price'];
+            $nestedObject->unit = $row['unit'];
+            $nestedObject->qty = $row['qty']; 
+            $nestedObject->discount = $row['discount'];         
+            //echo $row['prod_id'];
+            $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
+            $stmt2->execute();
+            if ($stmt2->rowCount() > 0) {
+                $dataFile = array();
+                while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                    // $dataFile[] = $row2['file_name'];
+                    $nestedObject->img_id = $row2['img_id'];
+                    $nestedObject->uid = $row2['uid'];
+                    // $nestedObject->name = $row2['name'];
+                    $nestedObject->file_name = $row2['file_name'];
+                }
+            } else {
+                $nestedObject->file = [];
+                $nestedObject->file_name = null;
+            }
+            $dataArray[] = $nestedObject;
+        }
+
+        $apiResponse = array(
+            "status" => "1",
+            "message" => "Get Product E-commerce",
+            "header" => $header,
+            "detail" => $dataArray,
+            // "sql" => $sql,
+            
+        );
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array('status' => 1, 'data' => array("header" => $header, "detail" => $detail)));
+        echo json_encode($apiResponse);
     }
 } catch (PDOException $e) {
     $conn->rollback();
