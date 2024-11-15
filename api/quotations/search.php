@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         from qtmaster a        
         left join customer c on a.cuscode = c.cuscode        
         left join user u on a.created_by = u.code
-        where 1 = 1 and a.active_status = 'Y'
+        where 1 = 1 and a.doc_status != 'ยกเลิก'
         $qtcode
         $cuscode
         $cusname

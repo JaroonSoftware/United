@@ -97,7 +97,7 @@ export const accessColumn = ({handleEdit, handleDelete, handlePrint}) => [
           icon={<PrinterOutlined />} 
           className='bn-warning-outline'
           style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-          onClick={(e) => handlePrint(record.qtcode) }
+          // onClick={(e) => handlePrint(record.qtcode) }
           size="small"
         />       
       </Space>

@@ -234,8 +234,8 @@ function QuotationManage() {
   };
 
   const handlePrint = () => {
-    const newWindow = window.open("", "_blank");
-    newWindow.location.href = `/quo-print/${formDetail.quotcode}`;
+    // const newWindow = window.open("", "_blank");
+    // newWindow.location.href = `/quo-print/${formDetail.quotcode}`;
   };
 
   const handleDelete = (code) => {

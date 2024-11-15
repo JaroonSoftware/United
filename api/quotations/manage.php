@@ -19,8 +19,8 @@ try {
 
         // var_dump($_POST);
         $sql = "insert qtmaster (`qtcode`, `qtdate`, `cuscode`,
-        `payment`, `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
-        values (:qtcode,:qtdate,:cuscode,:payment,:total_price,:vat,:grand_total_price,
+        `payment`, `payment_term`, `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
+        values (:qtcode,:qtdate,:cuscode,:payment,:payment_term,:total_price,:vat,:grand_total_price,
         :remark,:action_user,:action_user)";
 
         $stmt = $conn->prepare($sql);
@@ -31,6 +31,7 @@ try {
         $stmt->bindParam(":qtdate", $header->qtdate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":payment", $header->payment, PDO::PARAM_STR);
+        $stmt->bindParam(":payment_term", $header->payment_term, PDO::PARAM_STR);
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
         $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
         $stmt->bindParam(":grand_total_price", $header->grand_total_price, PDO::PARAM_STR); 
@@ -91,6 +92,7 @@ try {
         set
         cuscode = :cuscode,
         payment = :payment,
+        payment_term = :payment_term,
         total_price = :total_price,
         vat = :vat,
         grand_total_price = :grand_total_price,
@@ -106,6 +108,7 @@ try {
 
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":payment", $header->payment, PDO::PARAM_STR);
+        $stmt->bindParam(":payment_term", $header->payment_term, PDO::PARAM_STR);
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
         $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
         $stmt->bindParam(":grand_total_price", $header->grand_total_price, PDO::PARAM_STR);
@@ -173,7 +176,7 @@ try {
     } else  if($_SERVER["REQUEST_METHOD"] == "GET"){
         $code = $_GET["code"]; 
         $sql = "SELECT a.qtcode,a.qtdate,a.cuscode,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
-        ,c.zipcode,c.contact,c.tel,c.fax,a.payment,a.total_price,a.vat,a.grand_total_price,a.remark ";
+        ,c.zipcode,c.contact,c.tel,c.fax,a.payment,a.payment_term,a.total_price,a.vat,a.grand_total_price,a.remark ";
         $sql .= " FROM `qtmaster` as a ";
         $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";
         $sql .= " where a.qtcode = :code";
