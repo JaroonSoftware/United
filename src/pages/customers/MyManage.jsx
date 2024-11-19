@@ -16,9 +16,10 @@ import { SaveFilled } from "@ant-design/icons";
 import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router";
 import { delay } from "../../utils/util";
-// import OptionService from '../../service/Options.service';
+import OptionService from "../../service/Options.service";
 import Customerservice from "../../service/Customer.Service";
 import { CreateInput } from "thai-address-autocomplete-react";
+
 const InputThaiAddress = CreateInput();
 
 const customerservice = Customerservice();
@@ -27,10 +28,10 @@ const from = "/customers";
 const CustomerManage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const opService = OptionService();
   const { config } = location.state || { config: null };
   const [form] = Form.useForm();
-
+  const [optioncounty, setOptionsCounty] = useState([]);
   const [formDetail, setFormDetail] = useState({});
 
   const init = async () => {
@@ -46,7 +47,7 @@ const CustomerManage = () => {
 
   useEffect(() => {
     // setLoading(true);
-
+    GetCounty();
     if (config?.action !== "create") {
       getsupData(config.code);
     } else {
@@ -56,7 +57,12 @@ const CustomerManage = () => {
       };
     }
   }, []);
-
+  const GetCounty = () => {
+    opService.optionsCounty().then((res) => {
+      let { data } = res.data;
+      setOptionsCounty(data);
+    });
+  };
   const getsupData = (v) => {
     customerservice
       .get(v)
@@ -75,6 +81,7 @@ const CustomerManage = () => {
         message.error("Error getting infomation Product.");
       });
   };
+
   const handleSelect = (address) => {
     const f = form.getFieldsValue();
     const addr = {
@@ -127,7 +134,7 @@ const CustomerManage = () => {
 
   const Detail = () => (
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
-      <Col xs={24} sm={24} md={24} lg={6} xl={6} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item
           label="รหัสลูกค้า"
           name="cuscode"
@@ -140,7 +147,7 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={4} xl={4} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={3}>
         <Form.Item
           label="คำน้ำหน้า"
           name="prename"
@@ -180,7 +187,7 @@ const CustomerManage = () => {
           ></Select>
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={14} xl={14} xxl={6}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={5}>
         <Form.Item
           label="ชื่อ-นามสกุล"
           name="cusname"
@@ -189,11 +196,45 @@ const CustomerManage = () => {
           <Input placeholder="กรอกชื่อ-นามสกุล" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={6}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="เลขที่ผู้เสียภาษี" name="taxnumber">
           <Input placeholder="กรอกเลขที่ผู้เสียภาษี" />
         </Form.Item>
       </Col>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
+        <Form.Item label="ประเภทลูกค้า" name="cus_type">
+          <Select
+            size="large"
+            placeholder="เลือกประเภทลูกค้า"
+            showSearch
+            filterOption={filterOption}
+            options={[
+              {
+                value: "ลูกค้าทั่วไป",
+                label: "ลูกค้าทั่วไป",
+              },
+              {
+                value: "ลูกค้าประกัน",
+                label: "ลูกค้าประกัน",
+              },
+            ]}
+          ></Select>
+        </Form.Item>
+      </Col>
+      <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+          <Form.Item label="ที่จัดเก็บสินค้า" name="county_code">
+            <Select
+              size="large"
+              showSearch
+              filterOption={filterOption}
+              placeholder="เลือกที่จัดเก็บสินค้า"
+              options={optioncounty.map((item) => ({
+                value: item.county_code,
+                label: item.county_name,
+              }))}
+            />
+          </Form.Item>
+        </Col>
       <Col
         xs={24}
         sm={24}
@@ -217,17 +258,17 @@ const CustomerManage = () => {
 
   const AddressDetail = () => (
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
-      <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={24} xl={6} xxl={4}>
         <Form.Item label="เลขที่" name="idno">
           <Input placeholder="กรอกเลขที่อยู่" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="ถนน" name="road">
           <Input placeholder="กรอกถนน" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="ตำบล" name="subdistrict">
           <InputThaiAddress.District
             onSelect={handleSelect}
@@ -236,7 +277,7 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="อำเภอ" name="district">
           <InputThaiAddress.Amphoe
             onSelect={handleSelect}
@@ -245,7 +286,7 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="จังหวัด" name="province">
           <InputThaiAddress.Province
             onSelect={handleSelect}
@@ -254,7 +295,7 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="รหัสไปรษณีย์" name="zipcode">
           <InputThaiAddress.Zipcode
             onSelect={handleSelect}
@@ -268,17 +309,17 @@ const CustomerManage = () => {
 
   const DeliveryAddressDetail = () => (
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
-      <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={24} xl={6} xxl={4}>
         <Form.Item label="เลขที่" name="delidno">
           <Input placeholder="กรอกเลขที่อยู่" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="ถนน" name="delroad">
           <Input placeholder="กรอกถนน" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="ตำบล" name="delsubdistrict">
           <InputThaiAddress.District
             onSelect={handleDeliverySelect}
@@ -287,7 +328,7 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="อำเภอ" name="deldistrict">
           <InputThaiAddress.Amphoe
             onSelect={handleDeliverySelect}
@@ -296,7 +337,7 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="จังหวัด" name="delprovince">
           <InputThaiAddress.Province
             onSelect={handleDeliverySelect}
@@ -305,7 +346,7 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
         <Form.Item label="รหัสไปรษณีย์" name="delzipcode">
           <InputThaiAddress.Zipcode
             onSelect={handleDeliverySelect}
@@ -319,27 +360,27 @@ const CustomerManage = () => {
 
   const ContactDetail = () => (
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={6}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={6}>
         <Form.Item label="ติดต่อ" name="contact">
           <Input placeholder="กรอกสื่อการติดต่อ" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={6}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={6}>
         <Form.Item label="อีเมล" name="email">
           <Input placeholder="กรอกอีเมล" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={6}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={6}>
         <Form.Item label="เบอร์โทรศัพท์" name="tel">
           <Input placeholder="กรอกเบอร์โทรศัพท์" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={6}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={6}>
         <Form.Item label="เบอร์แฟ็ค" name="fax">
           <Input placeholder="กรอกเบอร์แฟ็ค" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+      <Col xs={24} sm={24} md={24} lg={24} xl={6} xxl={24}>
         <Form.Item label="หมายเหตุ" name="remark">
           <Input.TextArea placeholder="กรอกหมายเหตุ" rows={4} />
         </Form.Item>

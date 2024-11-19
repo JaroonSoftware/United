@@ -18,18 +18,19 @@ try {
 
         // var_dump($_POST);
         
-        $sql = "INSERT INTO customer (`cuscode`, `prename`, `cusname`, `taxnumber`, `idno`,`road`, `province`, 
+        $sql = "INSERT INTO customer (`cuscode`, `prename`, `cus_type` ,`cusname`, `taxnumber`, `idno`,`road`, `province`, 
         `subdistrict`,`district`,`zipcode`, `delidno`,`delroad`, `delprovince`, 
-        `delsubdistrict`,`deldistrict`,`delzipcode`, `tel`, `fax`,`contact`, `email`,`remark`, `active_status`, created_by, created_date) 
-        values (:cuscode,:prename,:cusname,:taxnumber,:idno,:road,:province,:subdistrict,:district,:zipcode,
+        `delsubdistrict`,`deldistrict`,`delzipcode`, `tel`, `fax`,`contact`, `email`, `county_code` ,`remark`, `active_status`, created_by, created_date) 
+        values (:cuscode,:prename,:cus_type,:cusname,:taxnumber,:idno,:road,:province,:subdistrict,:district,:zipcode,
         :delidno,:delroad,:delprovince,:delsubdistrict,:deldistrict,:delzipcode,
-        :tel,:fax,:contact,:email,:remark,'Y',:action_user,:action_date)";
+        :tel,:fax,:contact,:email,:county_code,:remark,'Y',:action_user,:action_date)";
         
         $stmt = $conn->prepare($sql);
         if(!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}"); 
         
         $stmt->bindParam(":cuscode", $cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":prename", $prename, PDO::PARAM_STR);
+        $stmt->bindParam(":cus_type", $cus_type, PDO::PARAM_STR);
         $stmt->bindParam(":cusname", $cusname, PDO::PARAM_STR);     
         $stmt->bindParam(":taxnumber", $taxnumber, PDO::PARAM_STR);
         $stmt->bindParam(":idno", $idno, PDO::PARAM_STR); 
@@ -47,7 +48,8 @@ try {
         $stmt->bindParam(":tel", $tel, PDO::PARAM_STR);
         $stmt->bindParam(":fax", $fax, PDO::PARAM_STR);
         $stmt->bindParam(":contact", $contact, PDO::PARAM_STR);        
-        $stmt->bindParam(":email", $email, PDO::PARAM_STR);        
+        $stmt->bindParam(":email", $email, PDO::PARAM_STR);     
+        $stmt->bindParam(":county_code", $county_code, PDO::PARAM_STR);       
         $stmt->bindParam(":remark", $remark, PDO::PARAM_STR);        
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT); 
         $stmt->bindParam(":action_date", $action_date, PDO::PARAM_STR);  
@@ -86,6 +88,7 @@ try {
         set
         cuscode = :cuscode,
         prename = :prename,
+        cus_type = :cus_type,
         cusname = :cusname,
         taxnumber = :taxnumber,
         idno = :idno,
@@ -104,6 +107,7 @@ try {
         fax = :fax,
         contact = :contact,
         email = :email,
+        county_code = :county_code,
         remark = :remark,
         active_status = :active_status,
         updated_date = CURRENT_TIMESTAMP(),
@@ -116,6 +120,7 @@ try {
 
         $stmt->bindParam(":cuscode", $cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":prename", $prename, PDO::PARAM_STR);
+        $stmt->bindParam(":cus_type", $cus_type, PDO::PARAM_STR);
         $stmt->bindParam(":cusname", $cusname, PDO::PARAM_STR);     
         $stmt->bindParam(":taxnumber", $taxnumber, PDO::PARAM_STR);
         $stmt->bindParam(":idno", $idno, PDO::PARAM_STR); 
@@ -133,7 +138,8 @@ try {
         $stmt->bindParam(":tel", $tel, PDO::PARAM_STR);
         $stmt->bindParam(":fax", $fax, PDO::PARAM_STR);
         $stmt->bindParam(":contact", $contact, PDO::PARAM_STR);        
-        $stmt->bindParam(":email", $email, PDO::PARAM_STR);        
+        $stmt->bindParam(":email", $email, PDO::PARAM_STR);     
+        $stmt->bindParam(":county_code", $county_code, PDO::PARAM_STR);         
         $stmt->bindParam(":remark", $remark, PDO::PARAM_STR);        
         $stmt->bindParam(":active_status", $active_status, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT); 

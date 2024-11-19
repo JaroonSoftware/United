@@ -8,6 +8,7 @@ const API_URL = {
   OPTION_UNIT: `/common/options-unit.php`,
   OPTION_KIND: `/common/options-kind.php`,
   OPTION_LOCATION: `/common/options-location.php`,
+  OPTION_COUNTY: `/common/options-county.php`,
   OPTION_BRAND: `/common/options-brand.php`,
   OPTION_MODEL: `/common/options-model.php`,
   OPTION_CARMODEL: `/common/options-carmodel.php`,
@@ -23,6 +24,7 @@ const OptionService = () => {
   const optionsUnit = () => api.get(`${API_URL.OPTION_UNIT}`, { ignoreLoading : true });
   const optionsKind = () => api.get(`${API_URL.OPTION_KIND}`, { ignoreLoading : true });
   const optionsLocation = () => api.get(`${API_URL.OPTION_LOCATION}`, { ignoreLoading : true });
+  const optionsCounty = () => api.get(`${API_URL.OPTION_COUNTY}`, { ignoreLoading : true });
   const optionsBrand = () => api.get(`${API_URL.OPTION_BRAND}`, { ignoreLoading : true });
   const optionsModel = () => api.get(`${API_URL.OPTION_MODEL}`, { ignoreLoading : true });
   const optionsCarmodel = () => api.get(`${API_URL.OPTION_CARMODEL}`, { ignoreLoading : true });
@@ -36,6 +38,7 @@ const OptionService = () => {
     optionsUnit,
     optionsKind,
     optionsLocation,
+    optionsCounty,
     optionsBrand,
     optionsModel,
     optionsCarmodel,

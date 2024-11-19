@@ -6,19 +6,19 @@ import { EditOutlined } from "@ant-design/icons";
 
 export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
   {
-    title: "รหัสที่จัดเก็บ",
-    key: "location_code",
-    dataIndex: "location_code",
+    title: "รหัสเขตขนส่ง",
+    key: "county_code",
+    dataIndex: "county_code",
     align: "left",
     hidden: true,
-    sorter: (a, b) => (a?.location_code || "").localeCompare(b?.location_code || ""),
+    sorter: (a, b) => (a?.county_code || "").localeCompare(b?.county_code || ""),
   },
   {
-    title: "ชื่อที่จัดเก็บสินค้า",
-    dataIndex: "location_name",
-    key: "location_name",
+    title: "ชื่อเขตขนส่ง",
+    dataIndex: "county_name",
+    key: "county_name",
     width: "60%",
-    sorter: (a, b) => (a?.location_name || "").localeCompare(b?.location_name || ""),
+    sorter: (a, b) => (a?.county_name || "").localeCompare(b?.county_name || ""),
   },
   {
     title: "สถานะ",

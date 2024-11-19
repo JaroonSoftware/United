@@ -1,5 +1,5 @@
 import { FileTextFilled,ReconciliationFilled,FileDoneOutlined,} from "@ant-design/icons";
-import { FaUserCircle, FaWarehouse, FaTag } from "react-icons/fa";
+import { FaUserCircle, FaWarehouse, FaTag, FaMapMarkedAlt  } from "react-icons/fa";
 import { RiTeamFill, RiBox3Fill } from "react-icons/ri";
 import { MdOutlineDashboard } from "react-icons/md";
 import { PiCodepenLogoBold } from "react-icons/pi";
@@ -82,6 +82,11 @@ let _nav = [
     title: "ที่จัดเก็บสินค้า",
     icon: <FaWarehouse className="nav-ico" />,
     to: "/location",
+  },
+  {
+    title: "เขตขนส่ง",
+    icon: <FaMapMarkedAlt  className="nav-ico" />,
+    to: "/county",
   },
   {
     title: "แบบ",

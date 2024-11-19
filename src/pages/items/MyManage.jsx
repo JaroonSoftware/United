@@ -18,7 +18,6 @@ import { Items } from "./model";
 import { useLocation, useNavigate } from "react-router";
 import { delay, BACKEND_URL_MAIN } from "../../utils/util";
 import Swal from "sweetalert2";
-// import OptionService from '../../service/Options.service';
 import Itemservice from "../../service/Items.Service";
 import OptionService from "../../service/Options.service";
 

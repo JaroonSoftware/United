@@ -7,15 +7,15 @@ import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router";
 import { delay } from "../../utils/util";
 // import OptionService from '../../service/Options.service';
-import LocationService from "../../service/Location.Service";
+import CountyService from "../../service/County.Service";
 
-const locationservice = LocationService();
+const countyservice = CountyService();
 // const opservice = OptionService();
-const from = "/location";
-const KindManage = () => {
+const from = "/county";
+const CountyManage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { config } = location.state || { config: null };
+  const county = useLocation();
+  const { config } = county.state || { config: null };
   const [form] = Form.useForm();
 
   const [formDetail, setFormDetail] = useState({});
@@ -34,7 +34,7 @@ const KindManage = () => {
     };
   }, []);
   const getsupData = (v) => {
-    locationservice
+    countyservice
       .get(v)
       .then(async (res) => {
         const { data } = res.data;
@@ -57,8 +57,8 @@ const KindManage = () => {
       const source = { ...formDetail, ...v };
       const actions =
         config?.action !== "create"
-          ? locationservice.update(source)
-          : locationservice.create(source);
+          ? countyservice.update(source)
+          : countyservice.create(source);
 
       actions
         .then(async (r) => {
@@ -79,11 +79,11 @@ const KindManage = () => {
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
       <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={8}>
         <Form.Item
-          label="ชื่อที่จัดเก็บสินค้า"
-          name="location_name"
+          label="ชื่อเขตขนส่ง"
+          name="county_name"
           rules={[{ required: true, message: "โปรดกรอกข้อมูล" }]}
         >
-          <Input placeholder="กรอกชื่อที่จัดเก็บสินค้า" />
+          <Input placeholder="กรอกชื่อเขตขนส่ง" />
         </Form.Item>
       </Col>
       <Col
@@ -113,7 +113,7 @@ const KindManage = () => {
           />
         </Form.Item>
       </Col>
-      <Form.Item name="location_code">
+      <Form.Item name="county_code">
         <Input type="hidden" disabled />
       </Form.Item>
     </Row>
@@ -158,4 +158,4 @@ const KindManage = () => {
   );
 };
 
-export default KindManage;
+export default CountyManage;

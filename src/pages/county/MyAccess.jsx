@@ -7,9 +7,9 @@ import { Input, Button, Table, Typography } from "antd";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons";
 import { MdOutlineLibraryAdd } from "react-icons/md";
 import { accessColumn } from "./model";
-import Locationservice from "../../service/Location.Service";
+import Countyservice from "../../service/County.Service";
 
-const locationservice = Locationservice();
+const countyservice = Countyservice();
 const mngConfig = {
   title: "",
   textOk: null,
@@ -17,7 +17,7 @@ const mngConfig = {
   action: "create",
   code: null,
 };
-const LocationAccess = () => {
+const CountyAccess = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [accessData, setAccessData] = useState([]);
@@ -26,7 +26,7 @@ const LocationAccess = () => {
   const handleSearch = () => {
     form.validateFields().then((v) => {
       const data = { ...v };
-      locationservice
+      countyservice
         .search(data, { ignoreLoading: Object.keys(data).length !== 0 })
         .then((res) => {
           const { data } = res.data;
@@ -51,7 +51,7 @@ const LocationAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "เพิ่มที่จัดเก็บสินค้า",
+          title: "เพิ่มเขตขนส่ง",
           action: "create",
         },
       },
@@ -65,9 +65,9 @@ const LocationAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "แก้ไขชื่อที่จัดเก็บสินค้า",
+          title: "แก้ไขเขตขนส่ง",
           action: "edit",
-          code: data?.location_code,
+          code: data?.county_code,
         },
       },
       replace: true,
@@ -76,7 +76,7 @@ const LocationAccess = () => {
 
   const handleView = (data) => {
     const newWindow = window.open("", "_blank");
-    newWindow.location.href = `/dln-print/${data.dncode}`;
+    newWindow.county.href = `/dln-print/${data.dncode}`;
   };
 
   const handleDelete = (data) => {
@@ -96,7 +96,7 @@ const LocationAccess = () => {
   }, []);
 
   const getData = (data) => {
-    locationservice
+    countyservice
       .search(data)
       .then((res) => {
         const { data } = res.data;
@@ -126,11 +126,11 @@ const LocationAccess = () => {
                 <Row gutter={[8, 8]}>
                   <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Form.Item
-                      label="ชื่อที่จัดเก็บสินค้า"
-                      name="kind_name"
+                      label="ชื่อเขตขนส่ง"
+                      name="county_name"
                       onChange={handleSearch}
                     >
-                      <Input placeholder="กรอกชื่อที่จัดเก็บสินค้า" />
+                      <Input placeholder="กรอกชื่อเขตขนส่ง" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -177,7 +177,7 @@ const LocationAccess = () => {
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายการที่จัดเก็บสินค้า
+            รายการเขตขนส่ง
           </Typography.Title>
         </Flex>
       </Col>
@@ -191,7 +191,7 @@ const LocationAccess = () => {
               hangleAdd();
             }}
           >
-            เพิ่มที่จัดเก็บสินค้า
+            เพิ่มเขตขนส่ง
           </Button>
         </Flex>
       </Col>
@@ -212,7 +212,7 @@ const LocationAccess = () => {
               <Table
                 title={() => TitleTable}
                 size="small"
-                rowKey="location_code"
+                rowKey="county_code"
                 columns={column}
                 dataSource={accessData}
               />
@@ -224,4 +224,4 @@ const LocationAccess = () => {
   );
 };
 
-export default LocationAccess;
+export default CountyAccess;

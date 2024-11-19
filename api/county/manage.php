@@ -18,15 +18,15 @@ try {
 
         // var_dump($_POST);
 
-        $sql = "INSERT INTO location (location_code,location_name,created_by,created_date) 
-        values (:location_code,:location_name,:action_user,:action_date)";
+        $sql = "INSERT INTO county (county_code,county_name,created_by,created_date) 
+        values (:county_code,:county_name,:action_user,:action_date)";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
 
-        $stmt->bindParam(":location_code", $location_code, PDO::PARAM_STR);
-        $stmt->bindParam(":location_name", $location_name, PDO::PARAM_STR);
+        $stmt->bindParam(":county_code", $county_code, PDO::PARAM_STR);
+        $stmt->bindParam(":county_name", $county_name, PDO::PARAM_STR);
         $stmt->bindParam(":action_date", $action_date, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
 
@@ -46,23 +46,23 @@ try {
         // var_dump($_POST);
 
         $sql = "
-        update location 
+        update county 
         set
-        location_code = :location_code,
-        location_name = :location_name,
+        county_code = :county_code,
+        county_name = :county_name,
         active_status = :active_status,
         updated_date = CURRENT_TIMESTAMP(),
         updated_by = :action_user
-        where location_code = :location_code";
+        where county_code = :county_code";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
 
-        $stmt->bindParam(":location_name", $location_name, PDO::PARAM_STR);
+        $stmt->bindParam(":county_name", $county_name, PDO::PARAM_STR);
         $stmt->bindParam(":active_status", $active_status, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-        $stmt->bindParam(":location_code", $location_code, PDO::PARAM_STR);
+        $stmt->bindParam(":county_code", $county_code, PDO::PARAM_STR);
 
         if (!$stmt->execute()) {
             $error = $conn->errorInfo();
@@ -76,8 +76,8 @@ try {
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
         $sql = " SELECT a.* ";
-        $sql .= " FROM `location` as a ";
-        $sql .= " where location_code = :code";
+        $sql .= " FROM `county` as a ";
+        $sql .= " where county_code = :code";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt->execute(['code' => $code])) {
