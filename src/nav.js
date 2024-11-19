@@ -1,16 +1,15 @@
-import { FileTextFilled, ReconciliationFilled,FileDoneOutlined } from "@ant-design/icons";
+import { FileTextFilled,ReconciliationFilled,FileDoneOutlined,} from "@ant-design/icons";
+import { FaUserCircle, FaWarehouse, FaTag } from "react-icons/fa";
+import { RiTeamFill, RiBox3Fill } from "react-icons/ri";
+import { MdOutlineDashboard } from "react-icons/md";
 import { PiCodepenLogoBold } from "react-icons/pi";
-import { FaTag } from "react-icons/fa";
-import { IoLogoModelS } from "react-icons/io";
 import { MdFormatShapes } from "react-icons/md";
 import { TbReportMoney } from "react-icons/tb";
-import { RiTeamFill } from "react-icons/ri";
-import { MdOutlineDashboard } from "react-icons/md";
-import { TiThLarge } from "react-icons/ti";
+import { IoLogoModelS } from "react-icons/io";
 import { GiDatabase } from "react-icons/gi";
-import { FaUserCircle } from "react-icons/fa";
-import { RiBox3Fill } from "react-icons/ri";
+import { TiThLarge } from "react-icons/ti";
 import { BsShop } from "react-icons/bs";
+
 let _nav = [
   {
     title: "MENU",
@@ -32,6 +31,11 @@ let _nav = [
     to: "/quotation",
   },
   {
+    title: "ใบขายสินค้า",
+    icon: <ReconciliationFilled className="nav-ico" />,
+    to: "/sales-order",
+  },
+  {
     title: "ข้อมูลลูกค้า",
     icon: <RiTeamFill className="nav-ico" />,
     to: "/customers",
@@ -39,17 +43,17 @@ let _nav = [
   {
     title: "BUY",
     type: "group",
-  }, 
+  },
   {
     title: "ใบสั่งซื้อ",
-    icon: <FileTextFilled className="nav-ico" />, 
+    icon: <FileTextFilled className="nav-ico" />,
     to: "/purchase-order",
   },
   {
     title: "ใบรับสินค้า",
-    icon: <FileDoneOutlined className="nav-ico"/>, 
+    icon: <FileDoneOutlined className="nav-ico" />,
     to: "/goods-receipt",
-  }, 
+  },
   {
     title: "ข้อมูลผู้ขาย",
     icon: <BsShop className="nav-ico" />,
@@ -73,6 +77,11 @@ let _nav = [
     title: "ชนิดสินค้า",
     icon: <PiCodepenLogoBold className="nav-ico" />,
     to: "/kind",
+  },
+  {
+    title: "ที่จัดเก็บสินค้า",
+    icon: <FaWarehouse className="nav-ico" />,
+    to: "/location",
   },
   {
     title: "แบบ",
@@ -103,11 +112,6 @@ let _nav = [
   {
     title: "กำลังปรับปรุง",
     type: "group",
-  },
-  {
-    title: "ใบขายสินค้า",
-    icon: <ReconciliationFilled className="nav-ico" />, 
-    to: "/sales-order",    
   },
   {
     title: "ใบเสร็จรับเงิน",

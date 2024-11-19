@@ -1,0 +1,72 @@
+.location-manage .ant-radio-button-wrapper:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.location-manage .ant-radio-button-wrapper:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.location-manage .ant-radio-group .ant-radio-button-wrapper {
+    font-weight: 600;
+    font-size: 12px;
+    height: 40px;
+    padding: 0 15px;
+    line-height: 2.4rem;
+}
+
+.location-manage .ant-collapse .ant-collapse-content {
+    color: rgba(0, 0, 0, 0.88);
+    background-color: #ffffff;
+    border-top: 1px solid #d9d9d9;
+    border-radius: 0px 0px 8px 8px;
+}
+
+.location-manage .ant-collapse {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    background: #ffffff00;
+}
+
+.location-manage  .ant-collapse>.ant-collapse-location >.ant-collapse-header { 
+    background-color: #d9d9d9;
+    background-color: #e5e5e5;
+}
+
+.location-manage .ant-collapse .ant-collapse-content>.ant-collapse-content-box {
+    padding: 16px 16px;
+}
+
+.location-manage .ant-collapse>.ant-collapse-location>.ant-collapse-header, 
+.location-manage .ant-collapse>.ant-collapse-location:last-child>.ant-collapse-header {
+    border-radius: 8px 8px 0px 0px;
+}
+
+.location-access .ant-table-tbody > tr > td, 
+.location-access .ant-table-thead > tr > th {
+    white-space: break-spaces;
+    vertical-align: top;
+}
+
+.location-access .ant-collapse>.ant-collapse-location:last-child, 
+.location-access .ant-collapse>.ant-collapse-location:last-child>.ant-collapse-header {
+    border-radius: 12px;
+    background-color: #d9d9d9;
+    border: none;
+}
+
+.location-access .ant-collapse .ant-collapse-header,
+.location-access .ant-collapse .ant-collapse-location-active .ant-collapse-header { 
+    border-bottom: 0px solid #fff;
+    padding-inline-start: 12px;
+    background-color: #d9d9d9;
+}
+
+
+.location-access .ant-collapse .ant-collapse-location-active .ant-collapse-content,
+.location-access .ant-collapse .ant-collapse-content {
+    color: rgba(0, 0, 0, 0.88);
+    background-color: #d9d9d9;
+    border-top: 0px solid #d9d9d9;
+    padding-inline: 12px;
+}

@@ -7,6 +7,7 @@ import { Itemtype, ItemtypeAccess, ItemtypeManage } from "../pages/itemtype";
 import { Unit, UnitAccess, UnitManage } from "../pages/unit";
 import { Customer, CustomerAccess, CustomerManage } from "../pages/customers";
 import { Kind, KindAccess, KindManage } from "../pages/kind";
+import { Location, LocationAccess, LocationManage } from "../pages/location";
 import { Brand, BrandAccess, BrandManage } from "../pages/brand";
 import { Model, ModelAccess, ModelManage } from "../pages/model";
 import { CarModel, CarModelAccess, CarModelManage} from "../pages/carmodel";
@@ -48,6 +49,13 @@ export const DataRouter = (
       <Route index element={<KindAccess />} />
       <Route path="manage/:action" element={<KindManage />} />
     </Route>
+
+
+    <Route path="/location/" exact element={<Location />}>
+      <Route index element={<LocationAccess />} />
+      <Route path="manage/:action" element={<LocationManage />} />
+    </Route>
+
 
     <Route path="/brand/" exact element={<Brand />}>
       <Route index element={<BrandAccess />} />

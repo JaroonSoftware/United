@@ -44,6 +44,7 @@ const ItemsManage = () => {
   const [optionUnit, setOptionUnit] = useState([]);
   const [optionType, setOptionType] = useState([]);
   const [optionKind, setOptionsKind] = useState([]);
+  const [optionLocation, setOptionsLocation] = useState([]);
   const [optionCarmodel, setOptionsCarmodel] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [previewImage, setPreviewImage] = useState("");
@@ -55,6 +56,7 @@ const ItemsManage = () => {
     GetItemsUnit();
     GetItemsType();
     GetItemsKind();
+    GetItemsLocation();
     GetCarmodel();
     if (config?.action !== "create") {
       getsupData(config.code);
@@ -77,6 +79,13 @@ const ItemsManage = () => {
     opService.optionsKind().then((res) => {
       let { data } = res.data;
       setOptionsKind(data);
+    });
+  };
+
+  const GetItemsLocation = () => {
+    opService.optionsLocation().then((res) => {
+      let { data } = res.data;
+      setOptionsLocation(data);
     });
   };
 
@@ -359,6 +368,20 @@ const ItemsManage = () => {
               options={optionKind.map((item) => ({
                 value: item.kind_code,
                 label: item.kind_name,
+              }))}
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+          <Form.Item label="ที่จัดเก็บสินค้า" name="location_code">
+            <Select
+              size="large"
+              showSearch
+              filterOption={filterOption}
+              placeholder="เลือกที่จัดเก็บสินค้า"
+              options={optionLocation.map((item) => ({
+                value: item.location_code,
+                label: item.location_name,
               }))}
             />
           </Form.Item>
