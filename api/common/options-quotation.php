@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
         $res = null;
         
         $sql = "SELECT q.qtcode,q.qtdate,c.cuscode, c.cusname,c.prename, c.idno, c.road, c.subdistrict, c.district, c.province, c.zipcode,q.doc_status
-         FROM qtmaster as q inner join `customer` as c on (q.cuscode=c.cuscode) where q.active_status = 'Y' and (q.doc_status = 'กำลังรอดำเนินการ' or q.doc_status = 'ยกเลิก') ";
+         FROM qtmaster as q inner join `customer` as c on (q.cuscode=c.cuscode) where q.doc_status = 'กำลังรอดำเนินการ' ";
             // $type_code
             $stmt = $conn->prepare($sql); 
             $stmt->execute();

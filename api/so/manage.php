@@ -166,8 +166,8 @@ try {
         echo json_encode(array("status"=> 1));
     } else  if($_SERVER["REQUEST_METHOD"] == "GET"){
         $code = $_GET["code"]; 
-        $sql = "SELECT a.qtcode,a.qtdate,a.cuscode,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
-        ,c.zipcode,c.contact,c.tel,c.fax,a.payment,a.total_price,a.vat,a.grand_total_price,a.remark ";
+        $sql = "SELECT a.qtcode,a.cuscode,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
+        ,c.zipcode,c.contact,c.tel,c.fax,a.total_price,a.vat,a.grand_total_price,a.remark ";
         $sql .= " FROM `somaster` as a ";
         $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";
         $sql .= " where a.socode = :code";
