@@ -9,8 +9,10 @@ import {
   Table,
   Typography,
   message,
+  Collapse,
+  Tabs,
 } from "antd";
-import { Card, Col, Divider, Flex, Row, Space,InputNumber } from "antd";
+import { Card, Col, Divider, Flex, Row, Space, InputNumber } from "antd";
 
 import OptionService from "../../service/Options.service";
 import SOService from "../../service/SO.service";
@@ -200,7 +202,7 @@ function MyManage() {
       contact: val.contact,
       tel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
     };
-    const res = await qtservice.get(val.qtcode);    
+    const res = await qtservice.get(val.qtcode);
     const {
       data: { detail },
     } = res.data;
@@ -209,8 +211,6 @@ function MyManage() {
     // console.log(quotation)
     setFormDetail((state) => ({ ...state, ...quotation }));
     form.setFieldsValue({ ...fvalue, ...quotation });
-
-    
   };
 
   const handleItemsChoosed = (value) => {
@@ -342,8 +342,7 @@ function MyManage() {
     <>
       <Space size="small" direction="vertical" className="flex gap-2">
         <Row gutter={[8, 8]} className="m-0">
-          
-        <Col xs={24} sm={24} md={6} lg={6}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item
               name="qtcode"
               htmlFor="qtcode-1"
@@ -371,7 +370,7 @@ function MyManage() {
               </Space.Compact>
             </Form.Item>
           </Col>
-        <Col xs={24} sm={24} md={6} lg={6}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item
               name="cuscode"
               htmlFor="cuscode-1"
@@ -628,109 +627,99 @@ function MyManage() {
     </Row>
   );
 
-  const SectionBottom = (
-    <Row
-      gutter={[{ xs: 32, sm: 32, md: 32, lg: 12, xl: 12 }, 8]}
-      className="m-0"
-    >
-      <Col span={12} className="p-0">
-        <Flex gap={4} justify="start">
-          <ButtonBack target={gotoFrom} />
-        </Flex>
-      </Col>
-      <Col span={12} style={{ paddingInline: 0 }}>
-        <Flex gap={4} justify="end">
-          {formDetail.active_status === "Y" || config.action === "create" ? (
-            <Button
-              className="bn-center justify-center"
-              icon={<SaveFilled style={{ fontSize: "1rem" }} />}
-              type="primary"
-              style={{ width: "9.5rem" }}
-              onClick={() => {
-                handleConfirm();
-              }}
-            >
-              Save
-            </Button>
-          ) : (
-            <></>
-          )}
-        </Flex>
-      </Col>
-    </Row>
-  );
 
+  const itemss = [
+    {
+      key: "1",
+      label: "ข้อมูลใบขายสินค้า",
+      children: (
+        <Form
+          form={form}
+          layout="vertical"
+          className="width-100"
+          autoComplete="off"
+        >
+          {/* style={{ backgroundColor: "red" }} */}
+          <Card
+            title={
+              <>
+                <Row className="m-0 py-3 sm:py-0" gutter={[12, 12]}>
+                  <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+                    <Typography.Title level={3} className="m-0">
+                      รหัสใบขายสินค้า : {soCode}
+                    </Typography.Title>
+                  </Col>
+                  <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+                    <Flex
+                      gap={10}
+                      align="center"
+                      className="justify-start sm:justify-end"
+                    >
+                      <Typography.Title level={3} className="m-0">
+                        วันที่ใบขายสินค้า :{" "}
+                      </Typography.Title>
+                      <Form.Item name="sodate" className="!m-0">
+                        <DatePicker
+                          className="input-40"
+                          allowClear={false}
+                          onChange={handleSO}
+                          format={dateFormat}
+                        />
+                      </Form.Item>
+                    </Flex>
+                  </Col>
+                </Row>
+              </>
+            }
+          >
+            <Row className="m-0" gutter={[12, 12]}>
+              <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+                <Divider orientation="left" className="!mb-3 !mt-1">
+                  {" "}
+                  Customer{" "}
+                </Divider>
+                {SectionCustomer}
+              </Col>
+              <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+                <Divider orientation="left" className="!mb-3 !mt-1">
+                  {" "}
+                  รายละเอียดอื่นๆ{" "}
+                </Divider>
+                {SectionOther}
+              </Col>
+            </Row>
+          </Card>
+        </Form>
+      ),
+    },
+  ];
+  const onChange1 = (key) => {
+    console.log(key);
+  };
   return (
     <div className="quotation-manage">
       <div id="quotation-manage" className="px-0 sm:px-0 md:px-8 lg:px-8">
+      <Tabs
+        defaultActiveKey="1"
+        type="card"
+        items={new Array(3).fill(null).map((_, i) => {
+          const id = String(i + 1);
+          return {
+            label: `Card Tab ${id}`,
+            key: id,
+            children: `Content of card tab ${id}`,
+          };
+        })}
+      />
         <Space direction="vertical" className="flex gap-4">
           {SectionTop}
-          <Form
-            form={form}
-            layout="vertical"
-            className="width-100"
-            autoComplete="off"
-          >
-            {/* style={{ backgroundColor: "red" }} */}
-            <Card
-              title={
-                <>
-                  <Row className="m-0 py-3 sm:py-0" gutter={[12, 12]}>
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
-                      <Typography.Title level={3} className="m-0">
-                        รหัสใบขายสินค้า : {soCode}
-                      </Typography.Title>
-                    </Col>
-                    <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
-                      <Flex
-                        gap={10}
-                        align="center"
-                        className="justify-start sm:justify-end"
-                      >
-                        <Typography.Title level={3} className="m-0">
-                          วันที่ใบขายสินค้า :{" "}
-                        </Typography.Title>
-                        <Form.Item name="sodate" className="!m-0">
-                          <DatePicker
-                            className="input-40"
-                            allowClear={false}
-                            onChange={handleSO}
-                            format={dateFormat}
-                          />
-                        </Form.Item>
-                      </Flex>
-                    </Col>
-                  </Row>
-                </>
-              }
-            >
-              <Row className="m-0" gutter={[12, 12]}>
-                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
-                  <Divider orientation="left" className="!mb-3 !mt-1">
-                    {" "}
-                    Customer{" "}
-                  </Divider>
-                  <Card style={cardStyle}>{SectionCustomer}</Card>
-                </Col>
-                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
-                  <Divider orientation="left" className="!mb-3 !mt-1">
-                    {" "}
-                    รายละเอียดอื่นๆ{" "}
-                  </Divider>
-                  <Card style={cardStyle}>{SectionOther}</Card>
-                </Col>
-                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
-                  <Divider orientation="left" className="!my-0">
-                    Product
-                  </Divider>
-                  <Card style={{ backgroundColor: "#f0f0f0" }}>
-                    {SectionProduct}
-                  </Card>
-                </Col>
-              </Row>
-            </Card>
-          </Form>
-          {SectionBottom}
+          <Collapse
+            items={itemss}
+            size="large"
+            defaultActiveKey={["1"]}
+            onChange={onChange1}
+          />
+          {SectionProduct}
         </Space>
       </div>
 
