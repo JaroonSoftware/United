@@ -14,7 +14,7 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
     sorter: (a, b) => (a?.car_model_code || "").localeCompare(b?.car_model_code || ""),
   },
   {
-    title: "ชื่อสินค้า",
+    title: "ชื่อแบบรถ",
     dataIndex: "car_model_name",
     key: "car_model_name",
     width: "30%",
@@ -28,7 +28,7 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
     sorter: (a, b) => (a?.brand_name || "").localeCompare(b?.brand_name || ""),
   },
   {
-    title: "ยี่ห้อ",
+    title: "รุ่น",
     dataIndex: "model_name",
     key: "model_name",
     width: "15%",

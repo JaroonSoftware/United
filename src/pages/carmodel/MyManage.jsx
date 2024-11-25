@@ -99,11 +99,11 @@ const KindManage = () => {
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
       <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={8}>
         <Form.Item
-          label="ชื่อแบบ"
+          label="ชื่อแบบรถ"
           name="car_model_name"
           rules={[{ required: true, message: "โปรดกรอกข้อมูล" }]}
         >
-          <Input placeholder="กรอกชื่อแบบ" />
+          <Input placeholder="กรอกชื่อแบบรถ" />
         </Form.Item>
       </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>

@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         from somaster a        
         left join customer c on a.cuscode = c.cuscode        
         left join user u on a.created_by = u.code
-        where 1 = 1 and a.active_status = 'Y'
+       
         $socode
         $cuscode
         $cusname

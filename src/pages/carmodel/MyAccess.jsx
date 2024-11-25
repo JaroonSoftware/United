@@ -51,7 +51,7 @@ const ModelAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "เพิ่มแบบ",
+          title: "เพิ่มแบบรถ",
           action: "create",
         },
       },
@@ -65,7 +65,7 @@ const ModelAccess = () => {
       state: {
         config: {
           ...mngConfig,
-          title: "แก้ไขข้อมูลแบบ",
+          title: "แก้ไขข้อมูลแบบรถ",
           action: "edit",
           code: data?.car_model_code,
         },
@@ -126,11 +126,11 @@ const ModelAccess = () => {
                 <Row gutter={[8, 8]}>
                   <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Form.Item
-                      label="ชื่อแบบ"
+                      label="ชื่อแบบรถ"
                       name="car_model_name"
                       onChange={handleSearch}
                     >
-                      <Input placeholder="กรอกชื่อแบบ" />
+                      <Input placeholder="กรอกชื่อแบบรถ" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -177,7 +177,7 @@ const ModelAccess = () => {
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายการแบบ
+            รายการแบบรถ
           </Typography.Title>
         </Flex>
       </Col>
@@ -191,7 +191,7 @@ const ModelAccess = () => {
               hangleAdd();
             }}
           >
-            เพิ่มแบบ
+            เพิ่มแบบรถ
           </Button>
         </Flex>
       </Col>

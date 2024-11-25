@@ -89,7 +89,7 @@ let _nav = [
     to: "/county",
   },
   {
-    title: "แบบ",
+    title: "แบบรถ",
     icon: <MdFormatShapes className="nav-ico" />,
     to: "/carmodel",
   },
