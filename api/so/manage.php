@@ -22,7 +22,7 @@ try {
        `total_price`, `vat`, `grand_total_price`,`claim_no`,`require_no`,`car_engineno`,`car_model_code`,`car_no`,`remark`,created_by,updated_by) 
         values (:socode,:delcode,:qtcode,:sodate,:cuscode,:total_price,:vat,:grand_total_price,:claim_no,:require_no,:car_engineno,:car_model_code,:car_no,
         :remark,:action_user,:action_user)";
-
+      
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -209,9 +209,22 @@ try {
         }
         $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $sql = "SELECT a.delcode,c.prename,c.cusname,c.cuscode";
+        $sql .= " FROM `somaster` as a ";
+        $sql .= " inner join `customer` as c on (a.delcode)=(c.cuscode)";
+        $sql .= " where a.socode = :code";
+
+        $stmt = $conn->prepare($sql);
+        if (!$stmt->execute(['code' => $code])) {
+            $error = $conn->errorInfo();
+            http_response_code(404);
+            throw new PDOException("Geting data error => $error");
+        }
+        $delcode = $stmt->fetch(PDO::FETCH_ASSOC);
+
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array('status' => 1, 'data' => array("header" => $header, "detail" => $detail)));
+        echo json_encode(array('status' => 1, 'data' => array("header" => $header, "detail" => $detail,  "delcode" => $delcode)));
     }
 } catch (PDOException $e) {
     $conn->rollback();

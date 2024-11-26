@@ -19,6 +19,7 @@ import QuotationService from "../../service/Quotation.service";
 
 import { SaveFilled, SearchOutlined } from "@ant-design/icons";
 import ModalCustomers from "../../components/modal/customersSO/ModalCustomersSO";
+import ModalDelivery from "../../components/modal/InsuranceCustomers/ModalInsuranceCustomers";
 import ModalQuotation from "../../components/modal/quotation/MyModal";
 
 import { soForm, columnsParametersEditable, componentsEditable } from "./model";
@@ -47,6 +48,7 @@ function MyManage() {
 
   /** Modal handle */
   const [openCustomer, setOpenCustomer] = useState(false);
+  const [openModalDelivery, setOpenModalDelivery] = useState(false);
   const [openProduct, setOpenProduct] = useState(false);
   const [openQuotation, setOpenQuotation] = useState(false);
   /** SaleOrder state */
@@ -56,7 +58,7 @@ function MyManage() {
   const [listDetail, setListDetail] = useState([]);
 
   const [formDetail, setFormDetail] = useState(soForm);
-
+  const [DeliveryDetail,setFomDeliveryDetail] = useState([]);
   const [unitOption, setUnitOption] = React.useState([]);
 
   useEffect(() => {
@@ -66,14 +68,15 @@ function MyManage() {
           .get(config?.code)
           .catch((error) => message.error("get SaleOrder data fail."));
         const {
-          data: { header, detail },
+          data: { header, detail, delcode },
         } = res.data;
         const { socode, sodate } = header;
         setFormDetail(header);
         setListDetail(detail);
+        setFomDeliveryDetail(delcode);
         setSOCode(socode);
         form.setFieldsValue({ ...header, sodate: dayjs(sodate) });
-
+        form.setFieldsValue({ ...DeliveryDetail, delname: delcode});
         // setTimeout( () => {  handleCalculatePrice(head?.valid_price_until, head?.dated_price_until) }, 200);
         // handleChoosedCustomer(head);
       } else {
@@ -148,10 +151,8 @@ function MyManage() {
       handleCalculatePrice(valid_price_until || 0, e || new Date());
     }
   };
-
-  /** Function modal handle */
   const handleChoosedCustomer = (val) => {
-    // console.log(val)
+    console.log(val)
     const fvalue = form.getFieldsValue();
     const addr = [
       !!val?.idno ? `${val.idno} ` : "",
@@ -166,18 +167,54 @@ function MyManage() {
       !!val?.prename ? `${val.prename} ` : "",
       !!val?.cusname ? `${val.cusname} ` : "",
     ];
-    const customer = {
+    const cuscode = [
+      !!val?.cuscode ? `${val.cuscode} ` : "",
+    ];
+    const IC = {
       ...val,
+      cuscode: cuscode.join(""),
+      cusname: cusname.join(""),
+      qtcode: (""),
       address: addr.join(""),
-      delcode: cusname.join(""),
+      contact: val.contact,
+      tel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
+    };
+    setListDetail([]);
+    // console.log(val.contact)
+    setFormDetail((state) => ({ ...state, ...IC }));
+    form.setFieldsValue({ ...fvalue, ...IC });
+  };
+
+  /** Function modal handle */
+  const handleChoosedDelivery = (val) => {
+    console.log(val)
+    const favalue = form.getFieldsValue();
+    const addr = [
+      !!val?.idno ? `${val.idno} ` : "",
+      !!val?.road ? `${val?.road} ` : "",
+      !!val?.subdistrict ? `${val.subdistrict} ` : "",
+      !!val?.district ? `${val.district} ` : "",
+      !!val?.province ? `${val.province} ` : "",
+      !!val?.zipcode ? `${val.zipcode} ` : "",
+      !!val?.country ? `(${val.country})` : "",
+    ];
+    const cusname = [
+      !!val?.prename ? `${val.prename} ` : "",
+      !!val?.cusname ? `${val.cusname} ` : "",
+    ];
+    const Cus = {
+      delcode: val.cuscode,
       delname: cusname.join(""),
-      cuscontact: val.contact,
-      custel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
+      deladdress: addr.join(""),
+      delcontact: val.contact,
+      deltel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
     };
     // console.log(val.contact)
-    setFormDetail((state) => ({ ...state, ...customer }));
-    form.setFieldsValue({ ...fvalue, ...customer });
+    setFormDetail((state1) => ({ ...state1, ...Cus }));
+    form.setFieldsValue({ ...favalue, ...Cus });
   };
+
+ 
 
   const handleChoosedQuotation = async (val) => {
     // console.log(val)
@@ -198,8 +235,6 @@ function MyManage() {
     const quotation = {
       ...val,
       cusname: cusname.join(""),
-      delcode: cusname.join(""),
-      delname: cusname.join(""),
       address: addr.join(""),
       contact: val.contact,
       tel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
@@ -237,10 +272,18 @@ function MyManage() {
           car_no: form.getFieldValue("car_no"),
           remark: form.getFieldValue("remark"),
         };
+
+        const delivery = {
+          ...formDetail,
+          cusname: form.getFieldValue("cusname"),
+         
+        };
+       
         const detail = listDetail;
 
-        const parm = { header, detail };
+        const parm = { header, detail, delivery };
         console.log(parm);
+
         const actions =
           config?.action !== "create" ? soservice.update : soservice.create;
         actions(parm)
@@ -260,6 +303,7 @@ function MyManage() {
           content: "Please enter require data",
         });
       });
+
   };
 
   const handleClose = async () => {
@@ -368,7 +412,7 @@ function MyManage() {
                 <Button
                   type="primary"
                   icon={<SearchOutlined />}
-                  onClick={() => setOpenCustomer(true)}
+                  onClick={() => setOpenModalDelivery(true)}
                   style={{ minWidth: 40 }}
                 ></Button>
               </Space.Compact>
@@ -384,17 +428,17 @@ function MyManage() {
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
-            <Form.Item name="address" label="ที่อยู่" className="!mb-1">
+            <Form.Item name="deladdress" label="ที่อยู่" className="!mb-1">
               <Input placeholder="ที่อยู่" readOnly />
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
-            <Form.Item name="contact" label="ผู้ติดต่อ" className="!mb-1">
+            <Form.Item name="delcontact" label="ผู้ติดต่อ" className="!mb-1">
               <Input placeholder="ผู้ติดต่อ" readOnly />
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
-            <Form.Item name="tel" label="เบอร์โทรลูกค้า" className="!mb-1">
+            <Form.Item name="deltel" label="เบอร์โทรลูกค้า" className="!mb-1">
               <Input placeholder="เบอร์โทรลูกค้า" readOnly />
             </Form.Item>
           </Col>
@@ -733,15 +777,21 @@ function MyManage() {
           autoComplete="off"
         >
           <Row className="m-0" gutter={[12, 12]}>
-            <Divider style={{ borderTop: "3px"}} orientation="left">บริษัทประกัน</Divider>
+            <Divider style={{ borderTop: "3px" }} orientation="left">
+              บริษัทประกัน
+            </Divider>
             <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
               {SectionInsuranceCompany}
             </Col>
-            <Divider style={{ borderTop: "3px"}} orientation="left">ลูกค้าทั่วไป</Divider>
+            <Divider style={{ borderTop: "3px" }} orientation="left">
+              ลูกค้าทั่วไป
+            </Divider>
             <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
               {SectionCustomer}
             </Col>
-            <Divider style={{ borderTop: "3px"}} orientation="left">รายละเอียด</Divider>
+            <Divider style={{ borderTop: "3px" }} orientation="left">
+              รายละเอียด
+            </Divider>
             <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
               {SectionOther}
             </Col>
@@ -802,7 +852,15 @@ function MyManage() {
           }}
         ></ModalCustomers>
       )}
-
+      {openModalDelivery && (
+        <ModalDelivery
+          show={openModalDelivery}
+          close={() => setOpenModalDelivery(false)}
+          values={(v) => {
+            handleChoosedDelivery(v);
+          }}
+        ></ModalDelivery>
+      )}
       {openProduct && (
         <ModalItems
           show={openProduct}

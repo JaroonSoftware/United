@@ -3,6 +3,8 @@ const API_URL = {
   OPTION_ITEMS: `/common/options-items.php`, 
   OPTION_SUPPLIER: `/common/options-supplier.php`,
   OPTION_CUSTOMER: `/common/options-customer.php`,
+  OPTION_CUSTOMERSO: `/common/options-customerSO.php`,
+  OPTION_IC: `/common/options-InsuranceCustomers.php`,
   OPTION_QUOTATION: `/common/options-quotation.php`,
   OPTION_ITEMSTYPE: `/common/options-itemstype.php`,
   OPTION_UNIT: `/common/options-unit.php`,
@@ -19,6 +21,8 @@ const OptionService = () => {
   const optionsItems = (parm = {}) => api.get(`${API_URL.OPTION_ITEMS}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsSupplier = () => api.get(`${API_URL.OPTION_SUPPLIER}`, { ignoreLoading : true });
   const optionsCustomer = () => api.get(`${API_URL.OPTION_CUSTOMER}`, { ignoreLoading : true });
+  const optionsCustomeSO = () => api.get(`${API_URL.OPTION_CUSTOMERSO}`, { ignoreLoading : true });
+  const optionsIC = () => api.get(`${API_URL.OPTION_IC}`, { ignoreLoading : true });
   const optionsQuotation = () => api.get(`${API_URL.OPTION_QUOTATION}`, { ignoreLoading : true });
   const optionsItemstype = () => api.get(`${API_URL.OPTION_ITEMSTYPE}`, { ignoreLoading : true });
   const optionsUnit = () => api.get(`${API_URL.OPTION_UNIT}`, { ignoreLoading : true });
@@ -33,6 +37,8 @@ const OptionService = () => {
     optionsItems,
     optionsSupplier,
     optionsCustomer,
+    optionsCustomeSO,
+    optionsIC,
     optionsQuotation,
     optionsItemstype,
     optionsUnit,

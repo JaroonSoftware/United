@@ -4,7 +4,7 @@ import { Row, Col, Space } from "antd";
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
-import { customersColumn } from "./modal-customersSO.model.js";
+import { customersColumn } from "./modal-InsuranceCustomers.model.js";
 import OptionService from "../../../service/Options.service.js";
 const opservice = OptionService();
 export default function ModalCustomers({ show, close, values, selected }) {
@@ -50,7 +50,7 @@ export default function ModalCustomers({ show, close, values, selected }) {
   const search = () => {
     setLoading(true);
     opservice
-      .optionsCustomeSO()
+      .optionsIC()
       .then((res) => {
         let { data } = res.data;
         setCustomersData(data);
@@ -81,9 +81,11 @@ export default function ModalCustomers({ show, close, values, selected }) {
     <>
       <Modal
         open={openModal}
-        title="Select Customer"
+        title="เลือกประกัน"
         afterClose={() => handleClose()}
         onCancel={() => setOpenModel(false)}
+        okText="เลือก"
+        cancelText="ยกเลิก"
         maskClosable={false}
         style={{ top: 20 }}
         width={800}
@@ -108,7 +110,7 @@ export default function ModalCustomers({ show, close, values, selected }) {
                         onChange={(e) => {
                           handleSearch(e.target.value);
                         }}
-                        placeholder="ค้นหาชื่อ หรือ รหัสลูกค้า"
+                        placeholder="ค้นหาชื่อประกัน หรือ รหัสประกัน"
                       />
                     </Form.Item>
                   </Col>

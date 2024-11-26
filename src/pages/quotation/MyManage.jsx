@@ -15,7 +15,7 @@ import { Card, Col, Divider, Flex, Row, Space, InputNumber } from "antd";
 import OptionService from "../../service/Options.service";
 import QuotationService from "../../service/Quotation.service";
 import { SaveFilled, SearchOutlined } from "@ant-design/icons";
-import ModalCustomers from "../../components/modal/customers/ModalCustomers";
+import ModalInsuranceCustomers from "../../components/modal/InsuranceCustomers/ModalInsuranceCustomers";
 
 import {
   quotationForm,
@@ -656,13 +656,13 @@ function QuotationManage() {
       </div>
 
       {openCustomer && (
-        <ModalCustomers
+        <ModalInsuranceCustomers
           show={openCustomer}
           close={() => setOpenCustomer(false)}
           values={(v) => {
             handleChoosedCustomer(v);
           }}
-        ></ModalCustomers>
+        ></ModalInsuranceCustomers>
       )}
 
       {openProduct && (
