@@ -19,7 +19,7 @@ import QuotationService from "../../service/Quotation.service";
 
 import { SaveFilled, SearchOutlined } from "@ant-design/icons";
 import ModalCustomers from "../../components/modal/customersSO/ModalCustomersSO";
-import ModalDelivery from "../../components/modal/InsuranceCustomers/ModalInsuranceCustomers";
+import ModalDelivery from "../../components/modal/DeliveryCustomers/ModalDeliveryCustomers";
 import ModalQuotation from "../../components/modal/quotation/MyModal";
 
 import { soForm, columnsParametersEditable, componentsEditable } from "./model";
@@ -53,12 +53,11 @@ function MyManage() {
   const [openQuotation, setOpenQuotation] = useState(false);
   /** SaleOrder state */
   const [soCode, setSOCode] = useState(null);
-
   /** Detail Data State */
   const [listDetail, setListDetail] = useState([]);
 
   const [formDetail, setFormDetail] = useState(soForm);
-  const [DeliveryDetail,setFomDeliveryDetail] = useState([]);
+  const [DeliveryDetail, setFomDeliveryDetail] = useState([]);
   const [unitOption, setUnitOption] = React.useState([]);
 
   useEffect(() => {
@@ -68,15 +67,29 @@ function MyManage() {
           .get(config?.code)
           .catch((error) => message.error("get SaleOrder data fail."));
         const {
-          data: { header, detail, delcode },
+          data: { delcode, header, detail },
         } = res.data;
         const { socode, sodate } = header;
+        console.log(sodate);
         setFormDetail(header);
         setListDetail(detail);
         setFomDeliveryDetail(delcode);
         setSOCode(socode);
+        form.setFieldsValue({
+          ...DeliveryDetail,
+          delname: delcode?.prename + " " + delcode?.cusname,
+        });
+        form.setFieldsValue({
+          ...DeliveryDetail,
+          deladdress: delcode?.address,
+        });
+        form.setFieldsValue({
+          ...DeliveryDetail,
+          delcontact: delcode?.contact,
+        });
+        form.setFieldsValue({ ...DeliveryDetail, deltel: delcode?.tel });
         form.setFieldsValue({ ...header, sodate: dayjs(sodate) });
-        form.setFieldsValue({ ...DeliveryDetail, delname: delcode});
+
         // setTimeout( () => {  handleCalculatePrice(head?.valid_price_until, head?.dated_price_until) }, 200);
         // handleChoosedCustomer(head);
       } else {
@@ -152,7 +165,7 @@ function MyManage() {
     }
   };
   const handleChoosedCustomer = (val) => {
-    console.log(val)
+    console.log(val);
     const fvalue = form.getFieldsValue();
     const addr = [
       !!val?.idno ? `${val.idno} ` : "",
@@ -167,14 +180,12 @@ function MyManage() {
       !!val?.prename ? `${val.prename} ` : "",
       !!val?.cusname ? `${val.cusname} ` : "",
     ];
-    const cuscode = [
-      !!val?.cuscode ? `${val.cuscode} ` : "",
-    ];
+    const cuscode = [!!val?.cuscode ? `${val.cuscode} ` : ""];
     const IC = {
       ...val,
       cuscode: cuscode.join(""),
       cusname: cusname.join(""),
-      qtcode: (""),
+      qtcode: "",
       address: addr.join(""),
       contact: val.contact,
       tel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
@@ -187,7 +198,7 @@ function MyManage() {
 
   /** Function modal handle */
   const handleChoosedDelivery = (val) => {
-    console.log(val)
+    console.log(val);
     const favalue = form.getFieldsValue();
     const addr = [
       !!val?.idno ? `${val.idno} ` : "",
@@ -213,8 +224,6 @@ function MyManage() {
     setFormDetail((state1) => ({ ...state1, ...Cus }));
     form.setFieldsValue({ ...favalue, ...Cus });
   };
-
- 
 
   const handleChoosedQuotation = async (val) => {
     // console.log(val)
@@ -273,15 +282,9 @@ function MyManage() {
           remark: form.getFieldValue("remark"),
         };
 
-        const delivery = {
-          ...formDetail,
-          cusname: form.getFieldValue("cusname"),
-         
-        };
-       
         const detail = listDetail;
-
-        const parm = { header, detail, delivery };
+        console.log(formDetail);
+        const parm = { header, detail };
         console.log(parm);
 
         const actions =
@@ -303,7 +306,6 @@ function MyManage() {
           content: "Please enter require data",
         });
       });
-
   };
 
   const handleClose = async () => {
@@ -427,17 +429,17 @@ function MyManage() {
               <Input placeholder="ชื่อลูกค้าทั่วไป" readOnly />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+          <Col xs={24} sm={24} md={12} lg={12}>
             <Form.Item name="deladdress" label="ที่อยู่" className="!mb-1">
               <Input placeholder="ที่อยู่" readOnly />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item name="delcontact" label="ผู้ติดต่อ" className="!mb-1">
               <Input placeholder="ผู้ติดต่อ" readOnly />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item name="deltel" label="เบอร์โทรลูกค้า" className="!mb-1">
               <Input placeholder="เบอร์โทรลูกค้า" readOnly />
             </Form.Item>
@@ -485,7 +487,7 @@ function MyManage() {
               htmlFor="cuscode-1"
               label="รหัสบริษัทประกัน"
               className="!mb-1"
-              rules={[{ required: true, message: "Missing Loading type" }]}
+              rules={[{ required: true, message: "ไม่พบข้อมูล" }]}
             >
               <Space.Compact style={{ width: "100%" }}>
                 <Input
@@ -513,17 +515,17 @@ function MyManage() {
               <Input placeholder="ชื่อบริษัทประกัน" readOnly />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+          <Col xs={24} sm={24} md={12} lg={12}>
             <Form.Item name="address" label="ที่อยู่" className="!mb-1">
               <Input placeholder="ที่อยู่" readOnly />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item name="contact" label="ผู้ติดต่อ" className="!mb-1">
               <Input placeholder="ผู้ติดต่อ" readOnly />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item name="tel" label="เบอร์โทรลูกค้า" className="!mb-1">
               <Input placeholder="เบอร์โทรลูกค้า" readOnly />
             </Form.Item>
@@ -682,32 +684,32 @@ function MyManage() {
     <>
       <Space size="small" direction="vertical" className="flex gap-2">
         <Row gutter={[8, 8]} className="m-0">
-          <Col xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
+        <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item className="" name="claim_no" label="เลขเคลม">
               <Input placeholder="เลขเคลม" />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item className="" name="require_no" label="เลขรับแจ้ง">
               <Input placeholder="เลขรับแจ้ง" />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item className="" name="car_engineno" label="หมายเลขตัวถัง">
               <Input placeholder="หมายเลขตัวถัง" />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item className="" name="car_model_code" label="แบบรถ">
               <Input placeholder="แบบรถ" />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
-            <Form.Item className="" name="car_no" label="ทะเบียนรถ">
-              <Input placeholder="ทะเบียนรถ" />
+          <Col xs={24} sm={24} md={6} lg={6}>
+            <Form.Item className="" name="car_no" label="ทะเบียนรถ" rules={[{ required: true, message: "กรูณาใส่ข้อมูล" }]}>
+              <Input placeholder="ทะเบียนรถ"  />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item className="" name="remark" label="Remark">
               <Input.TextArea placeholder="Enter Remark" rows={2} />
             </Form.Item>
@@ -807,24 +809,30 @@ function MyManage() {
   ];
 
   return (
-    <div className="quotation-manage">
-      <div id="quotation-manage" className="px-0 sm:px-0 md:px-8 lg:px-8">
+    <div className="so-manage">
+      <div id="so-manage" className="px-0 sm:px-0 md:px-8 lg:px-8">
         <Space direction="vertical" className="flex gap-4">
           {SectionTop}
+          <Form
+            form={form}
+            layout="vertical"
+            className="width-100"
+            autoComplete="off"
+          >
           <Row className="m-0" gutter={[12, 12]}>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+          <Col xs={24} sm={24} md={12} lg={12}>
               <Typography.Title level={3} className="m-0">
                 รหัสใบขายสินค้า : {soCode}
               </Typography.Title>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+            <Col xs={24} sm={24} md={12} lg={12}>
               <Flex
                 gap={10}
                 align="center"
                 className="justify-start sm:justify-end"
               >
                 <Typography.Title level={3} className="m-0">
-                  วันที่ใบขายสินค้า :{" "}
+                  วันที่ใบขายสินค้า :
                 </Typography.Title>
                 <Form.Item name="sodate" className="!m-0">
                   <DatePicker
@@ -835,8 +843,11 @@ function MyManage() {
                   />
                 </Form.Item>
               </Flex>
+              
             </Col>
+            
           </Row>
+          </Form>
           <Card>
             <Tabs defaultActiveKey="1" items={tab} size="large" />
           </Card>

@@ -108,7 +108,7 @@ export default function ModalCustomers({ show, close, values, selected }) {
                         onChange={(e) => {
                           handleSearch(e.target.value);
                         }}
-                        placeholder="ค้นหาชื่อ หรือ รหัสลูกค้า"
+                        placeholder="ค้นหาชื่อ หรือ รหัสประกัน"
                       />
                     </Form.Item>
                   </Col>

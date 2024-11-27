@@ -88,6 +88,7 @@ try {
         set
         delcode = :delcode,
         qtcode = :qtcode,
+        sodate = :sodate,
         cuscode = :cuscode,
         payment = :payment,
         total_price = :total_price,
@@ -122,6 +123,7 @@ try {
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
         $stmt->bindParam(":delcode", $header->delcode, PDO::PARAM_STR);
         $stmt->bindParam(":qtcode", $header->qtcode, PDO::PARAM_STR);
+        $stmt->bindParam(":sodate", $header->sodate, PDO::PARAM_STR);
         $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR);
 
         if (!$stmt->execute()) {
@@ -183,7 +185,7 @@ try {
         echo json_encode(array("status" => 1));
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
-        $sql = "SELECT a.delcode,a.qtcode,a.cuscode,a.claim_no,a.require_no,a.car_engineno,a.car_model_code,a.car_no,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
+        $sql = "SELECT a.socode,a.sodate,a.qtcode,a.delcode,a.cuscode,a.claim_no,a.require_no,a.car_engineno,a.car_model_code,a.car_no,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
         ,c.zipcode,c.contact,c.tel,c.fax,a.total_price,a.vat,a.grand_total_price,a.remark ";
         $sql .= " FROM `somaster` as a ";
         $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";
@@ -209,7 +211,8 @@ try {
         }
         $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.delcode,c.prename,c.cusname,c.cuscode";
+        $sql = "SELECT a.delcode,a.sodate,c.prename,c.cusname,c.cuscode,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
+        ,c.contact,c.tel";
         $sql .= " FROM `somaster` as a ";
         $sql .= " inner join `customer` as c on (a.delcode)=(c.cuscode)";
         $sql .= " where a.socode = :code";

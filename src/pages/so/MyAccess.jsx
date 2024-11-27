@@ -100,7 +100,7 @@ const MyAccess = () => {
         form.validateFields().then( v => {
             const data = {...v}; 
             if( !!data?.sodate ) {
-                const arr = data?.quotdate.map( m => dayjs(m).format("YYYY-MM-DD") )
+                const arr = data?.sodate.map( m => dayjs(m).format("YYYY-MM-DD") )
                 const [sodate_form, sodate_to] = arr; 
                 //data.created_date = arr
                 Object.assign(data, {sodate_form, sodate_to});
