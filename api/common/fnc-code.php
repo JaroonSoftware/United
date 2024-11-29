@@ -77,7 +77,18 @@ function update_recode($pdo){
         throw new PDOException("Update code error => $error");
     }
 } 
+function update_dncode($pdo){
+    $year = date("Y");
+    $month = date("m");
+    $sql = "update options set dncode = dncode + 1 where year = :y and month = :m";
+    $stmt = $pdo->prepare($sql);
 
+    if (!$stmt->execute([ 'y' => $year, 'm' => $month ])){
+        $error = $pdo->errorInfo(); 
+        http_response_code(401);
+        throw new PDOException("Update code error => $error");
+    }
+} 
 #endregion
  
 #region Request Code
@@ -315,6 +326,44 @@ function request_recode($pdo){
     return $prefix.sprintf("%03s", ( $number) );   
 }
 
+function request_dncode($pdo){
+    $year = date("Y");
+    $month = date("m");
+
+    $sql = "select dncode code from options where year = :y and month = :m";
+    $stmt = $pdo->prepare($sql); 
+    if (!$stmt->execute([ 'y' => $year, 'm' => $month ])){
+        $error = $pdo->errorInfo();
+        http_response_code(401);
+        throw new PDOException("Geting code error => $error");
+    }
+
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (empty($result)) {
+        create_options($pdo, $year, $month);
+        return 0;
+    } 
+    //QU240100001
+    $res = $result["code"];
+    $y = substr( date("Y")+543, -2);
+    $m = date("m");
+    $number = intval($res);
+    $prefix = "DN$y$m";
+    while(true){
+        $code = sprintf("%03s", ( $number) );
+        $format = $prefix.$code;
+        $sql = "SELECT 1 r FROM dnmaster where dncode = '$format'"; 
+        $stmt = $pdo->prepare($sql); 
+        $stmt->execute(); 
+        if ($stmt->rowCount() > 0){
+            $number += 1;
+            update_dncode($pdo);
+            continue;
+        } else break;
+    } 
+    return $prefix.sprintf("%03s", ( $number) );   
+}
 #endregion
 
 function create_options($pdo, $year, $month){
