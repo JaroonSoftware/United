@@ -214,20 +214,20 @@ const CustomerManage = () => {
                 label: "ลูกค้าประกัน",
               },
               {
-                value: "ลูกค้าทั่วไป",
-                label: "ลูกค้าทั่วไป",
+                value: "ลูกค้าอู่ซ่อมรถ",
+                label: "ลูกค้าอู่ซ่อมรถ",
               },              
             ]}
           ></Select>
         </Form.Item>
       </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-          <Form.Item label="ที่จัดเก็บสินค้า" name="county_code">
+          <Form.Item label="เขตขนส่ง" name="county_code">
             <Select
               size="large"
               showSearch
               filterOption={filterOption}
-              placeholder="เลือกที่จัดเก็บสินค้า"
+              placeholder="เลือกเขตขนส่ง"
               options={optioncounty.map((item) => ({
                 value: item.county_code,
                 label: item.county_name,

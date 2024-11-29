@@ -18,9 +18,9 @@ try {
         extract($_POST, EXTR_OVERWRITE, "_");
 
         // var_dump($_POST);
-        $sql = "insert qtmaster (`qtcode`, `qtdate`, `cuscode`,
+        $sql = "insert qtmaster (`qtcode`, `qtdate`, `cuscode`,`deldate`,
         `payment`, `payment_term`, `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
-        values (:qtcode,:qtdate,:cuscode,:payment,:payment_term,:total_price,:vat,:grand_total_price,
+        values (:qtcode,:qtdate,:cuscode,:deldate,:payment,:payment_term,:total_price,:vat,:grand_total_price,
         :remark,:action_user,:action_user)";
 
         $stmt = $conn->prepare($sql);
@@ -30,6 +30,7 @@ try {
         $stmt->bindParam(":qtcode", $header->qtcode, PDO::PARAM_STR);
         $stmt->bindParam(":qtdate", $header->qtdate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
+        $stmt->bindParam(":deldate", $header->deldate, PDO::PARAM_STR);
         $stmt->bindParam(":payment", $header->payment, PDO::PARAM_STR);
         $stmt->bindParam(":payment_term", $header->payment_term, PDO::PARAM_STR);
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
@@ -91,6 +92,7 @@ try {
         update qtmaster 
         set
         cuscode = :cuscode,
+        deldate = :deldate,
         payment = :payment,
         payment_term = :payment_term,
         total_price = :total_price,
@@ -107,6 +109,7 @@ try {
         $header = (object)$header; 
 
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
+        $stmt->bindParam(":deldate", $header->deldate, PDO::PARAM_STR);
         $stmt->bindParam(":payment", $header->payment, PDO::PARAM_STR);
         $stmt->bindParam(":payment_term", $header->payment_term, PDO::PARAM_STR);
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);

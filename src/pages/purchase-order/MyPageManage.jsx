@@ -24,7 +24,7 @@ import {
   columnsParametersEditable,
   componentsEditable,
 } from "./model";
-import { ModalItems } from "../../components/modal/items/modal-items";
+import { ModalItems } from "../../components/modal/itemsbySO/modal-items";
 import dayjs from "dayjs";
 import { delay, comma } from "../../utils/util";
 import { ButtonBack } from "../../components/button";

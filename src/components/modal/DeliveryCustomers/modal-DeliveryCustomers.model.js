@@ -13,10 +13,18 @@ export const customersColumn = ({handleChoose})=>{
         render: (v, record) => <Link className="text-select" onClick={()=>handleChoose(record)}>{v}</Link>
       },
       {
+        
         title: "ชื่อลูกค้า",
         dataIndex: "cusname",
-        width: "70%",
+        width: "50%",
         key: "cusname",
+        render: (v, record) => <Link className="text-select" onClick={()=>handleChoose(record)}> {v}</Link>
+      },
+      {
+        title: "ประเภทลูกค้า",
+        dataIndex: "cus_type",
+        width: "20%",
+        key: "cus_type",
         render: (v, record) => <Link className="text-select" onClick={()=>handleChoose(record)}> {v}</Link>
       } 
     ]

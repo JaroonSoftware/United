@@ -248,15 +248,17 @@ function MyManage() {
       contact: val.contact,
       tel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
     };
-    const res = await qtservice.get(val.qtcode);
-    const {
-      data: { detail },
-    } = res.data;
+    // alert(formDetail.doc_status)
+
+    const res = await qtservice.get(val.qtcode);    
+    const { detail } = res.data;
     setListDetail(detail);
     handleSummaryPrice();
     // console.log(quotation)
     setFormDetail((state) => ({ ...state, ...quotation }));
     form.setFieldsValue({ ...fvalue, ...quotation });
+
+    // alert(formDetail.doc_status)
   };
 
   const handleItemsChoosed = (value) => {
@@ -283,9 +285,9 @@ function MyManage() {
         };
 
         const detail = listDetail;
-        console.log(formDetail);
+        // console.log(formDetail);
         const parm = { header, detail };
-        console.log(parm);
+        // console.log(parm);
 
         const actions =
           config?.action !== "create" ? soservice.update : soservice.create;
@@ -399,14 +401,14 @@ function MyManage() {
             <Form.Item
               name="delcode"
               htmlFor="delcode-1"
-              label="รหัสลูกค้าทั่วไป"
+              label="รหัสลูกค้าที่จัดส่ง"
               className="!mb-1"
               rules={[{ required: true, message: "ไม่พบข้อมูล" }]}
             >
               <Space.Compact style={{ width: "100%" }}>
                 <Input
                   // readOnly
-                  placeholder="เลือกรหัสลูกค้าทั่วไป"
+                  placeholder="เลือกรหัสลูกค้าที่จัดส่ง"
                   id="delcode-1"
                   value={formDetail.delcode}
                   className="!bg-white"
@@ -423,10 +425,10 @@ function MyManage() {
           <Col xs={24} sm={24} md={12} lg={12}>
             <Form.Item
               name="delname"
-              label="ชื่อลูกค้าทั่วไป"
+              label="ชื่อลูกค้าที่จัดส่ง"
               className="!mb-1"
             >
-              <Input placeholder="ชื่อลูกค้าทั่วไป" readOnly />
+              <Input placeholder="ชื่อลูกค้าที่จัดส่ง" readOnly />
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12}>
@@ -553,7 +555,7 @@ function MyManage() {
               setOpenProduct(true);
             }}
           >
-            Choose Product
+            เลือกสินค้า
           </Button>
         </Flex>
       </Col>
@@ -747,7 +749,7 @@ function MyManage() {
           ) : (
             <></>
           )}
-          {formDetail.active_status === "Y" || config.action === "create" ? (
+          
             <Button
               className="bn-center justify-center"
               icon={<SaveFilled style={{ fontSize: "1rem" }} />}
@@ -759,9 +761,6 @@ function MyManage() {
             >
               Save
             </Button>
-          ) : (
-            <></>
-          )}
         </Flex>
       </Col>
     </Row>
@@ -786,7 +785,7 @@ function MyManage() {
               {SectionInsuranceCompany}
             </Col>
             <Divider style={{ borderTop: "3px" }} orientation="left">
-              ลูกค้าทั่วไป
+              ลูกค้าที่จัดส่ง
             </Divider>
             <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
               {SectionCustomer}

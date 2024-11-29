@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
     try { 
         $res = null;
         
-        $sql = "SELECT cuscode, cusname, prename, idno, road, subdistrict, district, province, zipcode, tel, contact, fax, taxnumber FROM `customer` where active_status = 'Y'";
+        $sql = "SELECT cuscode, cusname, prename, idno, road, subdistrict, district, province, zipcode, tel, contact, fax, taxnumber,cus_type FROM `customer` where active_status = 'Y'";
             // $type_code
             $stmt = $conn->prepare($sql); 
             $stmt->execute();

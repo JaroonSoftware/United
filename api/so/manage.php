@@ -49,6 +49,28 @@ try {
             die;
         }
 
+        if ($header->qtcode != '') {
+            $sql = "
+            update qtmaster 
+            set
+            doc_status = 'ออกใบขายสินค้าแล้ว',
+            updated_date = CURRENT_TIMESTAMP(),
+            updated_by = :action_user
+            where qtcode = :qtcode";
+
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
+            $stmt->bindParam(":qtcode", $header->qtcode, PDO::PARAM_STR);
+
+            if (!$stmt->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
+        }
+
         update_socode($conn);
 
         $code = $conn->lastInsertId();
@@ -90,7 +112,6 @@ try {
         qtcode = :qtcode,
         sodate = :sodate,
         cuscode = :cuscode,
-        payment = :payment,
         total_price = :total_price,
         vat = :vat,
         grand_total_price = :grand_total_price,
@@ -110,7 +131,6 @@ try {
         $header = (object)$header;
     
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
-        $stmt->bindParam(":payment", $header->payment, PDO::PARAM_STR);
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
         $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
         $stmt->bindParam(":grand_total_price", $header->grand_total_price, PDO::PARAM_STR);
