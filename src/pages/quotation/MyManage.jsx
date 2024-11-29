@@ -9,13 +9,14 @@ import {
   Table,
   Typography,
   message,
+  // Radio,
 } from "antd";
-import { Card, Col, Divider, Flex, Row, Space, InputNumber } from "antd";
+import { Card, Col, Divider, Flex, Row, Space,Popconfirm } from "antd";
 
 import OptionService from "../../service/Options.service";
 import QuotationService from "../../service/Quotation.service";
-import { SaveFilled, SearchOutlined } from "@ant-design/icons";
-import ModalDeliveryCustomers from "../../components/modal/customersSO/ModalCustomersSO";
+import { SaveFilled, SearchOutlined,QuestionCircleOutlined } from "@ant-design/icons";
+import ModalCustomers from "../../components/modal/customers/ModalCustomers";
 
 import {
   quotationForm,
@@ -32,6 +33,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuPackageSearch } from "react-icons/lu";
 import { LuPrinter } from "react-icons/lu";
+import { CloseCircleFilledIcon } from '../../components/icon';
+
 const opservice = OptionService();
 const qtservice = QuotationService();
 
@@ -72,13 +75,17 @@ function QuotationManage() {
           .catch((error) => message.error("get Quotation data fail."));
         const {
           data: { header, detail },
-        } = res.data;
-        const { qtcode, qtdate,deldate } = header;
+        } = res;
+        const { qtcode, qtdate, deldate } = header;
         setFormDetail(header);
         setListDetail(detail);
         // setQuotBanks( bank );
         setQuotCode(qtcode);
-        form.setFieldsValue({ ...header, qtdate: dayjs(qtdate), deldate: dayjs(deldate) });
+        form.setFieldsValue({
+          ...header,
+          qtdate: dayjs(qtdate),
+          deldate: dayjs(deldate),
+        });
 
         // setTimeout( () => {  handleCalculatePrice(head?.valid_price_until, head?.dated_price_until) }, 200);
         // handleChoosedCustomer(head);
@@ -89,11 +96,11 @@ function QuotationManage() {
           })
         ).data;
         setQuotCode(code);
-        form.setFieldValue("vat", 7);
         const ininteial_value = {
           ...formDetail,
           qtcode: code,
           qtdate: dayjs(new Date()),
+          doc_status:"กำลังรอดำเนินการ",
         };
         setFormDetail(ininteial_value);
         form.setFieldsValue(ininteial_value);
@@ -124,15 +131,10 @@ function QuotationManage() {
           (1 - Number(v?.discount || 0) / 100)),
       0
     );
-    const vat = form.getFieldValue("vat");
-    const grand_total_price =
-      total_price + (total_price * form.getFieldValue("vat")) / 100;
 
     setFormDetail(() => ({
       ...formDetail,
       total_price,
-      vat,
-      grand_total_price,
     }));
     // console.log(formDetail)
   };
@@ -184,6 +186,19 @@ function QuotationManage() {
     form.setFieldsValue({ ...fvalue, ...customer });
   };
 
+  const handleCancel = () => {
+    qtservice.deleted(config?.code).then( _ => {
+      handleClose().then((r) => {
+        message.success( "ยกเลิกใบเสนอราคาเรียบร้อย." ); 
+      });
+    })
+    .catch( err => {
+        console.warn(err);
+        const { data:{ message:mes } } = err.response;
+        message.error( mes || "error request"); 
+    });
+}
+
   const handleItemsChoosed = (value) => {
     setListDetail(value);
     handleSummaryPrice();
@@ -202,7 +217,6 @@ function QuotationManage() {
           payment_term: form.getFieldValue("payment_term"),
           remark: form.getFieldValue("remark"),
         };
-
         const detail = listDetail;
 
         const parm = { header, detail };
@@ -235,8 +249,8 @@ function QuotationManage() {
   };
 
   const handlePrint = () => {
-    // const newWindow = window.open("", "_blank");
-    // newWindow.location.href = `/quo-print/${formDetail.quotcode}`;
+    const newWindow = window.open("", "_blank");
+    newWindow.location.href = `/quo-print/${formDetail.quotcode}`;
   };
 
   const handleDelete = (code) => {
@@ -256,7 +270,7 @@ function QuotationManage() {
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
         onClick={() => handleDelete(record?.stcode)}
-        disabled={!record?.stcode || config.action !== "create"}
+        disabled={!record?.stcode || formDetail.doc_status !== "กำลังรอดำเนินการ"}
       />
     ) : null;
   };
@@ -317,17 +331,17 @@ function QuotationManage() {
               </Space.Compact>
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+          <Col xs={24} sm={24} md={12} lg={12}>
             <Form.Item name="cusname" label="ชื่อลูกค้า" className="!mb-1">
               <Input placeholder="ชื่อลูกค้า" readOnly />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+          <Col xs={24} sm={24} md={24} lg={24}>
             <Form.Item name="address" label="ที่อยู่" className="!mb-1">
               <Input placeholder="ที่อยู่ลูกค้า" readOnly />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+          <Col xs={24} sm={24} md={12} lg={12}>
             <Form.Item
               name="payment_term"
               label="เงื่อนไขการชำระ"
@@ -339,7 +353,7 @@ function QuotationManage() {
           <Col xs={24} sm={24} md={12} lg={12}>
             <Form.Item name="deldate" label="กำหนดการจัดส่ง" className="!mb-1">
               <DatePicker
-              size="large"
+                size="large"
                 className="input-40"
                 allowClear={false}
                 style={{ width: "100%" }}
@@ -348,6 +362,22 @@ function QuotationManage() {
               />
             </Form.Item>
           </Col>
+          {/* <Col xs={24} sm={24} md={4} lg={4}>
+            <Form.Item label="Vat" name="vat">
+              <Radio.Group>
+                <Radio value={"7"}>มี Vat</Radio>
+                <Radio value={"0"}>ไม่มี Vat</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={4} lg={4}>
+            <Form.Item label="แสดงรูปภาพ" name="show_pic">
+              <Radio.Group>
+                <Radio value={"แสดง"}>แสดง</Radio>
+                <Radio value={"ไม่แสดง"}>ไม่แสดง</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </Col> */}
         </Row>
       </Space>
     </>
@@ -370,6 +400,7 @@ function QuotationManage() {
             onClick={() => {
               setOpenProduct(true);
             }}
+            disabled={config?.action !== "create"}
           >
             เลือกสินค้า
           </Button>
@@ -416,74 +447,7 @@ function QuotationManage() {
                         style={{ borderRigth: "0px solid" }}
                       >
                         <Typography.Text type="danger">
-                          {comma(Number(formDetail?.total_price || 0))}
-                        </Typography.Text>
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell>Baht</Table.Summary.Cell>
-                    </Table.Summary.Row>
-                    <Table.Summary.Row>
-                      <Table.Summary.Cell
-                        index={0}
-                        colSpan={6}
-                      ></Table.Summary.Cell>
-                      <Table.Summary.Cell
-                        index={4}
-                        align="end"
-                        className="!pe-4"
-                      >
-                        Vat
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell
-                        className="!pe-4 text-end border-right-0"
-                        style={{ borderRigth: "0px solid" }}
-                      >
-                        <Form.Item name="vat" className="!m-0">
-                          <InputNumber
-                            className="width-100 input-30 text-end"
-                            addonAfter="%"
-                            controls={false}
-                            min={0}
-                            onFocus={(e) => {
-                              e.target.select();
-                            }}
-                            onChange={() => {
-                              handleSummaryPrice();
-                            }}
-                          />
-                        </Form.Item>
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell
-                        className="!pe-4 text-end border-right-0"
-                        style={{ borderRigth: "0px solid" }}
-                      >
-                        <Typography.Text type="danger">
-                          {comma(
-                            Number(
-                              (formDetail.total_price * formDetail?.vat) / 100
-                            )
-                          )}
-                        </Typography.Text>
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell>Baht</Table.Summary.Cell>
-                    </Table.Summary.Row>
-                    <Table.Summary.Row>
-                      <Table.Summary.Cell
-                        index={0}
-                        colSpan={7}
-                      ></Table.Summary.Cell>
-                      <Table.Summary.Cell
-                        index={4}
-                        align="end"
-                        className="!pe-4"
-                      >
-                        Grand Total
-                      </Table.Summary.Cell>
-                      <Table.Summary.Cell
-                        className="!pe-4 text-end border-right-0"
-                        style={{ borderRigth: "0px solid" }}
-                      >
-                        <Typography.Text type="danger">
-                          {comma(Number(formDetail?.grand_total_price || 0))}
+                          {comma(Number(formDetail?.total_price || 0), 2, 2)}
                         </Typography.Text>
                       </Table.Summary.Cell>
                       <Table.Summary.Cell>Baht</Table.Summary.Cell>
@@ -526,6 +490,25 @@ function QuotationManage() {
       </Col>
       <Col span={12} style={{ paddingInline: 0 }}>
         <Flex gap={4} justify="end">
+        {(formDetail.doc_status === "กำลังรอดำเนินการ"&&config?.action !== "create")&&
+          <Popconfirm 
+          placement="topRight"
+          title="ยืนยันการยกเลิก"  
+          description="คุณแน่ใจที่จะยกเลิกใบเสนอราคา?"
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          onConfirm={() => handleCancel()}
+        >
+          <Button
+            className="bn-center justify-center"
+            icon={<CloseCircleFilledIcon style={{ fontSize: "1rem" }} />}
+            type="primary"
+            style={{ width: "9.5rem" }}
+            danger
+          >
+            ยกเลิกใบเสนอราคา
+          </Button>
+        </Popconfirm>
+          }
           <Button
             className="bn-center justify-center"
             icon={<SaveFilled style={{ fontSize: "1rem" }} />}
@@ -534,6 +517,7 @@ function QuotationManage() {
             onClick={() => {
               handleConfirm();
             }}
+            disabled={formDetail.doc_status !== "กำลังรอดำเนินการ"}
           >
             Save
           </Button>
@@ -577,6 +561,7 @@ function QuotationManage() {
             onClick={() => {
               handleConfirm();
             }}
+            disabled={formDetail.doc_status !== "กำลังรอดำเนินการ"}
           >
             Save
           </Button>
@@ -657,13 +642,13 @@ function QuotationManage() {
       </div>
 
       {openCustomer && (
-        <ModalDeliveryCustomers
+        <ModalCustomers
           show={openCustomer}
           close={() => setOpenCustomer(false)}
           values={(v) => {
             handleChoosedCustomer(v);
           }}
-        ></ModalDeliveryCustomers>
+        ></ModalCustomers>
       )}
 
       {openProduct && (

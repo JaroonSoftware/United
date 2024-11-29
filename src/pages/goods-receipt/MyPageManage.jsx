@@ -11,12 +11,12 @@ import {
   message,
 } from "antd";
 import { Card, Col, Divider, Flex, Row, Space } from "antd";
+
 import OptionService from "../../service/Options.service";
 import GoodsReceiptService from "../../service/GoodsReceipt.service";
 import { SaveFilled, SearchOutlined } from "@ant-design/icons";
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { LuPackageSearch } from "react-icons/lu";
 import ModalSupplier from "../../components/modal/supplier/ModalSupplier";
+
 import {
   goodsreceiptForm,
   columnsParametersEditable,
@@ -28,6 +28,9 @@ import { delay } from "../../utils/util";
 import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { LuPackageSearch } from "react-icons/lu";
+import { LuPrinter } from "react-icons/lu";
 const opservice = OptionService();
 const grservice = GoodsReceiptService();
 
@@ -45,7 +48,7 @@ function GoodsReceiptManage() {
   const [openProduct, setOpenProduct] = useState(false);
 
   /** GoodsReceipt state */
-  const [grCode, setGrCode] = useState(null);
+  const [poCode, setPoCode] = useState(null);
 
   /** Detail Data State */
   const [listDetail, setListDetail] = useState([]);
@@ -67,11 +70,11 @@ function GoodsReceiptManage() {
           .catch((error) => message.error("get GoodsReceipt data fail."));
         const { header, detail } = res.data;
         const { grcode, grdate } = header;
-
+        // alert('grcode')
         setFormDetail(header);
         setListDetail(detail);
-        setGrCode(grcode);
-        form.setFieldsValue({ ...header, grdate: dayjs(grdate),deldate: dayjs(header.deldate) });
+        setPoCode(grcode);
+        form.setFieldsValue({ ...header, grdate: dayjs(grdate) });
 
         // setTimeout( () => {  handleCalculatePrice(head?.valid_price_until, head?.dated_price_until) }, 200);
         // handleChoosedSupplier(head);
@@ -81,7 +84,7 @@ function GoodsReceiptManage() {
             message.error("get GoodsReceipt code fail.");
           })
         ).data;
-        setGrCode(code);
+        setPoCode(code);
         form.setFieldValue("vat", 7);
         const ininteial_value = {
           ...formDetail,
@@ -220,9 +223,13 @@ function GoodsReceiptManage() {
   const handleClose = async () => {
     navigate(gotoFrom, { replace: true });
     await delay(300);
-    // console.clear();
+    console.clear();
   };
 
+  const handlePrint = () => {
+    const newWindow = window.open("", "_blank");
+    newWindow.location.href = `/quo-print/${formDetail.quotcode}`;
+  };
 
   const handleDelete = (code) => {
     const itemDetail = [...listDetail];
@@ -251,7 +258,7 @@ function GoodsReceiptManage() {
       const itemDetail = [...listDetail];
       const newData = [...itemDetail];
 
-      const ind = newData.findIndex((item) => r?.stcode === item?.stcode);
+      const ind = newData.findIndex((item) => r?.code === item?.code);
       if (ind < 0) return itemDetail;
       const item = newData[ind];
       newData.splice(ind, 1, {
@@ -265,7 +272,6 @@ function GoodsReceiptManage() {
     setListDetail([...newData(row)]);
   };
 
-
   /** setting column table */
   const prodcolumns = columnsParametersEditable(handleEditCell, unitOption, {
     handleRemove,
@@ -275,13 +281,13 @@ function GoodsReceiptManage() {
     <>
       <Space size="small" direction="vertical" className="flex gap-2">
         <Row gutter={[8, 8]} className="m-0">
-        <Col xs={24} sm={24} md={12} lg={12}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
             <Form.Item
               name="supcode"
               htmlFor="supcode-1"
               label="รหัสผู้ขาย"
               className="!mb-1"
-              rules={[{ required: true, message: "Missing Supplier Code" }]}
+              rules={[{ required: true, message: "กรอกรหัสผู้ขาย" }]}
             >
               <Space.Compact style={{ width: "100%" }}>
                 <Input
@@ -358,8 +364,9 @@ function GoodsReceiptManage() {
             onClick={() => {
               setOpenProduct(true);
             }}
+            disabled={config?.action !== "create"}
           >
-            Choose Product
+            เลือกใบสั่งซื้อ
           </Button>
         </Flex>
       </Col>
@@ -413,6 +420,21 @@ function GoodsReceiptManage() {
           <ButtonBack target={gotoFrom} />
         </Flex>
       </Col>
+      <Col span={12} style={{ paddingInline: 0 }}>
+        <Flex gap={4} justify="end">
+          {!!formDetail.quotcode && (
+            <Button
+              icon={<LuPrinter />}
+              onClick={() => {
+                handlePrint();
+              }}
+              className="bn-center !bg-orange-400 !text-white !border-transparent"
+            >
+              PRINT QUOTATION{" "}
+            </Button>
+          )}
+        </Flex>
+      </Col>
     </Row>
   );
 
@@ -426,7 +448,6 @@ function GoodsReceiptManage() {
           <ButtonBack target={gotoFrom} />
         </Flex>
       </Col>
-      {config?.action === "create" ? (
         <Col span={12} style={{ paddingInline: 0 }}>
         <Flex gap={4} justify="end">
           <Button
@@ -437,15 +458,12 @@ function GoodsReceiptManage() {
             onClick={() => {
               handleConfirm();
             }}
+            disabled={config?.action !== "create"}
           >
             Save
           </Button>
         </Flex>
       </Col>
-      ) : (
-       <></> 
-      )}      
-      
     </Row>
   );
 
@@ -466,7 +484,7 @@ function GoodsReceiptManage() {
                   <Row className="m-0 py-3 sm:py-0" gutter={[12, 12]}>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                       <Typography.Title level={3} className="m-0">
-                        รหัสใบรับสินค้า : {grCode}
+                        รหัสใบรับสินค้า : {poCode}
                       </Typography.Title>
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>

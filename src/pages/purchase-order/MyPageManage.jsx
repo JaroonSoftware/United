@@ -11,11 +11,13 @@ import {
   Typography,
   message,
   Select,
+  Radio,
+  Popconfirm,
 } from "antd";
 import { Card, Col, Divider, Flex, Row, Space } from "antd";
 import OptionService from "../../service/Options.service";
 import PurchaseOrderService from "../../service/PurchaseOrder.service";
-import { SaveFilled, SearchOutlined } from "@ant-design/icons";
+import { SaveFilled, SearchOutlined,QuestionCircleOutlined } from "@ant-design/icons";
 import ModalSupplier from "../../components/modal/supplier/ModalSupplier";
 import {
   purchaseorderForm,
@@ -29,11 +31,12 @@ import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuPackageSearch } from "react-icons/lu";
-import { LuPrinter } from "react-icons/lu";
+import { CloseCircleFilledIcon } from '../../components/icon';
+
 const opservice = OptionService();
 const poservice = PurchaseOrderService();
 const gotoFrom = "/purchase-order";
-const dateFormat = 'DD/MM/YYYY';
+const dateFormat = "DD/MM/YYYY";
 function PurchaseOrderManage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -59,14 +62,18 @@ function PurchaseOrderManage() {
         const res = await poservice
           .get(config?.code)
           .catch((error) => message.error("get PurchaseOrder data fail."));
-          // console.log(res.data)
+        // console.log(res.data)
         const { header, detail } = res.data;
         const { pocode, podate } = header;
-        
+
         setFormDetail(header);
         setListDetail(detail);
         setPoCode(pocode);
-        form.setFieldsValue({ ...header, podate: dayjs(podate),deldate: dayjs(header.deldate) });
+        form.setFieldsValue({
+          ...header,
+          podate: dayjs(podate),
+          deldate: dayjs(header.deldate),
+        });
 
         // setTimeout( () => {  handleCalculatePrice(head?.valid_price_until, head?.dated_price_until) }, 200);
         // handleChoosedSupplier(head);
@@ -77,16 +84,18 @@ function PurchaseOrderManage() {
           })
         ).data;
         setPoCode(code);
-        form.setFieldValue("vat", 7);
-        form.setFieldValue("payment", 'เงินสด');
+
+        form.setFieldValue("payment", "เงินสด");
         const ininteial_value = {
           ...formDetail,
           pocode: code,
-          podate: dayjs(new Date()),          
+          podate: dayjs(new Date()),
+          doc_status: "ยังไม่ได้รับของ",
         };
-        
+
         setFormDetail(ininteial_value);
         form.setFieldsValue(ininteial_value);
+        form.setFieldValue("vat", "7");
       }
       const [unitOprionRes] = await Promise.all([
         opservice.optionsUnit({ p: "unit-option" }),
@@ -188,6 +197,7 @@ function PurchaseOrderManage() {
           payment: form.getFieldValue("payment"),
           poqua: form.getFieldValue("poqua"),
           remark: form.getFieldValue("remark"),
+          vat: form.getFieldValue("vat"),
         };
         const detail = listDetail;
 
@@ -214,15 +224,23 @@ function PurchaseOrderManage() {
       });
   };
 
+  const handleCancel = () => {
+    poservice.deleted(config?.code).then( _ => {
+      handleClose().then((r) => {
+        message.success( "ยกเลิกใบสั่งซื้อเรียบร้อย." ); 
+      });
+    })
+    .catch( err => {
+        console.warn(err);
+        const { data:{ message:mes } } = err.response;
+        message.error( mes || "error request"); 
+    });
+}
+
   const handleClose = async () => {
     navigate(gotoFrom, { replace: true });
     await delay(300);
     console.clear();
-  };
-
-  const handlePrint = () => {
-    const newWindow = window.open("", "_blank");
-    newWindow.location.href = `/quo-print/${formDetail.quotcode}`;
   };
 
   const handleDelete = (code) => {
@@ -242,7 +260,9 @@ function PurchaseOrderManage() {
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
         onClick={() => handleDelete(record?.stcode)}
-        disabled={!record?.stcode}
+        disabled={
+          !record?.stcode || formDetail.doc_status !== "ยังไม่ได้รับของ"
+        }
       />
     ) : null;
   };
@@ -313,11 +333,7 @@ function PurchaseOrderManage() {
         </Row>
         <Row gutter={[8, 8]} className="m-0">
           <Col xs={24} sm={24} md={6} lg={6}>
-            <Form.Item
-              label="วันที่นัดส่งของ"
-              name="deldate"
-              className="!m-0"
-            >
+            <Form.Item label="วันที่นัดส่งของ" name="deldate" className="!m-0">
               <DatePicker
                 size="large"
                 placeholder="วันที่นัดส่งของ."
@@ -334,16 +350,16 @@ function PurchaseOrderManage() {
               rules={[{ required: true, message: "Please input your data!" }]}
             >
               <Select
-                    style={{ height: 40 }}
-                    options={[
-                      { value: "เงินสด", label: "เงินสด" },
-                      { value: "30 วัน", label: "30 วัน" },
-                      { value: "45 วัน", label: "45 วัน" },
-                      { value: "60 วัน", label: "60 วัน" },
-                      { value: "90 วัน", label: "90 วัน" },
-                      { value: "120 วัน", label: "120 วัน" },
-                    ]}
-                  />
+                style={{ height: 40 }}
+                options={[
+                  { value: "เงินสด", label: "เงินสด" },
+                  { value: "30 วัน", label: "30 วัน" },
+                  { value: "45 วัน", label: "45 วัน" },
+                  { value: "60 วัน", label: "60 วัน" },
+                  { value: "90 วัน", label: "90 วัน" },
+                  { value: "120 วัน", label: "120 วัน" },
+                ]}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={6} lg={6}>
@@ -351,7 +367,14 @@ function PurchaseOrderManage() {
               <Input placeholder="ใบเสนอราคา" />
             </Form.Item>
           </Col>
-          
+          <Col xs={24} sm={24} md={4} lg={4}>
+            <Form.Item label="Vat" name="vat">
+              <Radio.Group>
+                <Radio value={"7"}>มี Vat</Radio>
+                <Radio value={"0"}>ไม่มี Vat</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </Col>
         </Row>
       </Space>
     </>
@@ -376,7 +399,7 @@ function PurchaseOrderManage() {
             }}
             disabled={formDetail.doc_status !== "ยังไม่ได้รับของ"}
           >
-            เลือกสินค้า
+            Choose Product
           </Button>
         </Flex>
       </Col>
@@ -407,7 +430,7 @@ function PurchaseOrderManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={9}
+                        colSpan={8}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -429,7 +452,7 @@ function PurchaseOrderManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={8}
+                        colSpan={7}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -474,7 +497,7 @@ function PurchaseOrderManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={9}
+                        colSpan={8}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -531,6 +554,25 @@ function PurchaseOrderManage() {
       </Col>
       <Col span={12} style={{ paddingInline: 0 }}>
         <Flex gap={4} justify="end">
+          {(formDetail.doc_status === "ยังไม่ได้รับของ"&&config?.action !== "create")&&
+          <Popconfirm 
+          placement="topRight"
+          title="ยืนยันการยกเลิก"  
+          description="คุณแน่ใจที่จะยกเลิกใบสั่งซื้อ?"
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          onConfirm={() => handleCancel()}
+        >
+          <Button
+            className="bn-center justify-center"
+            icon={<CloseCircleFilledIcon style={{ fontSize: "1rem" }} />}
+            type="primary"
+            style={{ width: "9.5rem" }}
+            danger
+          >
+            ยกเลิกใบสั่งซื้อ
+          </Button>
+        </Popconfirm>
+          }
           <Button
             className="bn-center justify-center"
             icon={<SaveFilled style={{ fontSize: "1rem" }} />}
@@ -543,21 +585,6 @@ function PurchaseOrderManage() {
           >
             Save
           </Button>
-        </Flex>
-      </Col>
-      <Col span={12} style={{ paddingInline: 0 }}>
-        <Flex gap={4} justify="end">
-          {!!formDetail.quotcode && (
-            <Button
-              icon={<LuPrinter />}
-              onClick={() => {
-                handlePrint();
-              }}
-              className="bn-center !bg-orange-400 !text-white !border-transparent"
-            >
-              PRINT QUOTATION{" "}
-            </Button>
-          )}
         </Flex>
       </Col>
     </Row>
@@ -657,7 +684,7 @@ function PurchaseOrderManage() {
                   <Card style={{ backgroundColor: "#f0f0f0" }}>
                     {SectionProduct}
                   </Card>
-                </Col>                
+                </Col>
               </Row>
             </Card>
           </Form>

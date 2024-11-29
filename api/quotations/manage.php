@@ -173,38 +173,76 @@ try {
         $conn->commit();
         http_response_code(200);
         echo json_encode(array("status"=> 1));
-    } else  if($_SERVER["REQUEST_METHOD"] == "GET"){
-        $code = $_GET["code"]; 
-        $sql = "SELECT a.qtcode,a.qtdate,a.cuscode,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
-        ,c.zipcode,c.contact,c.tel,c.fax,a.payment,a.payment_term,a.total_price,a.vat,a.grand_total_price,a.remark ";
-        $sql .= " FROM `qtmaster` as a ";
-        $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";
-        $sql .= " where a.qtcode = :code";
+    } else  if($_SERVER["REQUEST_METHOD"] == "GET")
+    $code = $_GET["code"]; 
+    $sql = "SELECT a.qtcode,a.qtdate,a.cuscode,a.vat,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
+    ,c.zipcode,c.contact,c.tel,c.fax,a.payment,a.payment_term,a.deldate,a.total_price,a.remark,a.doc_status ";
+    $sql .= " FROM `qtmaster` as a ";
+    $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";
+    $sql .= " where a.qtcode = :code";
 
-        $stmt = $conn->prepare($sql); 
-        if (!$stmt->execute([ 'code' => $code ])){
-            $error = $conn->errorInfo(); 
-            http_response_code(404);
-            throw new PDOException("Geting data error => $error");
-        }
-        $header = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $sql = "SELECT a.qtcode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname, k.kind_name  ";
-        $sql .= " FROM `qtdetail` as a inner join `items` as i on (a.stcode=i.stcode) left outer join kind k on (i.kind_code=k.kind_code) ";        
-        $sql .= " where a.qtcode = :code";
-        
-        $stmt = $conn->prepare($sql); 
-        if (!$stmt->execute([ 'code' => $code ])){
-            $error = $conn->errorInfo(); 
-            http_response_code(404);
-            throw new PDOException("Geting data error => $error");
-        }
-        $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $conn->commit();
-        http_response_code(200);
-        echo json_encode(array('status' => 1, 'data' => array( "header" => $header, "detail" => $detail )));
+    $stmt = $conn->prepare($sql); 
+    if (!$stmt->execute([ 'code' => $code ])){
+        $error = $conn->errorInfo(); 
+        http_response_code(404);
+        throw new PDOException("Geting data error => $error");
     }
+    $header = $stmt->fetch(PDO::FETCH_ASSOC);
+    $sql = "SELECT a.qtcode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname,s.amtprice as cost ";
+    $sql .= " FROM `qtdetail` as a inner join `items` as i on (a.stcode=i.stcode) left outer join items_stock as s on (i.stcode=s.stcode)   ";        
+    $sql .= " where a.qtcode = :code";
+    
+    $stmt = $conn->prepare($sql); 
+    if (!$stmt->execute([ 'code' => $code ])){
+        $error = $conn->errorInfo(); 
+        http_response_code(404);
+        throw new PDOException("Geting data error => $error");
+    }
+    $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $dataArray = array();
+    //$dataFile = array();
+    foreach ($detail as $row) {
+        $nestedObject = new stdClass();
+        $nestedObject->stcode = $row['stcode'];
+        $nestedObject->stname = $row['stname'];
+        $nestedObject->price = $row['price'];
+        $nestedObject->unit = $row['unit'];
+        $nestedObject->qty = $row['qty']; 
+        $nestedObject->discount = $row['discount'];   
+        $nestedObject->cost = $row['cost'];           
+            
+        //echo $row['prod_id'];
+        $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
+        $stmt2->execute();
+        if ($stmt2->rowCount() > 0) {
+            $dataFile = array();
+            while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                // $dataFile[] = $row2['file_name'];
+                $nestedObject->img_id = $row2['img_id'];
+                $nestedObject->uid = $row2['uid'];
+                // $nestedObject->name = $row2['name'];
+                $nestedObject->file_name = $row2['file_name'];
+            }
+        } else {
+            $nestedObject->file = [];
+            $nestedObject->file_name = null;
+        }
+        $dataArray[] = $nestedObject;
+    }
+
+    $apiResponse = array(
+        "status" => "1",
+        "message" => "Get Product Quotation",
+        "header" => $header,
+        "detail" => $dataArray,
+        // "sql" => $sql,
+        
+    );
+
+    $conn->commit();
+    http_response_code(200);
+    echo json_encode($apiResponse);
 
 } catch (PDOException $e) { 
     $conn->rollback();
