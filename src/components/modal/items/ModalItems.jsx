@@ -55,6 +55,7 @@ export default function ModalItems({show, close, values, selected}) {
         {
             stcode:m.stcode,
             stname:m.stname,
+            kind_name:m.kind_name,
             price: Number(m?.price || 0),
             qty: 1,
             unit:m.unit,

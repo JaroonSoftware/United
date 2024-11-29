@@ -13,8 +13,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         if ($p == 'items') {
             ////ใช้เปิดPO
             $sql = "
-			select i.*, UUID() `key`
+			select i.*, k.kind_name
             from items i
+            left outer join kind k on (i.kind_code=k.kind_code)
             where 1 = 1 and i.active_status = 'Y'
             $type_code";
 
@@ -31,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $nestedObject->price = $row['price'];
                 $nestedObject->unit = $row['unit'];
                 $nestedObject->qty = $row['qty'];
-                $nestedObject->active_status = $row['active_status'];
+                $nestedObject->kind_name = $row['kind_name'];
                 //echo $row['prod_id'];
                 $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
                 $stmt2->execute();
@@ -63,11 +64,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             echo json_encode($apiResponse);
         } else if($p == 'po'){
             $sql = "
-			SELECT a.code,a.pocode, a.stcode,i.stname, a.qty, a.price, a.unit, a.discount, a.recamount
+			SELECT a.code,a.pocode, a.stcode,i.stname, a.qty, a.price, a.unit, a.discount, a.recamount, k.kind_name
             FROM podetail a 
             inner join pomaster b on (a.pocode=b.pocode)
             inner join items i on (a.stcode=i.stcode)
-            where b.supcode= '$supcode' and b.active_status = 'Y' and b.doc_status != 'รับของครบแล้ว' and a.qty>IF(a.recamount IS NULL,0,a.recamount) "; 
+            left outer join kind k on (i.kind_code=k.kind_code)
+            where b.supcode= '$supcode' and b.doc_status != 'รับของครบแล้ว' and a.qty>IF(a.recamount IS NULL,0,a.recamount) "; 
 
             $stmt = $conn->prepare($sql); 
             $stmt->execute();
@@ -85,6 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $nestedObject->qty = $row['qty'];
                 $nestedObject->recamount = $row['recamount'];
                 $nestedObject->pocode = $row['pocode'];
+                $nestedObject->kind_name = $row['kind_name'];
                 //echo $row['prod_id'];
                 $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
                 $stmt2->execute();

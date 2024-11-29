@@ -220,7 +220,7 @@ function GoodsReceiptManage() {
   const handleClose = async () => {
     navigate(gotoFrom, { replace: true });
     await delay(300);
-    console.clear();
+    // console.clear();
   };
 
 
@@ -240,8 +240,8 @@ function GoodsReceiptManage() {
         icon={
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
-        onClick={() => handleDelete(record?.stcode)}
-        disabled={!record?.stcode}
+        onClick={() => handleDelete(record?.code)}
+        disabled={!record?.code}
       />
     ) : null;
   };

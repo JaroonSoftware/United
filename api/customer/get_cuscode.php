@@ -6,13 +6,13 @@ $conn = $db->connect();
 
 if ($_SERVER["REQUEST_METHOD"] == "GET"){
     extract($_GET, EXTR_OVERWRITE, "_"); 
-    // $type_code = !empty($type) ? "and i.typecode = '$type'" : "";
+    $type_code = !empty($type) ? "and i.typecode = '$type'" : "";
     try {  
         $sql = "SELECT number as cuscode FROM `cuscode` ";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
-        $code = sprintf("CS%06s", ( intval($res["cuscode"]) + 1) );
+        $code = sprintf("C%06s", ( intval($res["cuscode"])) );
 
         http_response_code(200);
         echo json_encode(array("data"=>$code));

@@ -189,8 +189,8 @@ try {
         }
         $header = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.qtcode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname ";
-        $sql .= " FROM `qtdetail` as a inner join `items` as i on (a.stcode=i.stcode)  ";        
+        $sql = "SELECT a.qtcode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname, k.kind_name  ";
+        $sql .= " FROM `qtdetail` as a inner join `items` as i on (a.stcode=i.stcode) left outer join kind k on (i.kind_code=k.kind_code) ";        
         $sql .= " where a.qtcode = :code";
         
         $stmt = $conn->prepare($sql); 

@@ -374,8 +374,9 @@ function PurchaseOrderManage() {
             onClick={() => {
               setOpenProduct(true);
             }}
+            disabled={formDetail.doc_status !== "ยังไม่ได้รับของ"}
           >
-            Choose Product
+            เลือกสินค้า
           </Button>
         </Flex>
       </Col>
@@ -406,7 +407,7 @@ function PurchaseOrderManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={8}
+                        colSpan={9}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -428,7 +429,7 @@ function PurchaseOrderManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={7}
+                        colSpan={8}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -473,7 +474,7 @@ function PurchaseOrderManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={8}
+                        colSpan={9}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -538,6 +539,7 @@ function PurchaseOrderManage() {
             onClick={() => {
               handleConfirm();
             }}
+            disabled={formDetail.doc_status !== "ยังไม่ได้รับของ"}
           >
             Save
           </Button>
@@ -581,6 +583,7 @@ function PurchaseOrderManage() {
             onClick={() => {
               handleConfirm();
             }}
+            disabled={formDetail.doc_status !== "ยังไม่ได้รับของ"}
           >
             Save
           </Button>

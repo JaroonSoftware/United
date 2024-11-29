@@ -202,7 +202,7 @@ const CustomerManage = () => {
         </Form.Item>
       </Col>
       <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
-        <Form.Item label="ประเภทลูกค้า" name="cus_type">
+        <Form.Item label="ประเภทลูกค้า" name="cus_type" rules={[{ required: true, message: "กรุณากรอกข้อมูล!" }]}>
           <Select
             size="large"
             placeholder="เลือกประเภทลูกค้า"
@@ -210,13 +210,13 @@ const CustomerManage = () => {
             filterOption={filterOption}
             options={[
               {
-                value: "ลูกค้าทั่วไป",
-                label: "ลูกค้าทั่วไป",
-              },
-              {
                 value: "ลูกค้าประกัน",
                 label: "ลูกค้าประกัน",
               },
+              {
+                value: "ลูกค้าทั่วไป",
+                label: "ลูกค้าทั่วไป",
+              },              
             ]}
           ></Select>
         </Form.Item>

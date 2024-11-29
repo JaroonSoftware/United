@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         from pomaster a        
         left join supplier c on a.supcode = c.supcode        
         left join user u on a.created_by = u.code
-        where 1 = 1 and a.active_status = 'Y'
+        where 1 = 1 
         $pocode
         $supcode
         $supname

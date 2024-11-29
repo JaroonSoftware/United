@@ -17,7 +17,7 @@ export const columns = ()=>{
       align: "center",
       render: (im, rec) => 
         {
-          const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/Logo-AI.png`
+          const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/logo.png`
           );
           return <>
           <Image

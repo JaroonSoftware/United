@@ -116,7 +116,7 @@ export const productColumn = ({handleRemove},optionsItems) => [
     align: "center",
     render: (im, rec) => 
       {
-        const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/Logo-AI.png`
+        const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/logo.png`
         );
         return <>
         <Image
@@ -150,6 +150,14 @@ export const productColumn = ({handleRemove},optionsItems) => [
     align: "left", 
     render: (_, rec) => rec.stname,
   },
+  {
+    title: "ชนิดสินค้า",
+    dataIndex: "kind_name",
+    key: "kind_name", 
+    align: "center", 
+    width: "6%",
+    render: (_, rec) => rec.kind_name,
+  },  
   {
     title: "ราคาต่อหน่วย",
     dataIndex: "price",

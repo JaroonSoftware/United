@@ -114,14 +114,14 @@ export const productColumn = ({handleRemove},optionsItems) => [
     render: (im, rc, index) => <>{index + 1}</>,
   },
   {
-    title: "ยี่ห้อ/รูปประกอบ",
+    title: "รูปประกอบ",
     dataIndex: "file",
     key: "file",
     width: 120,
     align: "center",
     render: (im, rec) => 
       {
-        const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/Logo-AI.png`
+        const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/logo.png`
         );
         return <>
         <Typography.Text>
@@ -145,14 +145,13 @@ export const productColumn = ({handleRemove},optionsItems) => [
     align: "left",
   },
   {
-    title: "ชื่อรายละเอียด",
-    dataIndex: "purdetail",
-    key: "purdetail", 
-    align: "left", 
-    render: (_, rec) => <Typography.Text>
-    {rec.stnameEN}<br></br>{rec.st_add_on}
-    </Typography.Text>,
-  }, 
+    title: "ชนิดสินค้า",
+    dataIndex: "kind_name",
+    key: "kind_name", 
+    align: "center", 
+    width: "6%",
+    render: (_, rec) => rec.kind_name,
+  },  
   {
     title: "จำนวน",
     dataIndex: "qty",
