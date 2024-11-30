@@ -8,6 +8,7 @@ import { TbReportMoney } from "react-icons/tb";
 import { IoLogoModelS } from "react-icons/io";
 import { GiDatabase } from "react-icons/gi";
 import { TiThLarge } from "react-icons/ti";
+import { TfiTruck } from "react-icons/tfi";
 import { BsShop } from "react-icons/bs";
 
 let _nav = [
@@ -34,6 +35,11 @@ let _nav = [
     title: "ใบขายสินค้า",
     icon: <ReconciliationFilled className="nav-ico" />,
     to: "/sales-order",
+  },
+  {
+    title: "ใบส่งของ",
+    icon: <TfiTruck className="nav-ico" />,
+    to: "/delivery-note",
   },
   {
     title: "ข้อมูลลูกค้า",
