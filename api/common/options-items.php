@@ -117,6 +117,61 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
             http_response_code(200);
             echo json_encode($apiResponse);
+        }else if($p == 'so'){
+            $sql = "
+			SELECT a.code,a.pocode, a.stcode,i.stname, a.qty, a.price, a.unit, a.discount, a.recamount, k.kind_name
+            FROM podetail a 
+            inner join pomaster b on (a.pocode=b.pocode)
+            inner join items i on (a.stcode=i.stcode)
+            left outer join kind k on (i.kind_code=k.kind_code)
+            where b.supcode= '$supcode' and b.doc_status != 'รับของครบแล้ว' and a.qty>IF(a.recamount IS NULL,0,a.recamount) "; 
+
+            $stmt = $conn->prepare($sql); 
+            $stmt->execute();
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $dataArray = array();
+            //$dataFile = array();
+            foreach ($data as $row) {
+                $nestedObject = new stdClass();
+                $nestedObject->code = $row['code'];
+                $nestedObject->stcode = $row['stcode'];
+                $nestedObject->stname = $row['stname'];
+                $nestedObject->price = $row['price'];
+                $nestedObject->unit = $row['unit'];
+                $nestedObject->qty = $row['qty'];
+                $nestedObject->recamount = $row['recamount'];
+                $nestedObject->pocode = $row['pocode'];
+                $nestedObject->kind_name = $row['kind_name'];
+                //echo $row['prod_id'];
+                $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
+                $stmt2->execute();
+                if ($stmt2->rowCount() > 0) {
+                    $dataFile = array();
+                    while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                        // $dataFile[] = $row2['file_name'];
+                        $nestedObject->img_id = $row2['img_id'];
+                        $nestedObject->uid = $row2['uid'];
+                        // $nestedObject->name = $row2['name'];
+                        $nestedObject->file_name = $row2['file_name'];
+                    }
+                } else {
+                    $nestedObject->file = [];
+                    $nestedObject->file_name = null;
+                }
+                $dataArray[] = $nestedObject;
+            }
+
+            $apiResponse = array(
+                "status" => "1",
+                "message" => "Get Product E-commerce",
+                "data" => $dataArray,
+                // "sql" => $sql,
+            );
+
+
+            http_response_code(200);
+            echo json_encode($apiResponse);
         }else if ($p === 'gr' ){
             $sql = "
 			SELECT a.code,a.pocode, a.stcode,i.stname, a.qty, a.price, a.unit, a.discount, a.recamount
