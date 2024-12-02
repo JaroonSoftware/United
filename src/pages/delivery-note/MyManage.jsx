@@ -8,16 +8,16 @@ import {
   Table,
   Typography,
   message,
+  Modal,
 } from "antd";
 import { Card, Col, Divider, Flex, Row, Space } from "antd";
-
 import OptionService from "../../service/Options.service";
-import DeliveryNoteService from '../../service/DeliveryNote.service';
+import DeliveryNoteService from "../../service/DeliveryNote.service";
 // import QuotationService from "../../service/Quotation.service";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, SaveFilled } from "@ant-design/icons";
 import ModalCustomers from "../../components/modal/customers/ModalCustomers";
 // import ModalQuotation from "../../components/modal/quotation/MyModal";
-// import { ModalItems } from "../../components/modal/items/modal-items";
+import { ModalItems } from "../../components/modal/items/modal-items";
 
 import {
   DEFALUT_CHECK_DELIVERY,
@@ -26,22 +26,20 @@ import {
 } from "./model";
 
 import dayjs from "dayjs";
-import { comma } from "../../utils/util";
+import { delay,comma } from "../../utils/util";
 import { ButtonBack } from "../../components/button";
-import { useLocation } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
 import { RiDeleteBin5Line } from "react-icons/ri";
-// import { LuPackageSearch } from "react-icons/lu";
-import { LuPrinter } from "react-icons/lu";
+import { LuPackageSearch } from "react-icons/lu";
 const opservice = OptionService();
 const dnservice = DeliveryNoteService();
 // const qtservice = QuotationService();
 
 const gotoFrom = "/delivery-note";
-const dateFormat = 'DD/MM/YYYY';
+const dateFormat = "DD/MM/YYYY";
 
 function InvoiceManage() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const { config } = location.state || { config: null };
@@ -49,7 +47,7 @@ function InvoiceManage() {
 
   /** Modal handle */
   const [openCustomers, setOpenCustomers] = useState(false);
-  // const [openProduct, setOpenProduct] = useState(false);
+  const [openProduct, setOpenProduct] = useState(false);
   // const [openQuotation, setOpenQuotation] = useState(false);
 
   /** Invoice state */
@@ -76,16 +74,20 @@ function InvoiceManage() {
         const {
           data: { header, detail },
         } = res.data;
-        const { dncode, dndate,deldate } = header;
+        const { dncode, dndate, deldate } = header;
         setFormDetail(header);
         setListDetail(detail);
         setDNCode(dncode);
-        form.setFieldsValue({ ...header, dndate: dayjs(dndate), deldate: dayjs(deldate) });
+        form.setFieldsValue({
+          ...header,
+          dndate: dayjs(dndate),
+          deldate: dayjs(deldate),
+        });
 
         // setTimeout( () => {  handleCalculatePrice(head?.valid_price_until, head?.dated_price_until) }, 200);
         // handleChoosedCustomers(head);
-      } 
-      
+      }
+
       const [unitOprionRes] = await Promise.all([
         opservice.optionsUnit({ p: "unit-option" }),
       ]);
@@ -104,17 +106,15 @@ function InvoiceManage() {
   const handleSummaryPrice = () => {
     const newData = [...listDetail];
 
-    const total_weight = newData.reduce(
-      (a, v) =>
-        (a +=
-          Number(v.unit_weight || 0) ),
+    const price = newData.reduce(
+      (a, v) => (a += Number(v.price || 0)),
       0
     );
     // console.log(total_weight)
     // const total_weight += newData.qty;
     setFormDetail(() => ({
       ...formDetail,
-      total_weight,
+      price,
     }));
     // console.log(formDetail)
   };
@@ -130,7 +130,7 @@ function InvoiceManage() {
     form.setFieldValue("dated_price_until", nDateFormet);
   };
 
-  const handleQuotDate = (e) => {
+  const handleDNDate = (e) => {
     const { valid_price_until } = form.getFieldsValue();
     if (!!valid_price_until && !!e) {
       handleCalculatePrice(valid_price_until || 0, e || new Date());
@@ -166,11 +166,6 @@ function InvoiceManage() {
     setFormDetail((state) => ({ ...state, ...customers }));
     form.setFieldsValue({ ...fvalue, ...customers });
     // setListDetail([]);
-  };
-
-  const handlePrint = () => {
-    const newWindow = window.open("", "_blank");
-    newWindow.location.href = `/quo-print/${formDetail.quotcode}`;
   };
 
   const handleDelete = (stcode) => {
@@ -222,7 +217,7 @@ function InvoiceManage() {
   const SectionCustomers = (
     <>
       <Space size="small" direction="vertical" className="flex gap-2">
-        <Row gutter={[8, 8]} className="m-0">          
+        <Row gutter={[8, 8]} className="m-0">
           <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item
               name="cuscode"
@@ -239,12 +234,16 @@ function InvoiceManage() {
                   value={formDetail.cuscode}
                   className="!bg-white"
                 />
-                {config?.action !== "create" ? '' : <Button
-                  type="primary"
-                  icon={<SearchOutlined />}
-                  onClick={() => setOpenCustomers(true)}
-                  style={{ minWidth: 40 }}
-                ></Button>}                
+                {config?.action !== "create" ? (
+                  ""
+                ) : (
+                  <Button
+                    type="primary"
+                    icon={<SearchOutlined />}
+                    onClick={() => setOpenCustomers(true)}
+                    style={{ minWidth: 40 }}
+                  ></Button>
+                )}
               </Space.Compact>
             </Form.Item>
           </Col>
@@ -275,11 +274,11 @@ function InvoiceManage() {
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายการสินค้า
+            รายการใบขายสินค้า
           </Typography.Title>
         </Flex>
       </Col>
-      {/* <Col span={12} style={{ paddingInline: 0 }}>
+      <Col span={12} style={{ paddingInline: 0 }}>
         <Flex justify="end">
           <Button
             icon={<LuPackageSearch style={{ fontSize: "1.2rem" }} />}
@@ -291,7 +290,7 @@ function InvoiceManage() {
             Choose Product
           </Button>
         </Flex>
-      </Col> */}
+      </Col>
     </Flex>
   );
 
@@ -306,7 +305,7 @@ function InvoiceManage() {
           dataSource={listDetail}
           columns={prodcolumns}
           pagination={false}
-          rowKey="stcode"
+          rowKey="socode"
           scroll={{ x: "max-content" }}
           locale={{
             emptyText: <span>No data available, please add some data.</span>,
@@ -324,23 +323,20 @@ function InvoiceManage() {
                       <Table.Summary.Cell
                         index={4}
                         align="end"
-                        colSpan={3}
+                        colSpan={4}
                         className="!pe-4"
                       >
-                        น้ำหนักรวม
+                      ราคารวม
                       </Table.Summary.Cell>
                       <Table.Summary.Cell
                         className="!pe-4 text-end border-right-0"
                         style={{ borderRigth: "0px solid" }}
+                        colSpan={2}
                       >
                         <Typography.Text type="danger">
-                          {comma(Number(formDetail?.total_weight || 0),2,2)}
+                          {comma(Number(formDetail?.price || 0), 2, 2)}
                         </Typography.Text>
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell
-                        index={0}
-                        colSpan={2}
-                      ></Table.Summary.Cell>
                     </Table.Summary.Row>
                   </>
                 )}
@@ -351,7 +347,53 @@ function InvoiceManage() {
       </Flex>
     </>
   );
+  const handleConfirm = () => {
+    form
+      .validateFields()
+      .then((v) => {
+        if (listDetail.length < 1) throw new Error("กรุณาเพิ่ม รายการขาย");
 
+        const header = {
+          ...formDetail,
+          sodate: dayjs(form.getFieldValue("sodate")).format("YYYY-MM-DD"),
+          claim_no: form.getFieldValue("claim_no"),
+          require_no: form.getFieldValue("require_no"),
+          car_engineno: form.getFieldValue("car_engineno"),
+          car_model_code: form.getFieldValue("car_model_code"),
+          car_no: form.getFieldValue("car_no"),
+          remark: form.getFieldValue("remark"),
+        };
+
+        const detail = listDetail;
+        // console.log(formDetail);
+        const parm = { header, detail };
+        // console.log(parm);
+
+        const actions =
+          config?.action !== "create" ? dnservice.update : dnservice.create;
+        actions(parm)
+          .then((r) => {
+            handleClose().then((r) => {
+              message.success("Request SaleOrder success.");
+            });
+          })
+          .catch((err) => {
+            message.error("Request SaleOrder fail.");
+            console.warn(err);
+          });
+      })
+      .catch((err) => {
+        Modal.error({
+          title: "This is an error message",
+          content: "Please enter require data",
+        });
+      });
+  };
+  const handleClose = async () => {
+    navigate(gotoFrom, { replace: true });
+    await delay(300);
+    console.clear();
+  };
   ///** button */
 
   const SectionTop = (
@@ -364,28 +406,54 @@ function InvoiceManage() {
           <ButtonBack target={gotoFrom} />
         </Flex>
       </Col>
-      <Col span={12} style={{ paddingInline: 0 }}>
+      <Col span={12} className="p-0">
         <Flex gap={4} justify="end">
-          {!!formDetail.ivcod && (
-            <Button
-              icon={<LuPrinter />}
-              onClick={() => {
-                handlePrint();
-              }}
-              className="bn-center !bg-orange-400 !text-white !border-transparent"
-            >
-              PRINT QUOTATION{" "}
-            </Button>
-          )}
+          <Button
+            className="bn-center justify-center"
+            icon={<SaveFilled style={{ fontSize: "1rem" }} />}
+            type="primary"
+            style={{ width: "9.5rem", marginLeft: "10px" }}
+            onClick={() => {
+              handleConfirm();
+            }}
+          >
+            Save
+          </Button>
+        </Flex>
+      </Col>
+    </Row>
+  );
+  const SectionBottom = (
+    <Row
+      gutter={[{ xs: 32, sm: 32, md: 32, lg: 12, xl: 12 }, 8]}
+      className="m-0"
+    >
+      <Col span={12} className="p-0">
+        <Flex gap={4} justify="start">
+          <ButtonBack target={gotoFrom} />
+        </Flex>
+      </Col>
+      <Col span={12} className="p-0">
+        <Flex gap={4} justify="end">
+          <Button
+            className="bn-center justify-center"
+            icon={<SaveFilled style={{ fontSize: "1rem" }} />}
+            type="primary"
+            style={{ width: "9.5rem", marginLeft: "10px" }}
+            onClick={() => {
+              handleConfirm();
+            }}
+          >
+            Save
+          </Button>
         </Flex>
       </Col>
     </Row>
   );
 
-
   return (
-    <div className="goodsreceipt-manage">
-      <div id="goodsreceipt-manage" className="px-0 sm:px-0 md:px-8 lg:px-8">
+    <div className="dn-manage">
+      <div id="dn-manage" className="px-0 sm:px-0 md:px-8 lg:px-8">
         <Space direction="vertical" className="flex gap-4">
           {SectionTop}
           <Form
@@ -416,7 +484,7 @@ function InvoiceManage() {
                           <DatePicker
                             className="input-40"
                             allowClear={false}
-                            onChange={handleQuotDate}
+                            onChange={handleDNDate}
                             format={dateFormat}
                           />
                         </Form.Item>
@@ -445,8 +513,9 @@ function InvoiceManage() {
               </Row>
             </Card>
           </Form>
-          {/* {SectionBottom} */}
+          {SectionBottom}
         </Space>
+
       </div>
 
       {openCustomers && (
@@ -469,16 +538,16 @@ function InvoiceManage() {
         ></ModalQuotation>
       )} */}
 
-      {/* {openProduct && (
+      {openProduct && (
         <ModalItems
           show={openProduct}
           close={() => setOpenProduct(false)}
           values={(v) => {
-            handleItemsChoosed(v);
+            // handleItemsChoosed(v);
           }}
           selected={listDetail}
         ></ModalItems>
-      )} */}
+      )}
     </div>
   );
 }
