@@ -5,6 +5,7 @@ import TagQuotationStatus from "./tags-quotation-status/TagQuotationStatus"
 import TagItemTypes from "./tags-item-type/TagItemTypes"
 import TagActiveStatus from "./tags-active-status/TagActiveStatus"
 import TagsCreateBy from "./tags-created-by/TagsCreateBy"
+import TagReceiptStatus from "./tags-goods-receipt-status/TagGoodsReceiptStatus"
 
 export { 
     TagPurchaseOrderStatus, 
@@ -14,4 +15,5 @@ export {
     TagActiveStatus,
     TagSalesOrderStatus,
     TagsCreateBy,
+    TagReceiptStatus,
 }

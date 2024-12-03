@@ -1,5 +1,14 @@
-import { FileTextFilled,ReconciliationFilled,FileDoneOutlined,} from "@ant-design/icons";
-import { FaUserCircle, FaWarehouse, FaTag, FaMapMarkedAlt  } from "react-icons/fa";
+import {
+  FileTextFilled,
+  ReconciliationFilled,
+  FileDoneOutlined,
+} from "@ant-design/icons";
+import {
+  FaUserCircle,
+  FaWarehouse,
+  FaTag,
+  FaMapMarkedAlt,
+} from "react-icons/fa";
 import { RiTeamFill, RiBox3Fill } from "react-icons/ri";
 import { MdOutlineDashboard } from "react-icons/md";
 import { PiCodepenLogoBold } from "react-icons/pi";
@@ -40,6 +49,11 @@ let _nav = [
     title: "ใบส่งของ",
     icon: <TfiTruck className="nav-ico" />,
     to: "/delivery-note",
+  },
+  {
+    title: "ใบเสร็จรับเงิน",
+    icon: <TbReportMoney className="nav-ico" />,
+    to: "/receipt",
   },
   {
     title: "ข้อมูลลูกค้า",
@@ -91,7 +105,7 @@ let _nav = [
   },
   {
     title: "เขตขนส่ง",
-    icon: <FaMapMarkedAlt  className="nav-ico" />,
+    icon: <FaMapMarkedAlt className="nav-ico" />,
     to: "/county",
   },
   {
@@ -123,12 +137,6 @@ let _nav = [
   {
     title: "กำลังปรับปรุง",
     type: "group",
-  },
-  {
-    title: "ใบเสร็จรับเงิน",
-    icon: <TbReportMoney className="nav-ico" />,
-    to: "/1",
-    // to: "/receipt",
   },
 ];
 

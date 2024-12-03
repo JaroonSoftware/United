@@ -19,7 +19,7 @@ import { SaveFilled, SearchOutlined } from "@ant-design/icons";
 import ModalCustomers from "../../components/modal/customers/ModalCustomers";
 
 import {
-  quotationForm,
+  // quotationForm,
   columnsParametersEditable,
   componentsEditable,
 } from "./model";
@@ -54,7 +54,7 @@ function QuotationManage() {
   /** Detail Data State */
   const [listDetail, setListDetail] = useState([]);
 
-  const [formDetail, setFormDetail] = useState(quotationForm);
+  const [formDetail, setFormDetail] = useState();
 
   const cardStyle = {
     backgroundColor: "#f0f0f0",
