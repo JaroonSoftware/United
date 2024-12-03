@@ -17,7 +17,7 @@ import DeliveryNoteService from "../../service/DeliveryNote.service";
 import { SearchOutlined, SaveFilled } from "@ant-design/icons";
 import ModalCustomers from "../../components/modal/customers/ModalCustomers";
 // import ModalQuotation from "../../components/modal/quotation/MyModal";
-import { ModalItems } from "../../components/modal/items/modal-items";
+import { ModalItems } from "../../components/modal/SO/modal-items";
 
 import {
   DEFALUT_CHECK_DELIVERY,
@@ -83,9 +83,26 @@ function InvoiceManage() {
           dndate: dayjs(dndate),
           deldate: dayjs(deldate),
         });
-
-        // setTimeout( () => {  handleCalculatePrice(head?.valid_price_until, head?.dated_price_until) }, 200);
+      console.log(dncode)
+        // setTimeout( () => {  handleCalculatePrice(head?.valid_grand_total_price_until, head?.dated_grand_total_price_until) }, 200);
         // handleChoosedCustomers(head);
+      }
+      else {
+        const { data: code } = (
+          await dnservice.code().catch((e) => {
+            message.error("get Quotation code fail.");
+          })
+        ).data;
+        setDNCode(code);
+        const ininteial_value = {
+          ...formDetail,
+          dncode: code,
+          dndate: dayjs(new Date()),
+          // doc_status:"กำลังรอดำเนินการ",
+        };
+        // console.log(ininteial_value);
+        setFormDetail(ininteial_value);
+        form.setFieldsValue(ininteial_value);
       }
 
       const [unitOprionRes] = await Promise.all([
@@ -106,15 +123,15 @@ function InvoiceManage() {
   const handleSummaryPrice = () => {
     const newData = [...listDetail];
 
-    const price = newData.reduce(
-      (a, v) => (a += Number(v.price || 0)),
+    const grand_total_price = newData.reduce(
+      (a, v) => (a += Number(v.grand_total_price || 0)),
       0
     );
     // console.log(total_weight)
     // const total_weight += newData.qty;
     setFormDetail(() => ({
       ...formDetail,
-      price,
+      grand_total_price,
     }));
     // console.log(formDetail)
   };
@@ -126,14 +143,14 @@ function InvoiceManage() {
     );
     const nDateFormet = newDateAfterAdding.format("YYYY-MM-DD");
 
-    setFormDetail((state) => ({ ...state, dated_price_until: nDateFormet }));
-    form.setFieldValue("dated_price_until", nDateFormet);
+    setFormDetail((state) => ({ ...state, dated_grand_total_price_until: nDateFormet }));
+    form.setFieldValue("dated_grand_total_price_until", nDateFormet);
   };
 
   const handleDNDate = (e) => {
-    const { valid_price_until } = form.getFieldsValue();
-    if (!!valid_price_until && !!e) {
-      handleCalculatePrice(valid_price_until || 0, e || new Date());
+    const { valid_grand_total_price_until } = form.getFieldsValue();
+    if (!!valid_grand_total_price_until && !!e) {
+      handleCalculatePrice(valid_grand_total_price_until || 0, e || new Date());
     }
   };
 
@@ -156,7 +173,7 @@ function InvoiceManage() {
     ];
     const customers = {
       ...val,
-      qtcode: "",
+      dncode: "",
       cusname: cusname.join(""),
       address: addr.join(""),
       contact: val.contact,
@@ -167,10 +184,14 @@ function InvoiceManage() {
     form.setFieldsValue({ ...fvalue, ...customers });
     // setListDetail([]);
   };
-
-  const handleDelete = (stcode) => {
+  const handleSOChoosed = (value) => {
+    console.log(value);
+    setListDetail(value);
+    handleSummaryPrice();
+  };
+  const handleDelete = (socode) => {
     const itemDetail = [...listDetail];
-    const newData = itemDetail.filter((item) => item?.stcode !== stcode);
+    const newData = itemDetail.filter((item) => item?.socode !== socode);
     setListDetail([...newData]);
   };
 
@@ -184,8 +205,8 @@ function InvoiceManage() {
         icon={
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
-        onClick={() => handleDelete(record?.stcode)}
-        disabled={!record?.stcode}
+        onClick={() => handleDelete(record?.socode)}
+        disabled={!record?.socode}
       />
     ) : null;
   };
@@ -195,7 +216,7 @@ function InvoiceManage() {
       const itemDetail = [...listDetail];
       const newData = [...itemDetail];
 
-      const ind = newData.findIndex((item) => r?.stcode === item?.stcode);
+      const ind = newData.findIndex((item) => r?.socode === item?.socode);
       if (ind < 0) return itemDetail;
       const item = newData[ind];
       newData.splice(ind, 1, {
@@ -287,7 +308,7 @@ function InvoiceManage() {
               setOpenProduct(true);
             }}
           >
-            Choose Product
+            เลือกใบขายสินค้า
           </Button>
         </Flex>
       </Col>
@@ -323,7 +344,7 @@ function InvoiceManage() {
                       <Table.Summary.Cell
                         index={4}
                         align="end"
-                        colSpan={4}
+                        colSpan={5}
                         className="!pe-4"
                       >
                       ราคารวม
@@ -334,7 +355,7 @@ function InvoiceManage() {
                         colSpan={2}
                       >
                         <Typography.Text type="danger">
-                          {comma(Number(formDetail?.price || 0), 2, 2)}
+                          {comma(Number(formDetail?.grand_total_price || 0), 2, 2)}
                         </Typography.Text>
                       </Table.Summary.Cell>
                     </Table.Summary.Row>
@@ -356,11 +377,6 @@ function InvoiceManage() {
         const header = {
           ...formDetail,
           sodate: dayjs(form.getFieldValue("sodate")).format("YYYY-MM-DD"),
-          claim_no: form.getFieldValue("claim_no"),
-          require_no: form.getFieldValue("require_no"),
-          car_engineno: form.getFieldValue("car_engineno"),
-          car_model_code: form.getFieldValue("car_model_code"),
-          car_no: form.getFieldValue("car_no"),
           remark: form.getFieldValue("remark"),
         };
 
@@ -468,7 +484,7 @@ function InvoiceManage() {
                   <Row className="m-0 py-3 sm:py-0" gutter={[12, 12]}>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                       <Typography.Title level={3} className="m-0">
-                        เลขที่ใบส่งของ : {dnCode}
+                        เลขที่ใบส่งสินค้า : {dnCode}
                       </Typography.Title>
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
@@ -478,7 +494,7 @@ function InvoiceManage() {
                         className="justify-start sm:justify-end"
                       >
                         <Typography.Title level={3} className="m-0">
-                          วันที่ใบส่งของ :{" "}
+                          วันที่ใบส่งสินค้า :{" "}
                         </Typography.Title>
                         <Form.Item name="dndate" className="!m-0">
                           <DatePicker
@@ -498,7 +514,7 @@ function InvoiceManage() {
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
                   <Divider orientation="left" className="!mb-3 !mt-1">
                     {" "}
-                    ข้อมูลใบส่งของ{" "}
+                    ข้อมูลใบส่งสินค้า{" "}
                   </Divider>
                   <Card style={cardStyle}>{SectionCustomers}</Card>
                 </Col>
@@ -543,7 +559,7 @@ function InvoiceManage() {
           show={openProduct}
           close={() => setOpenProduct(false)}
           values={(v) => {
-            // handleItemsChoosed(v);
+            handleSOChoosed(v);
           }}
           selected={listDetail}
         ></ModalItems>

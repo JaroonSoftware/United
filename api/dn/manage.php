@@ -18,16 +18,14 @@ try {
         extract($_POST, EXTR_OVERWRITE, "_");
 
         // var_dump($_POST);
-        $sql = "insert dnmaster (`dncode`,`dncode`,`cuscode`, `dndate`, `cuscode`,`remark`,created_by,updated_by) 
-        values (:dncode,:dncode,:cuscode,:dndate,:cuscode,:remark,:action_user,:action_user)";
+        $sql = "insert dnmaster (`dncode`, `dndate`, `cuscode`,`remark`,created_by,updated_by) 
+        values (:dncode,:dndate,:cuscode,:remark,:action_user,:action_user)";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         $header = (object)$header;
         $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
-        $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
-        $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":dndate", $header->dndate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":remark", $header->remark, PDO::PARAM_STR);
@@ -66,8 +64,8 @@ try {
         $code = $conn->lastInsertId();
         // var_dump($master); exit;
 
-        $sql = "insert into dndetail (dncode,stcode,qty,price,unit)
-        values (:dncode,:stcode,:qty,:price,:unit,)";
+        $sql = "insert into dndetail (dncode,socode,qty,price,unit)
+        values (:dncode,:socode,:qty,:price,:unit,)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -75,7 +73,7 @@ try {
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
             $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
-            $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
+            $stmt->bindParam(":socode", $val->socode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
             $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
             $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
@@ -97,7 +95,6 @@ try {
         $sql = "
         update dnmaster 
         set
-        dncode = :dncode,
         cuscode = :cuscode,
         dndate = :dndate,
         socode = :socode,
@@ -132,8 +129,8 @@ try {
             throw new PDOException("Remove data error => $error");
         }
 
-        $sql = "insert into dndetail (dncode,stcode,unit,qty,price)
-        values (:dncode,:stcode,:unit,:qty,:price)";
+        $sql = "insert into dndetail (dncode,socode)
+        values (:dncode,:socode)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -141,10 +138,8 @@ try {
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
             $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
-            $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
-            $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
-            $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
-            $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
+            $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR);
+        
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();
                 throw new PDOException("Insert data error => $error");
@@ -190,9 +185,10 @@ try {
         }
         $header = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.dncode,a.unit,a.qty,a.price,i.socode,d.cusname";
-        $sql .= " FROM `dndetail` as a inner join `somaster` as i on (a.socode=i.socode) left outer join `customer` as d on (i.cuscode=d.cuscode) ";
-        $sql .= " where a.dncode = :code";
+        $sql = "SELECT a.dncode,a.socode,c.grand_total_price,c.sodate,c.cuscode,d.cusname";
+        $sql .= " FROM `dndetail` as a";
+        $sql .= " inner join `somaster` as c on (a.socode)=(c.socode) left outer join `customer` d on (c.cuscode)=(d.cuscode) ";
+        $sql .= " where dncode = :code";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt->execute(['code' => $code])) {
