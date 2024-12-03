@@ -46,6 +46,16 @@ export const columns = ()=>{
       key: "price",
     },    
     {
+      title: "ส่วนลด(%)",
+      dataIndex: "discount",
+      key: "discount",
+      width: "7%",
+      align: "right",
+      className: "!pe-3",
+      type:'number',
+      render: (_, rec) => <>{ rec?.discount}</>,
+    },
+    {
       title: "หน่วย",
       dataIndex: "unit",
       key: "unit",

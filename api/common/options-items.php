@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             inner join pomaster b on (a.pocode=b.pocode)
             inner join items i on (a.stcode=i.stcode)
             left outer join kind k on (i.kind_code=k.kind_code)
-            where b.supcode= '$supcode' and b.doc_status != 'รับของครบแล้ว' and a.qty>IF(a.recamount IS NULL,0,a.recamount) "; 
+            where b.doc_status != 'รับของครบแล้ว' and a.qty>IF(a.recamount IS NULL,0,a.recamount) "; 
 
             $stmt = $conn->prepare($sql); 
             $stmt->execute();
@@ -85,6 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $nestedObject->price = $row['price'];
                 $nestedObject->unit = $row['unit'];
                 $nestedObject->qty = $row['qty'];
+                $nestedObject->discount = $row['discount'];
                 $nestedObject->recamount = $row['recamount'];
                 $nestedObject->pocode = $row['pocode'];
                 $nestedObject->kind_name = $row['kind_name'];
@@ -119,12 +120,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             echo json_encode($apiResponse);
         }else if($p == 'so'){
             $sql = "
-			SELECT a.code,a.pocode, a.stcode,i.stname, a.qty, a.price, a.unit, a.discount, a.recamount, k.kind_name
-            FROM podetail a 
-            inner join pomaster b on (a.pocode=b.pocode)
+			SELECT a.code,a.socode, a.stcode,i.stname, a.qty, i.buyprice, a.unit, a.discount,IF(a.buyamount IS NULL,0,a.buyamount) as buyamount, k.kind_name
+            FROM sodetail a 
+            inner join somaster b on (a.socode=b.socode)
             inner join items i on (a.stcode=i.stcode)
             left outer join kind k on (i.kind_code=k.kind_code)
-            where b.supcode= '$supcode' and b.doc_status != 'รับของครบแล้ว' and a.qty>IF(a.recamount IS NULL,0,a.recamount) "; 
+            where IF(a.buyamount IS NULL,0,a.buyamount) < a.qty and b.doc_status != 'ยกเลิก' "; 
 
             $stmt = $conn->prepare($sql); 
             $stmt->execute();
@@ -135,13 +136,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             foreach ($data as $row) {
                 $nestedObject = new stdClass();
                 $nestedObject->code = $row['code'];
+                $nestedObject->socode = $row['socode'];
                 $nestedObject->stcode = $row['stcode'];
                 $nestedObject->stname = $row['stname'];
-                $nestedObject->price = $row['price'];
+                $nestedObject->buyprice = $row['buyprice'];
                 $nestedObject->unit = $row['unit'];
                 $nestedObject->qty = $row['qty'];
-                $nestedObject->recamount = $row['recamount'];
-                $nestedObject->pocode = $row['pocode'];
+                $nestedObject->buyamount = $row['buyamount'];
                 $nestedObject->kind_name = $row['kind_name'];
                 //echo $row['prod_id'];
                 $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");

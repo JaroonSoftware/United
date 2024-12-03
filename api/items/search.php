@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $nestedObject->stname = $row['stname'];
             $nestedObject->price = $row['price'];
             $nestedObject->unit = $row['unit'];
-            $nestedObject->qty = $row['qty'];
+            $nestedObject->qty = strval($row['qty']);
             $nestedObject->active_status = $row['active_status'];
             //echo $row['prod_id'];
             $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");

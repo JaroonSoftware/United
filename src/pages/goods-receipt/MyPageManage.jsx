@@ -173,7 +173,7 @@ function GoodsReceiptManage() {
     // console.log(val.contact)
     setFormDetail((state) => ({ ...state, ...supplier }));
     form.setFieldsValue({ ...fvalue, ...supplier });
-    setListDetail([]);
+    // setListDetail([]);
   };
 
   const handleItemsChoosed = (value) => {
@@ -197,7 +197,7 @@ function GoodsReceiptManage() {
         const detail = listDetail;
 
         const parm = { header, detail };
-        // console.log(parm)
+        console.log(parm)
         
         const actions =
           config?.action !== "create" ? grservice.update : grservice.create;
@@ -223,7 +223,7 @@ function GoodsReceiptManage() {
   const handleClose = async () => {
     navigate(gotoFrom, { replace: true });
     await delay(300);
-    console.clear();
+    // console.clear();
   };
 
   const handlePrint = () => {
@@ -554,7 +554,6 @@ function GoodsReceiptManage() {
         <ModalItems
           show={openProduct}
           close={() => setOpenProduct(false)}
-          supcode={form.getFieldValue("supcode")}
           values={(v) => {
             handleItemsChoosed(v);
           }}

@@ -179,7 +179,7 @@ function PurchaseOrderManage() {
   };
 
   const handleItemsChoosed = (value) => {
-    console.log(value);
+    // console.log(value);
     setListDetail(value);
     handleSummaryPrice();
   };
@@ -430,7 +430,7 @@ function PurchaseOrderManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={8}
+                        colSpan={10}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -452,7 +452,7 @@ function PurchaseOrderManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={7}
+                        colSpan={9}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -497,7 +497,7 @@ function PurchaseOrderManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={8}
+                        colSpan={10}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}

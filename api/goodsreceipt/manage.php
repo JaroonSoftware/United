@@ -53,14 +53,15 @@ try {
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
-        // $detail = $detail;  
+        $detail = $detail;  
+        $qty=0;
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
             $stmt->bindParam(":grcode", $header->grcode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":pocode", $val->pocode, PDO::PARAM_STR);
-            $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
-            $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
+            $stmt->bindParam(":qty", $val->qty, PDO::PARAM_STR);
+            $stmt->bindParam(":price", $val->price, PDO::PARAM_STR);
             $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
 
             if (!$stmt->execute()) {
@@ -83,7 +84,8 @@ try {
                 throw new PDOException("Insert data error => $error");
                 die;
             }
-            $sql = "update podetail set recamount = recamount+:qty where pocode = :pocode and stcode = :stcode";
+
+            $sql = "update podetail set recamount = IF(recamount IS NULL,0,recamount)+:qty where pocode = :pocode and stcode = :stcode";
 
             $stmt3 = $conn->prepare($sql);
             if (!$stmt3) throw new PDOException("Insert data error => {$conn->errorInfo()}");
@@ -98,7 +100,7 @@ try {
                 die;
             }
 
-            $strSQL = "SELECT count(code) as count FROM `podetail` where pocode = :pocode and qty>recamount ";
+            $strSQL = "SELECT count(code) as count FROM `podetail` where pocode = :pocode and qty>IF(recamount IS NULL,0,recamount) ";
             $stmt5 = $conn->prepare($strSQL);
             if (!$stmt5) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -255,8 +257,8 @@ try {
         }
         $header = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.grcode,a.stcode,a.pocode, a.price, a.unit, a.qty ,i.stname, k.kind_name ";
-        $sql .= " FROM `grdetail` as a inner join `items` as i on (a.stcode=i.stcode) left outer join kind k on (i.kind_code=k.kind_code) ";
+        $sql = "SELECT a.grcode,a.stcode,a.pocode, a.price, a.unit, a.qty ,i.stname,a.discount ";
+        $sql .= " FROM `grdetail` as a inner join `items` as i on (a.stcode=i.stcode)  ";
         $sql .= " where a.grcode = :code";
 
         $stmt = $conn->prepare($sql);
@@ -265,19 +267,20 @@ try {
             http_response_code(404);
             throw new PDOException("Geting data error => $error");
         }
-        $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-         $dataArray = array();
+        $dataArray = array();
         //$dataFile = array();
-        foreach ($detail as $row) {
+        foreach ($data as $row) {
             $nestedObject = new stdClass();
             $nestedObject->stcode = $row['stcode'];
             $nestedObject->stname = $row['stname'];
             $nestedObject->price = $row['price'];
             $nestedObject->unit = $row['unit'];
             $nestedObject->qty = $row['qty']; 
-            $nestedObject->discount = $row['discount'];  
-            $nestedObject->kind_name = $row['kind_name'];        
+            $nestedObject->discount = $row['discount'];     
+            $nestedObject->pocode = $row['pocode'];     
+                
             //echo $row['prod_id'];
             $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
             $stmt2->execute();
@@ -299,12 +302,13 @@ try {
 
         $apiResponse = array(
             "status" => "1",
-            "message" => "Get Product E-commerce",
+            "message" => "Get Product",
             "header" => $header,
             "detail" => $dataArray,
             // "sql" => $sql,
             
         );
+
         $conn->commit();
         http_response_code(200);
         echo json_encode($apiResponse);

@@ -139,6 +139,21 @@ const ItemsManage = () => {
       });
   };
 
+  // const handleConfirmDB = () => {
+  //     itemservice.getdb()
+  // .then(async (r) => {
+  //   message.success("Request success.");
+  //   navigate(from, { replace: true });
+  //   await delay(300);
+  //   console.clear();
+  // })
+  // .catch((err) => {
+  //   console.warn(err);
+  //   const data = err?.response?.data;
+  //   message.error(data?.message || "บันทึกไม่สำเร็จ");
+  // });
+  // }
+
   const handleConfirm = () => {
     form.validateFields().then((v) => {
       const source = { ...formDetail, ...v };
@@ -465,6 +480,17 @@ const ItemsManage = () => {
       </Col>
       <Col span={12} style={{ paddingInline: 0 }}>
         <Flex gap={4} justify="end">
+        {/* <Button
+            icon={<SaveFilled style={{ fontSize: "1rem" }} />}
+            type="primary"
+            style={{ width: "9.5rem" }}
+            onClick={() => {
+              handleConfirmDB();
+            }}
+          >
+            Query
+          </Button> */}
+        
           <Button
             icon={<SaveFilled style={{ fontSize: "1rem" }} />}
             type="primary"

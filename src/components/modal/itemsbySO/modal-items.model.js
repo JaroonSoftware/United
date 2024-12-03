@@ -41,11 +41,16 @@ export const columns = ()=>{
       key: "stname",
     },
     {
-      title: "ราคา",
-      dataIndex: "price",
-      key: "price",
+      title: "จำนวนที่ขาย",
+      dataIndex: "qty",
+      key: "qty",
     },
-    {
+      {
+        title: "จำนวนที่ซื้อแล้ว",
+        dataIndex: "buyamount",
+        key: "buyamount",
+      },
+    {      
       title: "หน่วย",
       dataIndex: "unit",
       key: "unit",

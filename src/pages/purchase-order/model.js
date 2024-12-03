@@ -179,6 +179,14 @@ export const productColumn = ({handleRemove},optionsItems) => [
     className: "!pe-3",
   },
   {
+    title: "ใบขายสินค้า",
+    dataIndex: "socode",
+    key: "socode",
+    width: "8%",
+    align: "right",
+    className: "!pe-3",
+  },
+  {
     title: "จำนวน",
     dataIndex: "qty",
     key: "qty", 

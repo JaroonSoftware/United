@@ -10,7 +10,7 @@ import { columns } from "./modal-items.model";
 import OptionService from "../../../service/Options.service"
 
 const opnService = OptionService();
-export default function ModalItems({show, close,supcode, values, selected}) {
+export default function ModalItems({show, close, values, selected}) {
     const [form] = Form.useForm();
     /** handle state */
     const [itemsData, setItemsData] = useState([]);
@@ -62,6 +62,7 @@ export default function ModalItems({show, close,supcode, values, selected}) {
             qty_buy: m.qty,
             recamount: m.recamount,
             qty: m.qty-m.recamount,
+            discount:m.discount,
             unit:m.unit,     
             file_name:m.file_name,   
         }));
@@ -112,7 +113,7 @@ export default function ModalItems({show, close,supcode, values, selected}) {
     useEffect( () => {
         const onload = () =>{            
             setLoading(true);
-            opnService.optionsItems({p:'po',supcode:supcode}).then((res) => {
+            opnService.optionsItems({p:'po'}).then((res) => {
                 let { status, data } = res;
                 if (status === 200) {
                     setItemsData(data.data);
@@ -155,7 +156,7 @@ export default function ModalItems({show, close,supcode, values, selected}) {
             footer={ButtonModal}
             maskClosable={false}
             style={{ top: 20 }}
-            width={800}
+            width={1200}
             className='sample-request-modal-items'
         >
             <Spin spinning={loading} >

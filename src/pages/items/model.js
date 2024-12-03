@@ -4,6 +4,7 @@ import { Button,Image } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { 
   BACKEND_URL_MAIN,
+  comma 
  } from '../../utils/util';
 // import dayjs from 'dayjs';
 
@@ -44,12 +45,20 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
     width: "40%",
     sorter: (a, b) => (a?.stname || "").localeCompare(b?.stname || ""),
   },
+  // {
+  //   title: "จำนวนในสต๊อก",
+  //   dataIndex: "qty",
+  //   key: "qty",
+  //   sorter: (a, b) => (a?.qty || "").localeCompare(b?.qty || ""),
+  //   width: 140,
+  // },
   {
-    title: "จำนวนในสต๊อก",
+    title: "จำนวนสต๊อก",
     dataIndex: "qty",
-    key: "typename",
-    sorter: (a, b) => (a?.typename || "").localeCompare(b?.typename || ""),
+    key: "qty",
+    sorter: (a, b) => (a?.qty || "").localeCompare(b?.qty || ""),
     width: 140,
+    render: (_, rec) => <>{ comma( Number(rec?.qty ||  0),  2, 2 )}</>,
   },
   {
     title: "สถานะ",
