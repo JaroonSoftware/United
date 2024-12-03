@@ -9,7 +9,6 @@ import {
   Table,
   Typography,
   message,
-  Tabs,
 } from "antd";
 import { Card, Col, Divider, Flex, Row, Space, InputNumber } from "antd";
 
@@ -60,6 +59,10 @@ function MyManage() {
   const [DeliveryDetail, setFomDeliveryDetail] = useState([]);
   const [unitOption, setUnitOption] = React.useState([]);
 
+  const cardStyle = {
+    backgroundColor: "#f0f0f0",
+    height: "calc(100% - (25.4px + 1rem))",
+  };
   useEffect(() => {
     const initial = async () => {
       if (config?.action !== "create") {
@@ -250,7 +253,7 @@ function MyManage() {
     };
     // alert(formDetail.doc_status)
 
-    const res = await qtservice.get(val.qtcode);    
+    const res = await qtservice.get(val.qtcode);
     const { detail } = res.data;
     setListDetail(detail);
     handleSummaryPrice();
@@ -542,7 +545,7 @@ function MyManage() {
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายการใบขายสินค้า
+            รายการสินค้า
           </Typography.Title>
         </Flex>
       </Col>
@@ -686,7 +689,7 @@ function MyManage() {
     <>
       <Space size="small" direction="vertical" className="flex gap-2">
         <Row gutter={[8, 8]} className="m-0">
-        <Col xs={24} sm={24} md={6} lg={6}>
+          <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item className="" name="claim_no" label="เลขเคลม">
               <Input placeholder="เลขเคลม" />
             </Form.Item>
@@ -707,8 +710,13 @@ function MyManage() {
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={6} lg={6}>
-            <Form.Item className="" name="car_no" label="ทะเบียนรถ" rules={[{ required: true, message: "กรูณาใส่ข้อมูล" }]}>
-              <Input placeholder="ทะเบียนรถ"  />
+            <Form.Item
+              className=""
+              name="car_no"
+              label="ทะเบียนรถ"
+              rules={[{ required: true, message: "กรูณาใส่ข้อมูล" }]}
+            >
+              <Input placeholder="ทะเบียนรถ" />
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={6} lg={6}>
@@ -749,64 +757,64 @@ function MyManage() {
           ) : (
             <></>
           )}
-          
-            <Button
-              className="bn-center justify-center"
-              icon={<SaveFilled style={{ fontSize: "1rem" }} />}
-              type="primary"
-              style={{ width: "9.5rem", marginLeft: "10px" }}
-              onClick={() => {
-                handleConfirm();
-              }}
-            >
-              Save
-            </Button>
+
+          <Button
+            className="bn-center justify-center"
+            icon={<SaveFilled style={{ fontSize: "1rem" }} />}
+            type="primary"
+            style={{ width: "9.5rem", marginLeft: "10px" }}
+            onClick={() => {
+              handleConfirm();
+            }}
+          >
+            Save
+          </Button>
         </Flex>
       </Col>
     </Row>
   );
+  const SectionButtom = (
+    <Row
+      gutter={[{ xs: 32, sm: 32, md: 32, lg: 12, xl: 12 }, 8]}
+      className="m-0"
+    >
+      <Col span={12} className="p-0">
+        <Flex gap={4} justify="start">
+          <ButtonBack target={gotoFrom} />
+        </Flex>
+      </Col>
+      <Col span={12} className="p-0">
+        <Flex gap={4} justify="end">
+          {formDetail.active_status === "Y" ? (
+            <Button
+              icon={<TbSquareRoundedX style={{ fontSize: "1.4rem" }} />}
+              type="primary"
+              onClick={() => handleCancleSO()}
+              className="bn-center justify-center"
+              style={{ width: "9.5rem" }}
+              danger
+            >
+              ยกเลิกใบขายสินค้า
+            </Button>
+          ) : (
+            <></>
+          )}
 
-  const tab = [
-    {
-      key: "1",
-      label: "ข้อมูลใบขายสินค้า",
-      children: (
-        <Form
-          form={form}
-          layout="vertical"
-          className="width-100"
-          autoComplete="off"
-        >
-          <Row className="m-0" gutter={[12, 12]}>
-            <Divider style={{ borderTop: "3px" }} orientation="left">
-              บริษัทประกัน
-            </Divider>
-            <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
-              {SectionInsuranceCompany}
-            </Col>
-            <Divider style={{ borderTop: "3px" }} orientation="left">
-              ลูกค้าที่จัดส่ง
-            </Divider>
-            <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
-              {SectionCustomer}
-            </Col>
-            <Divider style={{ borderTop: "3px" }} orientation="left">
-              รายละเอียด
-            </Divider>
-            <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
-              {SectionOther}
-            </Col>
-          </Row>
-        </Form>
-      ),
-    },
-    {
-      key: "2",
-      label: "รายการสินค้า",
-      children: <>{SectionProduct}</>,
-    },
-  ];
-
+          <Button
+            className="bn-center justify-center"
+            icon={<SaveFilled style={{ fontSize: "1rem" }} />}
+            type="primary"
+            style={{ width: "9.5rem", marginLeft: "10px" }}
+            onClick={() => {
+              handleConfirm();
+            }}
+          >
+            Save
+          </Button>
+        </Flex>
+      </Col>
+    </Row>
+  );
   return (
     <div className="so-manage">
       <div id="so-manage" className="px-0 sm:px-0 md:px-8 lg:px-8">
@@ -818,38 +826,70 @@ function MyManage() {
             className="width-100"
             autoComplete="off"
           >
-          <Row className="m-0" gutter={[12, 12]}>
-          <Col xs={24} sm={24} md={12} lg={12}>
-              <Typography.Title level={3} className="m-0">
-                รหัสใบขายสินค้า : {soCode}
-              </Typography.Title>
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={12}>
-              <Flex
-                gap={10}
-                align="center"
-                className="justify-start sm:justify-end"
-              >
-                <Typography.Title level={3} className="m-0">
-                  วันที่ใบขายสินค้า :
-                </Typography.Title>
-                <Form.Item name="sodate" className="!m-0">
-                  <DatePicker
-                    className="input-40"
-                    allowClear={false}
-                    onChange={handleSO}
-                    format={dateFormat}
-                  />
-                </Form.Item>
-              </Flex>
-              
-            </Col>
-            
-          </Row>
+            <Card
+              title={
+                <>
+                  <Row className="m-0 py-3 sm:py-0" gutter={[12, 12]}>
+                    <Col xs={24} sm={24} md={12} lg={12}>
+                      <Typography.Title level={3} className="m-0">
+                        รหัสใบขายสินค้า : {soCode}
+                      </Typography.Title>
+                    </Col>
+                    <Col xs={24} sm={24} md={12} lg={12}>
+                      <Flex
+                        gap={10}
+                        align="center"
+                        className="justify-start sm:justify-end"
+                      >
+                        <Typography.Title level={3} className="m-0">
+                          วันที่ใบขายสินค้า :
+                        </Typography.Title>
+                        <Form.Item name="sodate" className="!m-0">
+                          <DatePicker
+                            className="input-40"
+                            allowClear={false}
+                            onChange={handleSO}
+                            format={dateFormat}
+                          />
+                        </Form.Item>
+                      </Flex>
+                    </Col>
+                  </Row>
+                </>
+              }
+            >
+              <Row className="m-0" gutter={[12, 12]}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+                  <Divider orientation="left" className="!mb-3 !mt-1">
+                    บริษัทประกัน
+                  </Divider>
+                  <Card style={cardStyle}>{SectionInsuranceCompany}</Card>
+                </Col>
+
+                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+                  <Divider orientation="left" className="!mb-3 !mt-1">
+                    ลูกค้าที่จัดส่ง
+                  </Divider>
+                  <Card style={cardStyle}>{SectionCustomer}</Card>
+                </Col>
+
+                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+                  <Divider orientation="left" className="!mb-3 !mt-1">
+                    รายละเอียด
+                  </Divider>
+                  <Card style={cardStyle}>{SectionOther}</Card>
+                </Col>
+
+                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+                  <Divider orientation="left" className="!mb-3 !mt-1">
+                    รายการสินค้า
+                  </Divider>
+                  <Card style={cardStyle}>{SectionProduct}</Card>
+                </Col>
+              </Row>
+            </Card>
           </Form>
-          <Card>
-            <Tabs defaultActiveKey="1" items={tab} size="large" />
-          </Card>
+          {SectionButtom}
         </Space>
       </div>
 
