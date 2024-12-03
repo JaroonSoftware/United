@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import DNService from '../../service/DeliveryNote.service';
 
 
-const soservice = DNService(); 
+const dnservice = DNService(); 
 const mngConfig = {title:"", textOk:null, textCancel:null, action:"create", code:null};
 
 const RangePicker = DatePicker.RangePicker;
@@ -30,7 +30,7 @@ const MyAccess = () => {
         <>  
         <Row gutter={[8,8]}> 
             <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-                <Form.Item label='Sale Order Code' name='socode'>
+                <Form.Item label='Sale Order Code' name='dncode'>
                     <Input placeholder='Enter Sale Order Code.' />
                 </Form.Item>                            
             </Col>
@@ -124,7 +124,7 @@ const MyAccess = () => {
 
     const handleEdit = (data) => {
         
-        navigate("manage/edit", { state: { config: {...mngConfig, title:"แก้ไขใบขายสินค้า", action:"edit", code:data?.socode} }, replace:true } );
+        navigate("manage/edit", { state: { config: {...mngConfig, title:"แก้ไขใบขายสินค้า", action:"edit", code:data?.dncode} }, replace:true } );
     }; 
 
     const handlePrintsData = (code) => { 
@@ -137,7 +137,7 @@ const MyAccess = () => {
     const column = accessColumn( {handleEdit, handlePrintsData });
 
     const getData = (data) => {
-        soservice.search(data, { ignoreLoading: loading}).then( res => {
+        dnservice.search(data, { ignoreLoading: loading}).then( res => {
             const {data} = res.data;
 
             setAccessData(data);

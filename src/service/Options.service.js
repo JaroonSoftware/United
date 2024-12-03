@@ -14,6 +14,7 @@ const API_URL = {
   OPTION_BRAND: `/common/options-brand.php`,
   OPTION_MODEL: `/common/options-model.php`,
   OPTION_CARMODEL: `/common/options-carmodel.php`,
+  OPTION_SO: `/common/options-so.php`,
 };
  
 
@@ -32,6 +33,7 @@ const OptionService = () => {
   const optionsBrand = () => api.get(`${API_URL.OPTION_BRAND}`, { ignoreLoading : true });
   const optionsModel = () => api.get(`${API_URL.OPTION_MODEL}`, { ignoreLoading : true });
   const optionsCarmodel = () => api.get(`${API_URL.OPTION_CARMODEL}`, { ignoreLoading : true });
+  const optionsSO = () => api.get(`${API_URL.OPTION_SO}`, { ignoreLoading : true });
 
   return {
     optionsItems,
@@ -48,6 +50,7 @@ const OptionService = () => {
     optionsBrand,
     optionsModel,
     optionsCarmodel,
+    optionsSO,
   };
 };
 
