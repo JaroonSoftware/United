@@ -224,7 +224,7 @@ const MyAccess = () => {
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-           รายการใบเสร็จรับเงิน (Receipt)
+            หน้าจัดการใบเสร็จรับเงิน (Receipt)
           </Typography.Title>
         </Flex>
       </Col>
