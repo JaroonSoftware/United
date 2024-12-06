@@ -155,7 +155,7 @@ export default function ModalItems({show, close, values, selected}) {
             footer={ButtonModal}
             maskClosable={false}
             style={{ top: 20 }}
-            width={800}
+            width={1200}
             className='sample-request-modal-items'
         >
             <Spin spinning={loading} >

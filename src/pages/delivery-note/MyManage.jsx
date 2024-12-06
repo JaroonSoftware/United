@@ -471,14 +471,14 @@ function InvoiceManage() {
             });
           })
           .catch((err) => {
-            message.error("Request Delivery Note fail.");
-            console.warn(err);
+            console.log(err);
+            message.error(err.response.data.message);
           });
       })
       .catch((err) => {
         Modal.error({
           title: "This is an error message",
-          content: "Please enter require data",
+          content: "คุณกรอกข้อมูล ไม่ครบถ้วน",
         });
       });
   };
