@@ -77,6 +77,8 @@ function update_recode($pdo){
         throw new PDOException("Update code error => $error");
     }
 } 
+
+
 function update_dncode($pdo){
     $year = date("Y");
     $month = date("m");
