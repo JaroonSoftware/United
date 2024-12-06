@@ -47,12 +47,13 @@ export default function ModalItems({show, close, values, selected}) {
         setItemsList([...itemsList, newData]);
     };
 
-    const handleCheckDuplicate = (itemCode) => !!selected.find( (item) =>  item?.stcode === itemCode ) ; 
+    const handleCheckDuplicate = (code) => !!selected.find( (item) =>  item?.code === code ) ; 
 
     const handleConfirm = () => { 
-        const choosed = selected.map( m => m.stcode );
-        const itemsChoose = (itemsData.filter( f => itemsRowKeySelect.includes(f.stcode) && !choosed.includes(f.stcode) )).map( (m, i) => (
+        const choosed = selected.map( m => m.code );
+        const itemsChoose = (itemsData.filter( f => itemsRowKeySelect.includes(f.code) && !choosed.includes(f.code) )).map( (m, i) => (
         {
+            code:m.code,
             stcode:m.stcode,
             stname:m.stname,
             socode:m.socode,
@@ -63,9 +64,7 @@ export default function ModalItems({show, close, values, selected}) {
             discount:0,
         }));
         
-        // const trans = selected.filter( (item) =>  item?.stcode === "" );
-        // const rawdt = selected.filter( (item) =>  item?.stcode !== "" );
-        // console.log(itemsChoose, rawdt, trans); 
+
 
         values([...selected, ...itemsChoose]);
         
@@ -80,23 +79,18 @@ export default function ModalItems({show, close, values, selected}) {
         type: "checkbox",
         fixed: true,
         hideSelectAll:true,
-        onChange: (selectedRowKeys, selectedRows) => { 
-            // setItemsRowKeySelect([...new Set([...selectedRowKeys, ...itemsRowKeySelect])]);
-            // setItemsList(selectedRows);
-            //setItemsRowKeySelect(selectedRowKeys);
-        },
         getCheckboxProps: (record) => { 
             return {
-                disabled: handleCheckDuplicate(record.stcode), 
-                name: record.stcode,
+                disabled: handleCheckDuplicate(record.code), 
+                name: record.code,
             }
         },
         onSelect: (record, selected, selectedRows, nativeEvent) => {
             //console.log(record, selected, selectedRows, nativeEvent);
             if( selected ){
-                setItemsRowKeySelect([...new Set([...itemsRowKeySelect, record.stcode])]);
+                setItemsRowKeySelect([...new Set([...itemsRowKeySelect, record.code])]);
             } else {
-                const ind = itemsRowKeySelect.findIndex( d => d === record.stcode);
+                const ind = itemsRowKeySelect.findIndex( d => d === record.code);
                 const tval = [...itemsRowKeySelect];
                 tval.splice(ind, 1);
                 setItemsRowKeySelect([...tval]);
@@ -119,7 +113,7 @@ export default function ModalItems({show, close, values, selected}) {
                     setItemsData(data.data);
                     setItemsDataWrap(data.data);
 
-                    const keySeleted = selected.map( m => m.stcode );
+                    const keySeleted = selected.map( m => m.code );
 
                     setItemsRowKeySelect([...keySeleted]);
                     // console.log(selected);
@@ -178,7 +172,7 @@ export default function ModalItems({show, close, values, selected}) {
                             dataSource={itemsDataWrap}
                             columns={column} 
                             rowSelection={itemSelection}
-                            rowKey="stcode"
+                            rowKey="code"
                             pagination={{ 
                                 total:itemsDataWrap.length, 
                                 showTotal:(_, range) => `${range[0]}-${range[1]} of ${itemsData.length} items`,

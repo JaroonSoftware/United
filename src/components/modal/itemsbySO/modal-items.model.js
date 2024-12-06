@@ -5,6 +5,12 @@ import { BACKEND_URL_MAIN } from '../../../utils/util';
 export const columns = ()=>{
   return [
     {
+      key: "code",
+      dataIndex: "code",
+      align: "left",
+      hidden: true,
+    },
+    {
       title: "รหัสสินค้า",
       key: "stcode",
       dataIndex: "stcode", 

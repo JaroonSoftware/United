@@ -88,7 +88,6 @@ try {
 
 
 
-
         $conn->commit();
         http_response_code(200);
         echo json_encode(array("data" => array("code" => $code)));

@@ -245,7 +245,7 @@ function PurchaseOrderManage() {
 
   const handleDelete = (code) => {
     const itemDetail = [...listDetail];
-    const newData = itemDetail.filter((item) => item?.stcode !== code);
+    const newData = itemDetail.filter((item) => item?.code !== code);
     setListDetail([...newData]);
   };
 
@@ -259,9 +259,9 @@ function PurchaseOrderManage() {
         icon={
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
-        onClick={() => handleDelete(record?.stcode)}
+        onClick={() => handleDelete(record?.code)}
         disabled={
-          !record?.stcode || formDetail.doc_status !== "ยังไม่ได้รับของ"
+          !record?.code || formDetail.doc_status !== "ยังไม่ได้รับของ"
         }
       />
     ) : null;
@@ -417,7 +417,7 @@ function PurchaseOrderManage() {
           dataSource={listDetail}
           columns={prodcolumns}
           pagination={false}
-          rowKey="stcode"
+          rowKey="code"
           scroll={{ x: "max-content" }}
           locale={{
             emptyText: <span>No data available, please add some data.</span>,
