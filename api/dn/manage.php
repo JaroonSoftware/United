@@ -36,36 +36,12 @@ try {
             throw new PDOException("Insert data error => $error");
             die;
         }
-
-        if ($header->cuscode != '') {
-            $sql = "
-            update dnmaster 
-            set
-            doc_status = 'ออกใบเสร็จรับเงินแล้ว',
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where cuscode = :cuscode";
-
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-            $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
-
-            if (!$stmt->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-                die;
-            }
-        }
-
+        
         update_dncode($conn);
-
         $code = $conn->lastInsertId();
-        // var_dump($master); exit;
 
         $sql = "insert into dndetail (dncode,socode,qty,price,unit)
-        values (:dncode,:socode,:qty,:price,:unit,)";
+        values (:dncode,:socode,:qty,:price,:unit)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -81,6 +57,21 @@ try {
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();
                 throw new PDOException("Insert data error => $error");
+            }
+
+            $sql = "update sodetail set delamount = delamount+:qty where socode = :socode and stcode = :stcode";
+
+            $stmt3 = $conn->prepare($sql);
+            if (!$stmt3) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt3->bindParam(":qty", $val->qty, PDO::PARAM_STR);
+            $stmt3->bindParam(":socode", $val->socode, PDO::PARAM_STR);
+            $stmt3->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
+
+            if (!$stmt3->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
             }
         }
 

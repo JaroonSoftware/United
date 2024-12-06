@@ -10,7 +10,7 @@ import {
   message,
   Modal,
 } from "antd";
-import { Card, Col, Divider, Flex, Row, Space } from "antd";
+import { Card, Col, Divider, Flex, Row, Space,InputNumber } from "antd";
 import OptionService from "../../service/Options.service";
 import DeliveryNoteService from "../../service/DeliveryNote.service";
 // import QuotationService from "../../service/Quotation.service";
@@ -83,7 +83,8 @@ function InvoiceManage() {
           dndate: dayjs(dndate),
           deldate: dayjs(deldate),
         });
-      console.log(dncode)
+        
+      // console.log(dncode)
         // setTimeout( () => {  handleCalculatePrice(head?.valid_grand_total_price_until, head?.dated_grand_total_price_until) }, 200);
         // handleChoosedCustomers(head);
       }
@@ -103,6 +104,7 @@ function InvoiceManage() {
         // console.log(ininteial_value);
         setFormDetail(ininteial_value);
         form.setFieldsValue(ininteial_value);
+        form.setFieldValue("vat", "7");
       }
 
       const [unitOprionRes] = await Promise.all([
@@ -123,14 +125,22 @@ function InvoiceManage() {
   const handleSummaryPrice = () => {
     const newData = [...listDetail];
 
-    const grand_total_price = newData.reduce(
-      (a, v) => (a += Number(v.grand_total_price || 0)),
+    const total_price = newData.reduce(
+      (a, v) =>
+        (a +=
+          Number(v.qty || 0) *
+          Number(v?.price || 0) *
+          (1 - Number(v?.discount || 0) / 100)),
       0
     );
-    // console.log(total_weight)
-    // const total_weight += newData.qty;
+    const vat = form.getFieldValue("vat");
+    const grand_total_price =
+      total_price + (total_price * form.getFieldValue("vat")) / 100;
+
     setFormDetail(() => ({
       ...formDetail,
+      total_price,
+      vat,
       grand_total_price,
     }));
     // console.log(formDetail)
@@ -185,13 +195,13 @@ function InvoiceManage() {
     // setListDetail([]);
   };
   const handleSOChoosed = (value) => {
-    console.log(value);
+    // console.log(value);
     setListDetail(value);
     handleSummaryPrice();
   };
-  const handleDelete = (socode) => {
+  const handleDelete = (code) => {
     const itemDetail = [...listDetail];
-    const newData = itemDetail.filter((item) => item?.socode !== socode);
+    const newData = itemDetail.filter((item) => item?.code !== code);
     setListDetail([...newData]);
   };
 
@@ -205,8 +215,8 @@ function InvoiceManage() {
         icon={
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
-        onClick={() => handleDelete(record?.socode)}
-        disabled={!record?.socode}
+        onClick={() => handleDelete(record?.code)}
+        disabled={!record?.code}
       />
     ) : null;
   };
@@ -326,7 +336,7 @@ function InvoiceManage() {
           dataSource={listDetail}
           columns={prodcolumns}
           pagination={false}
-          rowKey="socode"
+          rowKey="code"
           scroll={{ x: "max-content" }}
           locale={{
             emptyText: <span>No data available, please add some data.</span>,
@@ -337,27 +347,93 @@ function InvoiceManage() {
                 {listDetail.length > 0 && (
                   <>
                     <Table.Summary.Row>
-                      {/* <Table.Summary.Cell
+                      <Table.Summary.Cell
                         index={0}
-                        colSpan={2}
-                      ></Table.Summary.Cell> */}
+                        colSpan={10}
+                      ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
                         align="end"
-                        colSpan={5}
                         className="!pe-4"
                       >
-                      ราคารวม
+                        Total
                       </Table.Summary.Cell>
                       <Table.Summary.Cell
                         className="!pe-4 text-end border-right-0"
                         style={{ borderRigth: "0px solid" }}
-                        colSpan={2}
                       >
                         <Typography.Text type="danger">
-                          {comma(Number(formDetail?.grand_total_price || 0), 2, 2)}
+                          {comma(Number(formDetail?.total_price || 0))}
                         </Typography.Text>
                       </Table.Summary.Cell>
+                      <Table.Summary.Cell>Baht</Table.Summary.Cell>
+                    </Table.Summary.Row>
+                    <Table.Summary.Row>
+                      <Table.Summary.Cell
+                        index={0}
+                        colSpan={9}
+                      ></Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        index={4}
+                        align="end"
+                        className="!pe-4"
+                      >
+                        Vat
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        className="!pe-4 text-end border-right-0"
+                        style={{ borderRigth: "0px solid" }}
+                      >
+                        <Form.Item name="vat" className="!m-0">
+                          <InputNumber
+                            className="width-100 input-30 text-end"
+                            addonAfter="%"
+                            controls={false}
+                            min={0}
+                            onFocus={(e) => {
+                              e.target.select();
+                            }}
+                            onChange={() => {
+                              handleSummaryPrice();
+                            }}
+                          />
+                        </Form.Item>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        className="!pe-4 text-end border-right-0"
+                        style={{ borderRigth: "0px solid" }}
+                      >
+                        <Typography.Text type="danger">
+                          {comma(
+                            Number(
+                              (formDetail.total_price * formDetail?.vat) / 100
+                            )
+                          )}
+                        </Typography.Text>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell>Baht</Table.Summary.Cell>
+                    </Table.Summary.Row>
+                    <Table.Summary.Row>
+                      <Table.Summary.Cell
+                        index={0}
+                        colSpan={10}
+                      ></Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        index={4}
+                        align="end"
+                        className="!pe-4"
+                      >
+                        Grand Total
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        className="!pe-4 text-end border-right-0"
+                        style={{ borderRigth: "0px solid" }}
+                      >
+                        <Typography.Text type="danger">
+                          {comma(Number(formDetail?.grand_total_price || 0))}
+                        </Typography.Text>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell>Baht</Table.Summary.Cell>
                     </Table.Summary.Row>
                   </>
                 )}
@@ -543,16 +619,6 @@ function InvoiceManage() {
           }}
         ></ModalCustomers>
       )}
-
-      {/* {openQuotation && (
-        <ModalQuotation
-          show={openQuotation}
-          close={() => setOpenQuotation(false)}
-          values={(v) => {
-            handleChoosedQuotation(v);
-          }}
-        ></ModalQuotation>
-      )} */}
 
       {openProduct && (
         <ModalItems

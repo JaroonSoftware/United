@@ -26,7 +26,7 @@ export default function ModalSO({show, close, values, selected}) {
  
     const handleSearch = (value) => {
         if(!!value){    
-            const f = soData.filter( d => ( (d.socode?.includes(value)) || (d.cuscode?.includes(value)) ) );
+            const f = soData.filter( d => ( (d.stcode?.includes(value)) || (d.stname?.includes(value)) ) );
              
             setSODataWrap(f);            
         } else { 
@@ -47,17 +47,22 @@ export default function ModalSO({show, close, values, selected}) {
         setItemsList([...itemsList, newData]);
     };
 
-    const handleCheckDuplicate = (itemCode) => !!selected.find( (item) =>  item?.socode === itemCode ) ; 
+    const handleCheckDuplicate = (itemCode) => !!selected.find( (item) =>  item?.code === itemCode ) ; 
 
     const handleConfirm = () => { 
-        const choosed = selected.map( m => m.socode );
-        const itemsChoose = (soData.filter( f => itemsRowKeySelect.includes(f.socode) && !choosed.includes(f.socode) )).map( (m, i) => (
+        const choosed = selected.map( m => m.code );
+        const itemsChoose = (soData.filter( f => itemsRowKeySelect.includes(f.code) && !choosed.includes(f.code) )).map( (m, i) => (
         {
+            code:m.code,
+            stcode:m.stcode,
+            stname:m.stname,
             socode:m.socode,
-            cusname:m.cusname,
             kind_name:m.kind_name,
-            grand_total_price: Number(m?.grand_total_price || 0),
-            qty: 1,
+            price: Number(m?.buyprice || 0),
+            qty: Number(m?.qty-m?.delamount || 0),
+            delamount:m.delamount,
+            unit:m.unit,
+            discount:0,
         }));
         
         // const trans = selected.filter( (item) =>  item?.socode === "" );
@@ -84,16 +89,16 @@ export default function ModalSO({show, close, values, selected}) {
         },
         getCheckboxProps: (record) => { 
             return {
-                disabled: handleCheckDuplicate(record.socode), 
-                name: record.socode,
+                disabled: handleCheckDuplicate(record.code), 
+                name: record.code,
             }
         },
         onSelect: (record, selected, selectedRows, nativeEvent) => {
             //console.log(record, selected, selectedRows, nativeEvent);
             if( selected ){
-                setItemsRowKeySelect([...new Set([...itemsRowKeySelect, record.socode])]);
+                setItemsRowKeySelect([...new Set([...itemsRowKeySelect, record.code])]);
             } else {
-                const ind = itemsRowKeySelect.findIndex( d => d === record.socode);
+                const ind = itemsRowKeySelect.findIndex( d => d === record.code);
                 const tval = [...itemsRowKeySelect];
                 tval.splice(ind, 1);
                 setItemsRowKeySelect([...tval]);
@@ -116,7 +121,7 @@ export default function ModalSO({show, close, values, selected}) {
                     setSOData(data.data);
                     setSODataWrap(data.data);
 
-                    const keySeleted = selected.map( m => m.socode );
+                    const keySeleted = selected.map( m => m.code );
 
                     setItemsRowKeySelect([...keySeleted]);
                     // console.log(selected);
@@ -153,7 +158,7 @@ export default function ModalSO({show, close, values, selected}) {
             footer={ButtonModal}
             maskClosable={false}
             style={{ top: 20 }}
-            width={800}
+            width={1200}
             className='sample-request-modal-items'
         >
             <Spin spinning={loading} >
@@ -175,7 +180,7 @@ export default function ModalSO({show, close, values, selected}) {
                             dataSource={soDataWrap}
                             columns={column} 
                             rowSelection={itemSelection}
-                            rowKey="socode"
+                            rowKey="code"
                             pagination={{ 
                                 total:soDataWrap.length, 
                                 showTotal:(_, range) => `${range[0]}-${range[1]} of ${soData.length} items`,
