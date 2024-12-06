@@ -73,7 +73,7 @@ function MyManage() {
           data: { delcode, header, detail },
         } = res.data;
         const { socode, sodate } = header;
-        console.log(sodate);
+        // console.log(sodate);
         setFormDetail(header);
         setListDetail(detail);
         setFomDeliveryDetail(delcode);
@@ -589,7 +589,7 @@ function MyManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={6}
+                        colSpan={8}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -611,7 +611,7 @@ function MyManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={5}
+                        colSpan={7}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -656,7 +656,7 @@ function MyManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={6}
+                        colSpan={8}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}

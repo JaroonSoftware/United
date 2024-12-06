@@ -13,6 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $cuscode = !empty($cuscode) ? "and a.cuscode like '%$cuscode%'" : "";
     $cusname = !empty($cusname) ? "and a.cusname like '%$cusname%'" : "";
+    $cus_type = !empty($cus_type) ? "and a.cusname like '%$cus_type%'" : "";
     $prename = !empty($prename) ? "and a.prename like '%$prename%'" : "";
     $tel = !empty($tel) ? "and a.tel like '%$tel%'" : "";
     $contact = !empty($contack) ? "and a.contack like '%$contack%'" : "";
@@ -33,11 +34,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $delprovince = !empty($delprovince) ? "and a.delprovince like '%$delprovince%'" : "";
     $delzipcode = !empty($delzipcode) ? "and a.delzipcode like '%$delzipcode%'" : "";
     try {
-        $sql = "SELECT a.cuscode,a.prename, a.cusname,a.tel,a.contact,a.fax,a.taxnumber,a.email,a.idno,a.road,a.subdistrict,a.district,a.province,a.zipcode,a.delidno,
-        a.road,a.delsubdistrict,a.deldistrict,a.delprovince,a.delzipcode, a.active_status FROM `customer` as a    
+        $sql = "SELECT a.cuscode,a.prename, a.cusname,a.cus_type,a.tel,a.contact,a.fax,a.taxnumber,a.email,a.idno,a.road,a.subdistrict,a.district,a.province,a.zipcode,a.delidno,
+        a.road,a.delsubdistrict,a.deldistrict,a.delprovince,a.delzipcode, a.active_status FROM `customer` as a  
         where 1 = 1    
         $cuscode
         $cusname
+        $cus_type
         $tel
         $province
         order by a.created_date desc";

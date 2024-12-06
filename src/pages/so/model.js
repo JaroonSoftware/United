@@ -2,12 +2,12 @@ import { Button,Space } from "antd";
 import "../../assets/styles/banks.css"
 // import { Typography } from "antd"; 
 // import { Popconfirm, Button } from "antd";
-import { Tooltip } from "antd";
+import { Tooltip,Image } from "antd";
 // import { EditOutlined, QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons"; 
 import { EditableRow, EditableCell } from "../../components/table/TableEditAble";
 import dayjs from 'dayjs';
 import { EditOutlined,PrinterOutlined } from "@ant-design/icons";
-import { comma } from '../../utils/util';
+import { comma,BACKEND_URL_MAIN } from '../../utils/util';
 import { TagsCreateBy } from "../../components/badge-and-tag/";
 import { TagSalesOrderStatus } from "../../components/badge-and-tag";
 
@@ -113,19 +113,48 @@ export const productColumn = ({handleRemove,handleSelectChange}) => [
     render: (im, rc, index) => <>{index + 1}</>,
   },
   {
+    title: "รูปประกอบ",
+    dataIndex: "file",
+    key: "file",
+    width: 120,
+    align: "center",
+    render: (im, rec) => 
+      {
+        const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/logo.png`
+        );
+        return <>
+        <Image
+      style={{ borderRadius: 10 }}
+      preview={false}
+      height={75}
+      alt={`Image ${rec.file_name}`}
+      src={`${BACKEND_URL_MAIN}` + img}
+    />
+    </>
+    },
+  },
+  {
     title: "รหัสสินค้า",
     dataIndex: "stcode",
     key: "stcode",
-    width: 120, 
-    align: "left",
+    width: 140, 
+    align: "center",
   },
   {
     title: "ชื่อสินค้า",
-    dataIndex: "purdetail",
-    key: "purdetail", 
+    dataIndex: "stname",
+    key: "stname", 
     align: "left", 
     render: (_, rec) => rec.stname,
   },
+  {
+    title: "ชนิดสินค้า",
+    dataIndex: "kind_name",
+    key: "kind_name", 
+    align: "center", 
+    width: "6%",
+    render: (_, rec) => rec.kind_name,
+  }, 
   {
     title: "จำนวน",
     dataIndex: "qty",

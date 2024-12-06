@@ -40,8 +40,8 @@ try {
         update_dncode($conn);
         $code = $conn->lastInsertId();
 
-        $sql = "insert into dndetail (dncode,socode,qty,price,unit)
-        values (:dncode,:socode,:qty,:price,:unit)";
+        $sql = "insert into dndetail (dncode,socode,stcode,qty,price,unit,discount)
+        values (:dncode,:socode,:stcode,:qty,:price,:unit,:discount)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -50,16 +50,18 @@ try {
             $val = (object)$val;
             $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
             $stmt->bindParam(":socode", $val->socode, PDO::PARAM_STR);
+            $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
             $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
             $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
+            $stmt->bindParam(":discount", $val->discount, PDO::PARAM_INT);
 
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();
                 throw new PDOException("Insert data error => $error");
             }
 
-            $sql = "update sodetail set delamount = delamount+:qty where socode = :socode and stcode = :stcode";
+            $sql = "update sodetail set buyamount = buyamount+:qty where socode = :socode and stcode = :stcode";
 
             $stmt3 = $conn->prepare($sql);
             if (!$stmt3) throw new PDOException("Insert data error => {$conn->errorInfo()}");
@@ -69,6 +71,51 @@ try {
             $stmt3->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
 
             if (!$stmt3->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
+
+            $strSQL = "SELECT count(code) as count FROM `sodetail` where socode = :socode and qty>IF(buyamount IS NULL,0,buyamount) ";
+            $stmt5 = $conn->prepare($strSQL);
+            if (!$stmt5) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt5->bindParam(":socode", $val->socode, PDO::PARAM_STR);
+
+            if (!$stmt5->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
+
+            $res = $stmt5->fetch(PDO::FETCH_ASSOC);
+            extract($res, EXTR_OVERWRITE, "_");
+            if ($count == 0) {
+
+                $sql = "
+                update somaster 
+                set
+                doc_status = 'รอออกใบเสร็จรับเงิน',
+                updated_date = CURRENT_TIMESTAMP(),
+                updated_by = :action_user
+                where socode = :socode";
+            } else {
+                $sql = "
+                update somaster 
+                set
+                doc_status = 'รอออกใบส่งของ',
+                updated_date = CURRENT_TIMESTAMP(),
+                updated_by = :action_user
+                where socode = :socode";
+            }
+
+            $stmt4 = $conn->prepare($sql);
+            if (!$stmt4) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt4->bindParam(":action_user", $action_user, PDO::PARAM_INT);
+            $stmt4->bindParam(":socode", $val->socode, PDO::PARAM_STR);
+
+            if (!$stmt4->execute()) {
                 $error = $conn->errorInfo();
                 throw new PDOException("Insert data error => $error");
                 die;
@@ -176,10 +223,12 @@ try {
         }
         $header = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.dncode,a.socode,c.grand_total_price,c.sodate,c.cuscode,d.cusname";
+        $sql = "SELECT a.dncode,a.stcode,a.socode, a.price, a.unit, a.qty ,i.stname,a.discount,s.buyamount, k.kind_name ";
         $sql .= " FROM `dndetail` as a";
-        $sql .= " inner join `somaster` as c on (a.socode)=(c.socode) left outer join `customer` d on (c.cuscode)=(d.cuscode) ";
-        $sql .= " where dncode = :code";
+        $sql .= " inner join `items` as i on (a.stcode=i.stcode)  ";
+        $sql .= " left outer join `sodetail` as s on (a.stcode=s.stcode) and a.socode=s.socode  ";
+        $sql .= " left outer join kind k on (i.kind_code=k.kind_code)  ";
+        $sql .= " where a.dncode = :code";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt->execute(['code' => $code])) {
@@ -187,11 +236,53 @@ try {
             http_response_code(404);
             throw new PDOException("Geting data error => $error");
         }
-        $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $dataArray = array();
+        //$dataFile = array();
+        foreach ($data as $row) {
+            $nestedObject = new stdClass();
+            $nestedObject->stcode = $row['stcode'];
+            $nestedObject->stname = $row['stname'];
+            $nestedObject->price = $row['price'];
+            $nestedObject->unit = $row['unit'];
+            $nestedObject->qty = $row['qty']; 
+            $nestedObject->discount = $row['discount'];     
+            $nestedObject->socode = $row['socode'];    
+            $nestedObject->buyamount = $row['buyamount']; 
+            $nestedObject->kind_name = $row['kind_name']; 
+                
+            //echo $row['prod_id'];
+            $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
+            $stmt2->execute();
+            if ($stmt2->rowCount() > 0) {
+                $dataFile = array();
+                while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                    // $dataFile[] = $row2['file_name'];
+                    $nestedObject->img_id = $row2['img_id'];
+                    $nestedObject->uid = $row2['uid'];
+                    // $nestedObject->name = $row2['name'];
+                    $nestedObject->file_name = $row2['file_name'];
+                }
+            } else {
+                $nestedObject->file = [];
+                $nestedObject->file_name = null;
+            }
+            $dataArray[] = $nestedObject;
+        }
+
+        $apiResponse = array(
+            "status" => "1",
+            "message" => "Get Product",
+            "header" => $header,
+            "detail" => $dataArray,
+            // "sql" => $sql,
+            
+        );
 
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array('status' => 1, 'data' => array("header" => $header, "detail" => $detail)));
+        echo json_encode($apiResponse);
     }
 } catch (PDOException $e) {
     $conn->rollback();

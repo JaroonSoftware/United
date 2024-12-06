@@ -16,28 +16,34 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
     title: "ชื่อลูกค้า",
     dataIndex: "cusname",
     key: "cusname",
-    width: "30%",
     sorter: (a, b) => (a?.cusname || "").localeCompare(b?.cusname || ""),
+  },
+  {
+    title: "ประเภทลูกค้า",
+    dataIndex: "cus_type",
+    key: "cus_type",
+    width: "10%",
+    sorter: (a, b) => (a?.cus_type || "").localeCompare(b?.cus_type || ""),
   },
   {
     title: "จังหวัด",
     dataIndex: "province",
     key: "province",
-    width: "20%",
+    width: "10%",
     sorter: (a, b) => (a?.province || "").localeCompare(b?.province || ""),
   },
   {
     title: "เบอร์โทร",
     dataIndex: "tel",
     key: "tel",
-    width: "20%",
+    width: "10%",
     sorter: (a, b) => (a?.tel || "").localeCompare(b?.tel || ""),
   },
   {
     title: "สถานะ",
     dataIndex: "active_status",
     key: "active_status",
-    width: "20%",
+    width: "10%",
     sorter: (a, b) => (a?.active_status || "").localeCompare(b?.active_status || ""),
     render: (data) => (
       <div>

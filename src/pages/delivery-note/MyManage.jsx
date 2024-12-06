@@ -10,7 +10,7 @@ import {
   message,
   Modal,
 } from "antd";
-import { Card, Col, Divider, Flex, Row, Space,InputNumber } from "antd";
+import { Card, Col, Divider, Flex, Row, Space, InputNumber } from "antd";
 import OptionService from "../../service/Options.service";
 import DeliveryNoteService from "../../service/DeliveryNote.service";
 // import QuotationService from "../../service/Quotation.service";
@@ -26,7 +26,7 @@ import {
 } from "./model";
 
 import dayjs from "dayjs";
-import { delay,comma } from "../../utils/util";
+import { delay, comma } from "../../utils/util";
 import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -71,9 +71,7 @@ function InvoiceManage() {
         const res = await dnservice
           .get(config?.code)
           .catch((error) => message.error("get Invoice data fail."));
-        const {
-          data: { header, detail },
-        } = res.data;
+          const { header, detail } = res.data;
         const { dncode, dndate, deldate } = header;
         setFormDetail(header);
         setListDetail(detail);
@@ -83,12 +81,11 @@ function InvoiceManage() {
           dndate: dayjs(dndate),
           deldate: dayjs(deldate),
         });
-        
-      // console.log(dncode)
+
+        // console.log(dncode)
         // setTimeout( () => {  handleCalculatePrice(head?.valid_grand_total_price_until, head?.dated_grand_total_price_until) }, 200);
         // handleChoosedCustomers(head);
-      }
-      else {
+      } else {
         const { data: code } = (
           await dnservice.code().catch((e) => {
             message.error("get Quotation code fail.");
@@ -153,7 +150,10 @@ function InvoiceManage() {
     );
     const nDateFormet = newDateAfterAdding.format("YYYY-MM-DD");
 
-    setFormDetail((state) => ({ ...state, dated_grand_total_price_until: nDateFormet }));
+    setFormDetail((state) => ({
+      ...state,
+      dated_grand_total_price_until: nDateFormet,
+    }));
     form.setFieldValue("dated_grand_total_price_until", nDateFormet);
   };
 
@@ -226,7 +226,7 @@ function InvoiceManage() {
       const itemDetail = [...listDetail];
       const newData = [...itemDetail];
 
-      const ind = newData.findIndex((item) => r?.socode === item?.socode);
+      const ind = newData.findIndex((item) => r?.code === item?.code);
       if (ind < 0) return itemDetail;
       const item = newData[ind];
       newData.splice(ind, 1, {
@@ -452,6 +452,7 @@ function InvoiceManage() {
 
         const header = {
           ...formDetail,
+          dncode: dnCode,
           sodate: dayjs(form.getFieldValue("sodate")).format("YYYY-MM-DD"),
           remark: form.getFieldValue("remark"),
         };
@@ -466,11 +467,11 @@ function InvoiceManage() {
         actions(parm)
           .then((r) => {
             handleClose().then((r) => {
-              message.success("Request SaleOrder success.");
+              message.success("Request Delivery Note success.");
             });
           })
           .catch((err) => {
-            message.error("Request SaleOrder fail.");
+            message.error("Request Delivery Note fail.");
             console.warn(err);
           });
       })
@@ -484,7 +485,7 @@ function InvoiceManage() {
   const handleClose = async () => {
     navigate(gotoFrom, { replace: true });
     await delay(300);
-    console.clear();
+    // console.clear();
   };
   ///** button */
 
@@ -607,7 +608,6 @@ function InvoiceManage() {
           </Form>
           {SectionBottom}
         </Space>
-
       </div>
 
       {openCustomers && (
