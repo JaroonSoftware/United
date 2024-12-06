@@ -1,5 +1,5 @@
 import { Typography } from "antd";
-import { TagInvoiceStatus } from "../../../components/badge-and-tag/";
+import { TagInvoiceStatus } from "../../badge-and-tag";
 import dayjs from 'dayjs';
 
 /** get items column */
@@ -8,16 +8,16 @@ export const customersColumn = ({handleChoose})=>{
     return [
       {
         title: "เลขที่ใบแจ้งหนี้",
-        key: "ivcode",
+        key: "dncode",
         width: "15%",
-        dataIndex: "ivcode", 
+        dataIndex: "dncode", 
         render: (v, record) => <Link className="text-select" onClick={()=>handleChoose(record)}>{v}</Link>
       },
       {
         title: "วันที่ใบแจ้งหนี้",
-        key: "ivdate",
+        key: "dndate",
         width: "15%",
-        dataIndex: "ivdate", 
+        dataIndex: "dndate", 
         render: (v, record) => <Link className="text-select" onClick={()=>handleChoose(record)}>{dayjs(v).format("DD/MM/YYYY")}</Link>
       },
       {
@@ -42,7 +42,7 @@ export const customersColumn = ({handleChoose})=>{
         align: "center",
         sorter: (a, b) => a.doc_status.localeCompare(b.doc_status),
         sortDirections: ["descend", "ascend"],
-        // render: (data) => <TagInvoiceStatus result={data} />,
+        render: (data) => <TagInvoiceStatus result={data} />,
       },
     ]
   };

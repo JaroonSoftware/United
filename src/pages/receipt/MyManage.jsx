@@ -19,11 +19,11 @@ import {
   Popconfirm
 } from "antd";
 import ModalCustomers from "../../components/modal/customers/ModalCustomers";
-import ModalInvoice from "../../components/modal/invoice/MyModal";
+import ModalDN from "../../components/modal/delivery/MyModal";
 import ModalPayment from "../../components/modal/payment/MyModal";
 import OptionService from "../../service/Options.service";
 import ReceiptService from "../../service/Receipt.service";
-import InvoiceService from "../../service/Invoice.service";
+import DNService from "../../service/DeliveryNote.service";
 
 import {
   DEFALUT_CHECK_RECEIPT,
@@ -50,7 +50,7 @@ import { CloseCircleFilledIcon } from '../../components/icon';
 
 const opservice = OptionService();
 const reservice = ReceiptService();
-const ivservice = InvoiceService();
+const dnservice = DNService();
 
 const gotoFrom = "/receipt";
 const dateFormat = "DD/MM/YYYY";
@@ -64,7 +64,7 @@ function ReceiptManage() {
 
   /** Modal handle */
   const [openCustomers, setOpenCustomers] = useState(false);
-  const [openInvoice, setOpenInvoice] = useState(false);
+  const [openDN, setOpenDN] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
 
   const [listPayment, setListPayment] = useState([]);
@@ -119,7 +119,7 @@ function ReceiptManage() {
           recode: code,
           redate: dayjs(new Date()),
           check_date: dayjs(new Date()),          
-          doc_status:"รอชำระเงิน",
+          doc_status:"รอออกแจ้งหนี้",
         };
 
         setFormDetail(ininteial_value);
@@ -223,7 +223,7 @@ function ReceiptManage() {
     ];
     const customers = {
       ...val,
-      ivcode: "",
+      dncode: "",
       cusname: cusname.join(""),
       address: addr.join(""),
       contact: val.contact,
@@ -235,9 +235,9 @@ function ReceiptManage() {
     setListDetail([]);
   };
 
-  const handleChoosedInvoice = async (val) => {
+  const handleChoosedDN = async (val) => {
     // console.log(val);
-    const res = await ivservice.get(val.ivcode);
+    const res = await dnservice.get(val.dncode);
     const {
       data: { header, detail },
     } = res.data;
@@ -260,7 +260,7 @@ function ReceiptManage() {
       !!val?.prename ? `${val.prename} ` : "",
       !!val?.cusname ? `${val.cusname} ` : "",
     ];
-    const quotation = {
+    const delivery = {
       ...val,
       cusname: cusname.join(""),
       address: addr.join(""),
@@ -269,8 +269,8 @@ function ReceiptManage() {
       tel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
     };
 
-    setFormDetail((state) => ({ ...state, ...quotation }));
-    form.setFieldsValue({ ...fvalue, ...quotation });
+    setFormDetail((state) => ({ ...state, ...delivery }));
+    form.setFieldsValue({ ...fvalue, ...delivery });
   };
 
   const handleConfirm = () => {
@@ -340,9 +340,9 @@ function ReceiptManage() {
     newWindow.location.href = `/receipt/${formDetail.recode}`;
   };
 
-  const handleDelete = (ivcode) => {
+  const handleDelete = (dncode) => {
     const itemDetail = [...listDetail];
-    const newData = itemDetail.filter((item) => item?.ivcode !== ivcode);
+    const newData = itemDetail.filter((item) => item?.dncode !== dncode);
     setListDetail([...newData]);
   };
 
@@ -356,7 +356,7 @@ function ReceiptManage() {
         icon={
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
-        onClick={() => handleDelete(record?.ivcode)}
+        onClick={() => handleDelete(record?.dncode)}
         disabled={(formDetail.doc_status === "ยกเลิก")}
       />
     ) : null;
@@ -533,10 +533,10 @@ function ReceiptManage() {
             className="bn-center justify-center bn-primary-outline"
             disabled={(formDetail.doc_status === "ยกเลิก")}
             onClick={() => {
-              setOpenInvoice(true);
+              setOpenDN(true);
             }}
           >
-            Choose Invoice
+            Choose Delivery Note
           </Button>
         </Flex>
       </Col>
@@ -799,7 +799,7 @@ function ReceiptManage() {
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
                   <Divider orientation="left" className="!mb-3 !mt-1">
-                    รายการใบเสร็จรับเงิน
+                    รายการใบส่งสินค้า
                   </Divider>
                   <Card style={cardStyle}>{SectionProduct}</Card>
                 </Col>
@@ -827,16 +827,16 @@ function ReceiptManage() {
         ></ModalCustomers>
       )}
 
-      {openInvoice && (
-        <ModalInvoice
-          show={openInvoice}
-          close={() => setOpenInvoice(false)}
+      {openDN && (
+        <ModalDN
+          show={openDN}
+          close={() => setOpenDN(false)}
           cuscode={form.getFieldValue("cuscode")}
           values={(v) => {
-            handleChoosedInvoice(v);
+            handleChoosedDN(v);
           }}
           selected={listDetail}
-        ></ModalInvoice>
+        ></ModalDN>
       )}
 
       {openPayment && (

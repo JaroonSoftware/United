@@ -1,9 +1,8 @@
 import { Button, Space } from "antd"; 
 import "../../assets/styles/banks.css"
 import { Tooltip,Image } from "antd";
-// import { EditOutlined, QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons"; 
 import { EditableRow, EditableCell } from "../../components/table/TableEditAble";
-// import { TagDeliveryNoteStatus } from "../../components/badge-and-tag/tags-delivery-note-status";
+import { TagDeliveryNoteStatus } from "../../components/badge-and-tag/";
 import dayjs from 'dayjs';
 import {  EditOutlined, PrinterOutlined } from "@ant-design/icons";
 import { comma,BACKEND_URL_MAIN } from '../../utils/util';
@@ -62,7 +61,7 @@ export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrints
     width: '13%',
     sorter: (a, b) => a.doc_status.localeCompare(b.doc_status),
     sortDirections: ["descend", "ascend"],
-    // render: (data) => <TagDeliveryNoteStatus result={data} />,
+    render: (data) => <TagDeliveryNoteStatus result={data} />,
   },
   {
     title: "Action",

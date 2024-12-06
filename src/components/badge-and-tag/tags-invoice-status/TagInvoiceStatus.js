@@ -4,15 +4,15 @@ import { CheckCircleFilled, ClockCircleFilled } from "@ant-design/icons"
 import { CloseCircleFilledIcon } from '../../icon';
 
 
-export default function TagDeliveryNoteStatus({result}) {
+export default function TagInvoiceStatus({result}) {
   let elementToRender;
 
   switch (result) {
-    case 'ออกใบเสร็จรับเงินแล้ว':
-      elementToRender = <Tag icon={<CheckCircleFilled />} color="#87d068"> ออกใบเสร็จรับเงินแล้ว </Tag>;
+    case 'ออกใบเสร็จแล้ว':
+      elementToRender = <Tag icon={<CheckCircleFilled />} color="#87d068"> ออกใบเสร็จแล้ว </Tag>;
       break;
     case 'รอออกใบเสร็จรับเงิน':
-      elementToRender = <Tag icon={<ClockCircleFilled />} color="#347C98"> รอออกใบเสร็จรับเงิน</Tag>;
+      elementToRender = <Tag icon={<ClockCircleFilled />} color="#347C98"> รอออกใบเสร็จรับเงิน </Tag>;
       break;
     case 'ยกเลิก':
       elementToRender = <Tag icon={<CloseCircleFilledIcon />} color="#ababab"> ยกเลิก </Tag>;

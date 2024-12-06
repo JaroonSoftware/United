@@ -46,13 +46,13 @@ try {
             doc_status = 'ออกใบเสร็จแล้ว',
             updated_date = CURRENT_TIMESTAMP(),
             updated_by = :action_user
-            where ivcode = :ivcode";
+            where dncode = :dncode";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-        $stmt->bindParam(":ivcode", $header->ivcode, PDO::PARAM_STR);
+        $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
 
         if (!$stmt->execute()) {
             $error = $conn->errorInfo();
@@ -65,8 +65,8 @@ try {
         $total_price=0;
         $total_pay=0;
 
-        $sql = "insert into receipt_detail (recode,ivcode,stcode,unit,qty,price,discount)
-        values (:recode,:ivcode,:stcode,:unit,:qty,:price,:discount)";
+        $sql = "insert into receipt_detail (recode,dncode,stcode,unit,qty,price,discount)
+        values (:recode,:dncode,:stcode,:unit,:qty,:price,:discount)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -74,7 +74,7 @@ try {
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
             $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
-            $stmt->bindParam(":ivcode", $val->ivcode, PDO::PARAM_STR);
+            $stmt->bindParam(":dncode", $val->dncode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
@@ -232,8 +232,8 @@ try {
             throw new PDOException("Remove data error => $error");
         }
 
-        $sql = "insert into receipt_detail (recode,ivcode,stcode,unit,qty,price,discount)
-        values (:recode,:ivcode,:stcode,:unit,:qty,:price,:discount)";
+        $sql = "insert into receipt_detail (recode,dncode,stcode,unit,qty,price,discount)
+        values (:recode,:dncode,:stcode,:unit,:qty,:price,:discount)";
         $stmt5 = $conn->prepare($sql);
         if (!$stmt5) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -241,7 +241,7 @@ try {
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
             $stmt5->bindParam(":recode", $header->recode, PDO::PARAM_STR);
-            $stmt5->bindParam(":ivcode", $val->ivcode, PDO::PARAM_STR);
+            $stmt5->bindParam(":dncode", $val->dncode, PDO::PARAM_STR);
             $stmt5->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt5->bindParam(":price", $val->price, PDO::PARAM_INT);
             $stmt5->bindParam(":unit", $val->unit, PDO::PARAM_STR);
@@ -382,7 +382,7 @@ try {
         }
         $header = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.recode,a.ivcode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname ";
+        $sql = "SELECT a.recode,a.dncode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname ";
         $sql .= " FROM `receipt_detail` as a inner join `items` as i on (a.stcode=i.stcode)  ";
         $sql .= " where a.recode = :code";
 

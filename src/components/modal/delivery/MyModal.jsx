@@ -5,14 +5,12 @@ import { Row, Col, Space } from "antd";
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useForm } from 'antd/es/form/Form';
-
-
 import { customersColumn } from "./model.js";
-// import OptionService from '../../../service/Options.service.js';
+import OptionService from '../../../service/Options.service.js';
 
-// const opservice = OptionService();
+const opservice = OptionService();
 
-export default function ModalInvoice({show, close,cuscode, values, selected}) {
+export default function ModalDN({show, close,cuscode, values, selected}) {
     const [form] = useForm(); 
 
     const [customersData, setCustomersData] = useState([]);
@@ -49,26 +47,26 @@ export default function ModalInvoice({show, close,cuscode, values, selected}) {
 
     /** setting initial component */ 
     const column = customersColumn({handleChoose});
-    // const search = () =>{
-    //     setLoading(true);
-    //     opservice.optionsInvoice({cuscode:cuscode}).then((res) => {
-    //         let { data } = res.data; 
-    //         setCustomersData(data);
-    //         setCustomersDataWrap(data);
-    //         // console.log(modalData, data) 
-    //     })
-    //     .catch((err) => { 
-    //         console.warn(err);
-    //         const data = err?.response?.data;
-    //         message.error( data?.message || "error request");  
-    //         // setLoading(false);
-    //     })
-    //     .finally( () => setTimeout( () => { setLoading(false) }, 400));
-    // }
+    const search = () =>{
+        setLoading(true);
+        opservice.optionsDN({}).then((res) => {
+            let { data } = res.data; 
+            setCustomersData(data);
+            setCustomersDataWrap(data);
+            // console.log(modalData, data) 
+        })
+        .catch((err) => { 
+            console.warn(err);
+            const data = err?.response?.data;
+            message.error( data?.message || "error request");  
+            // setLoading(false);
+        })
+        .finally( () => setTimeout( () => { setLoading(false) }, 400));
+    }
 
     useEffect( () => {
         if( !!openModal ){
-            // search();
+            search();
             // console.log("modal-customers");       
         } 
     }, [openModal]);
