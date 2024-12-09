@@ -158,14 +158,6 @@ export const productColumn = ({handleRemove},optionsItems) => [
     render: (_, rec) => rec.kind_name,
   },  
   {
-    title: "จำนวนที่ส่งแล้ว",
-    dataIndex: "delamount",
-    key: "delamount",
-    width: "8%",
-    align: "right",
-    className: "!pe-3",
-  },
-  {
     title: "ใบขายสินค้า",
     dataIndex: "socode",
     key: "socode",
@@ -196,6 +188,15 @@ export const productColumn = ({handleRemove},optionsItems) => [
     required: true,
     type:'number',
     render: (_, rec) => <>{ comma( Number(rec?.price ||  0),  2, 2 )}</>,
+  },
+  {
+    title: "ต้นทุน",
+    dataIndex: "cost",
+    key: "cost", 
+    width: "8%",
+    align: "right",
+    className: "!pe-3",        
+    // hidden: true,
   },
   {
     title: "หน่วยสินค้า",

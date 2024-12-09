@@ -8,12 +8,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     // $type_code = !empty($type) ? "and i.typecode = '$type'" : "";
     try {
         $sql = "
-			SELECT a.code,a.socode, a.stcode,i.stname, a.qty, i.buyprice, a.unit, a.discount,IF(a.buyamount IS NULL,0,a.buyamount) as buyamount, k.kind_name
+			SELECT a.code,a.socode, a.stcode,i.stname, a.qty, i.buyprice,s.amtprice, a.unit, a.discount,IF(a.delamount IS NULL,0,a.delamount) as delamount, k.kind_name
             FROM sodetail a 
             inner join somaster b on (a.socode=b.socode)
             inner join items i on (a.stcode=i.stcode)
+            inner join items_stock s on (s.stcode=i.stcode)
             left outer join kind k on (i.kind_code=k.kind_code)
-            where IF(a.buyamount IS NULL,0,a.buyamount) < a.qty and b.doc_status != 'ยกเลิก' "; 
+            where IF(a.delamount IS NULL,0,a.delamount) < a.qty and b.doc_status != 'ยกเลิก' "; 
 
             $stmt = $conn->prepare($sql); 
             $stmt->execute();
@@ -28,9 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $nestedObject->stcode = $row['stcode'];
                 $nestedObject->stname = $row['stname'];
                 $nestedObject->buyprice = $row['buyprice'];
+                $nestedObject->amtprice = $row['amtprice'];
                 $nestedObject->unit = $row['unit'];
                 $nestedObject->qty = $row['qty'];
-                $nestedObject->buyamount = $row['buyamount'];
+                $nestedObject->delamount = $row['delamount'];
                 $nestedObject->kind_name = $row['kind_name'];
                 //echo $row['prod_id'];
                 $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");

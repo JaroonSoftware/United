@@ -52,7 +52,7 @@ export const columns = ()=>{
       key: "qty",
     },
       {
-        title: "จำนวนที่ซื้อแล้ว",
+        title: "จำนวนที่ส่งแล้ว",
         dataIndex: "delamount",
         key: "delamount",
       },

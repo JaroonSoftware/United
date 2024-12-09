@@ -17,9 +17,33 @@ try {
         $_POST = json_decode($rest_json, true);
         extract($_POST, EXTR_OVERWRITE, "_");
 
+        foreach ($detail as $ind => $val) {
+            $val = (object)$val;
+
+            $strSQL = "SELECT qty FROM items_stock where stcode = :stcode ";
+            $stmt5 = $conn->prepare($strSQL);
+            if (!$stmt5) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt5->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
+
+            if (!$stmt5->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
+
+            $res = $stmt5->fetch(PDO::FETCH_ASSOC);
+            extract($res, EXTR_OVERWRITE, "_");
+            if ($qty < $val->qty) {
+                $error = $conn->errorInfo();
+                throw new PDOException("จำนวนสต๊อกเหลือไม่พอให้ตัดออก");
+                die;
+            }
+        }
+
         // var_dump($_POST);
-        $sql = "insert dnmaster (`dncode`, `dndate`, `cuscode`,`remark`,created_by,updated_by) 
-        values (:dncode,:dndate,:cuscode,:remark,:action_user,:action_user)";
+        $sql = "insert dnmaster (`dncode`, `dndate`, `cuscode`,`vat`,`remark`,created_by,updated_by) 
+        values (:dncode,:dndate,:cuscode,:vat,:remark,:action_user,:action_user)";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
@@ -28,6 +52,7 @@ try {
         $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
         $stmt->bindParam(":dndate", $header->dndate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
+        $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
         $stmt->bindParam(":remark", $header->remark, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_STR);
 
@@ -40,8 +65,8 @@ try {
         update_dncode($conn);
         $code = $conn->lastInsertId();
 
-        $sql = "insert into dndetail (dncode,socode,stcode,qty,price,unit,discount)
-        values (:dncode,:socode,:stcode,:qty,:price,:unit,:discount)";
+        $sql = "insert into dndetail (dncode,socode,stcode,qty,price,unit,discount,cost)
+        values (:dncode,:socode,:stcode,:qty,:price,:unit,:discount,:cost)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -52,16 +77,32 @@ try {
             $stmt->bindParam(":socode", $val->socode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
-            $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
+            $stmt->bindParam(":price", $val->price, PDO::PARAM_STR);
             $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
             $stmt->bindParam(":discount", $val->discount, PDO::PARAM_INT);
+            $stmt->bindParam(":cost", $val->cost, PDO::PARAM_STR);
 
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();
                 throw new PDOException("Insert data error => $error");
             }
 
-            $sql = "update sodetail set buyamount = buyamount+:qty where socode = :socode and stcode = :stcode";
+            $sql2 = "UPDATE items_stock SET qty= qty-:qty,price= amtprice*qty ,updated_date = CURRENT_TIMESTAMP() where stcode =:stcode ";
+            $stmt2 = $conn->prepare($sql2);
+            if (!$stmt2) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            // $stmt2->bindParam(":price", $val->price, PDO::PARAM_STR);
+            $stmt2->bindParam(":qty", $val->qty, PDO::PARAM_STR);
+            // $stmt2->bindParam(":discount", $val->discount, PDO::PARAM_STR);
+            $stmt2->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
+
+            if (!$stmt2->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
+
+            $sql = "update sodetail set delamount = delamount+:qty where socode = :socode and stcode = :stcode";
 
             $stmt3 = $conn->prepare($sql);
             if (!$stmt3) throw new PDOException("Insert data error => {$conn->errorInfo()}");
@@ -76,7 +117,7 @@ try {
                 die;
             }
 
-            $strSQL = "SELECT count(code) as count FROM `sodetail` where socode = :socode and qty>IF(buyamount IS NULL,0,buyamount) ";
+            $strSQL = "SELECT count(code) as count FROM `sodetail` where socode = :socode and qty>IF(delamount IS NULL,0,delamount) ";
             $stmt5 = $conn->prepare($strSQL);
             if (!$stmt5) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -137,6 +178,7 @@ try {
         dndate = :dndate,
         socode = :socode,
         remark = :remark,
+        vat = :vat,
         updated_date = CURRENT_TIMESTAMP(),
         updated_by = :action_user
         where dncode = :dncode";
@@ -148,6 +190,7 @@ try {
 
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":remark", $header->remark, PDO::PARAM_STR);
+        $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
         $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
         $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR);
@@ -167,8 +210,8 @@ try {
             throw new PDOException("Remove data error => $error");
         }
 
-        $sql = "insert into dndetail (dncode,socode)
-        values (:dncode,:socode)";
+        $sql = "insert into dndetail (dncode,socode,stcode,qty,price,unit,discount,cost)
+        values (:dncode,:socode,:stcode,:qty,:price,:unit,:discount,:cost)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -176,12 +219,19 @@ try {
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
             $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
-            $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR);
+            $stmt->bindParam(":socode", $val->socode, PDO::PARAM_STR);
+            $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
+            $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
+            $stmt->bindParam(":price", $val->price, PDO::PARAM_STR);
+            $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
+            $stmt->bindParam(":discount", $val->discount, PDO::PARAM_INT);
+            $stmt->bindParam(":cost", $val->cost, PDO::PARAM_STR);
         
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();
                 throw new PDOException("Insert data error => $error");
             }
+            
         }
 
         $conn->commit();
@@ -210,7 +260,7 @@ try {
         echo json_encode(array("status" => 1));
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
-        $sql = "SELECT a.dncode,a.cuscode,a.dndate,a.remark,c.prename,c.cusname,CONCAT(COALESCE(c.idno, '') ,' ', COALESCE(c.road, ''),' ', COALESCE(c.subdistrict, ''),' ', COALESCE(c.district, ''),' ',COALESCE(c.zipcode, '') ) as address";
+        $sql = "SELECT a.dncode,a.cuscode,a.dndate,a.vat,a.remark,c.prename,c.cusname,CONCAT(COALESCE(c.idno, '') ,' ', COALESCE(c.road, ''),' ', COALESCE(c.subdistrict, ''),' ', COALESCE(c.district, ''),' ',COALESCE(c.zipcode, '') ) as address";
         $sql .= " FROM `dnmaster` as a ";
         $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";
         $sql .= " where a.dncode = :code";
@@ -223,7 +273,7 @@ try {
         }
         $header = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.dncode,a.stcode,a.socode, a.price, a.unit, a.qty ,i.stname,a.discount,s.buyamount, k.kind_name ";
+        $sql = "SELECT a.dncode,a.stcode,a.socode, a.price, a.unit, a.qty ,i.stname,a.discount,s.delamount, k.kind_name,a.cost ";
         $sql .= " FROM `dndetail` as a";
         $sql .= " inner join `items` as i on (a.stcode=i.stcode)  ";
         $sql .= " left outer join `sodetail` as s on (a.stcode=s.stcode) and a.socode=s.socode  ";
@@ -249,8 +299,9 @@ try {
             $nestedObject->qty = $row['qty']; 
             $nestedObject->discount = $row['discount'];     
             $nestedObject->socode = $row['socode'];    
-            $nestedObject->buyamount = $row['buyamount']; 
+            $nestedObject->delamount = $row['delamount']; 
             $nestedObject->kind_name = $row['kind_name']; 
+            $nestedObject->cost = $row['cost']; 
                 
             //echo $row['prod_id'];
             $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");

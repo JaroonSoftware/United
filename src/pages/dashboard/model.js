@@ -4,7 +4,7 @@ export const minstockColumn = ({ handleShowDetail }) => [
     title: "ลำดับ",
     dataIndex: "ind",
     key: "ind",
-    align: "center",
+    align: "left",
     width: 60,
     render: (im, rc, index) => <>{index + 1}</>,
   },
@@ -21,13 +21,6 @@ export const minstockColumn = ({ handleShowDetail }) => [
     dataIndex: "stname",
     align: "left",
     sorter: (a, b) => (a?.stname || "").localeCompare(b?.stname || ""),
-  },
-  {
-    title: "ผู้ขายที่ซื้อ",
-    key: "supname",
-    dataIndex: "supname",
-    align: "left",
-    sorter: (a, b) => (a?.supname || "").localeCompare(b?.supname || ""),
   },
   {
     title: "จำนวนในสต๊อก",
