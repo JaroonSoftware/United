@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
         $res = null;
         
         $sql = "SELECT i.ivcode,i.ivdate,c.cuscode, c.cusname,c.prename, c.idno, c.road, c.subdistrict, c.district, c.province, c.zipcode,i.doc_status
-         FROM ivmaster as i inner join `customer` as c on (i.cuscode=c.cuscode) where i.cuscode= '$cuscode' and i.doc_status != 'ยกเลิก' and i.doc_status != 'ออกใบเสร็จแล้ว'  ";
+         FROM ivmaster as i inner join `customer` as c on (i.cuscode=c.cuscode) where c.cuscode= '$cuscode' and i.doc_status != 'ยกเลิก' and i.doc_status != 'ออกใบเสร็จแล้ว'  ";
             // $type_code
             $stmt = $conn->prepare($sql); 
             $stmt->execute();

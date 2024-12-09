@@ -16,51 +16,67 @@ import {
   Space,
   Table,
   Radio,
-  Popconfirm,
+  Popconfirm
 } from "antd";
 import ModalCustomers from "../../components/modal/customers/ModalCustomers";
 import ModalDN from "../../components/modal/delivery/MyModal";
+import ModalPayment from "../../components/modal/payment/MyModal";
 import OptionService from "../../service/Options.service";
 import ReceiptService from "../../service/Receipt.service";
 import DNService from "../../service/DeliveryNote.service";
+
 import {
   DEFALUT_CHECK_RECEIPT,
   componentsEditable,
   columnsParametersEditable,
+  columnsPaymentEditable,
 } from "./model";
+
 import dayjs from "dayjs";
 import { delay, comma } from "../../utils/util";
 import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import {
   SaveFilled,
   SearchOutlined,
+  CreditCardOutlined,
   QuestionCircleOutlined,
 } from "@ant-design/icons";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuPrinter } from "react-icons/lu";
 import { LuPackageSearch } from "react-icons/lu";
-import { CloseCircleFilledIcon } from "../../components/icon";
+import { CloseCircleFilledIcon } from '../../components/icon';
+
 const opservice = OptionService();
 const reservice = ReceiptService();
 const dnservice = DNService();
+
 const gotoFrom = "/receipt";
 const dateFormat = "DD/MM/YYYY";
 
 function ReceiptManage() {
   const navigate = useNavigate();
   const location = useLocation();
+
   const { config } = location.state || { config: null };
   const [form] = Form.useForm();
+
   /** Modal handle */
   const [openCustomers, setOpenCustomers] = useState(false);
   const [openDN, setOpenDN] = useState(false);
+  const [openPayment, setOpenPayment] = useState(false);
+
   const [listPayment, setListPayment] = useState([]);
+
   /** Receipt state */
   const [reCode, setRECode] = useState(null);
+
   /** Detail Data State */
   const [listDetail, setListDetail] = useState([]);
+
   const [unitOption, setUnitOption] = useState([]);
+
   const [formDetail, setFormDetail] = useState(DEFALUT_CHECK_RECEIPT);
   const cardStyle = {
     backgroundColor: "#f0f0f0",
@@ -102,8 +118,8 @@ function ReceiptManage() {
           ...formDetail,
           recode: code,
           redate: dayjs(new Date()),
-          check_date: dayjs(new Date()),
-          doc_status: "รอออกแจ้งหนี้",
+          check_date: dayjs(new Date()),          
+          doc_status:"รอออกแจ้งหนี้",
         };
 
         setFormDetail(ininteial_value);
@@ -176,6 +192,16 @@ function ReceiptManage() {
     if (!!valid_price_until && !!e) {
       handleCalculatePrice(valid_price_until || 0, e || new Date());
     }
+  };
+
+  const handleChoosedPayment = (val) => {
+    const tmpdata = {
+      ...val,
+      paydate: dayjs(val.paydate).format("YYYY-MM-DD"),
+    };
+    // console.log(val)
+    setListPayment([...listPayment, tmpdata]);
+    handleSummaryPrice();
   };
 
   /** Function modal handle */
@@ -331,6 +357,29 @@ function ReceiptManage() {
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
         onClick={() => handleDelete(record?.dncode)}
+        disabled={(formDetail.doc_status === "ยกเลิก")}
+      />
+    ) : null;
+  };
+
+  const handleDeletePayment = (record) => {
+    const itemDetail = [...listPayment];
+
+    const newData = itemDetail.filter((item, index) => index !== record);
+    setListPayment([...newData]);
+  };
+
+  const handleRemovePayment = (record) => {
+    const itemDetail = [...listPayment];
+    return itemDetail.length >= 1 ? (
+      <Button
+        className="bt-icon"
+        size="small"
+        danger
+        icon={
+          <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
+        }
+        onClick={() => handleDeletePayment(record)}
         disabled={formDetail.doc_status === "ยกเลิก"}
       />
     ) : null;
@@ -358,6 +407,10 @@ function ReceiptManage() {
   /** setting column table */
   const prodcolumns = columnsParametersEditable(handleEditCell, unitOption, {
     handleRemove,
+  });
+
+  const paymentcolumns = columnsPaymentEditable(handleEditCell, {
+    handleRemovePayment,
   });
 
   const SectionCustomers = (
@@ -478,7 +531,7 @@ function ReceiptManage() {
           <Button
             icon={<LuPackageSearch style={{ fontSize: "1.2rem" }} />}
             className="bn-center justify-center bn-primary-outline"
-            disabled={formDetail.doc_status === "ยกเลิก"}
+            disabled={(formDetail.doc_status === "ยกเลิก")}
             onClick={() => {
               setOpenDN(true);
             }}
@@ -488,6 +541,93 @@ function ReceiptManage() {
         </Flex>
       </Col>
     </Flex>
+  );
+
+  const TitleTablePayment = (
+    <Flex className="width-100" align="center">
+      <Col span={12} className="p-0">
+        <Flex gap={4} justify="start" align="center">
+          <Typography.Title className="m-0 !text-zinc-800" level={3}>
+            รายการชำระเงิน
+          </Typography.Title>
+        </Flex>
+      </Col>
+      <Col span={12} style={{ paddingInline: 0 }}>
+        <Flex justify="end">
+          <Button
+            icon={<CreditCardOutlined style={{ fontSize: "1.2rem" }} />}
+            className="bn-center justify-center bn-primary-outline"
+            disabled={(formDetail.doc_status === "ยกเลิก")}
+            onClick={() => {
+              handleSummaryPrice();
+              form.validateFields().then((v) => {
+                if (formDetail.balance <= 0)
+                  throw message.error("ชำระเงินครบแล้ว");
+
+                if (listDetail.length < 1)
+                  throw message.error("กรุณาเลือก ใบแจ้งหนี้ก่อน");
+                setOpenPayment(true);
+              });
+            }}
+          >
+            Add Payment
+          </Button>
+        </Flex>
+      </Col>
+    </Flex>
+  );
+
+  const SectionPayment = (
+    <>
+      <Flex className="width-100" vertical gap={4}>
+        <Table
+          title={() => TitleTablePayment}
+          components={componentsEditable}
+          rowClassName={() => "editable-row"}
+          bordered
+          dataSource={listPayment}
+          columns={paymentcolumns}
+          pagination={false}
+          rowKey="code"
+          scroll={{ x: "max-content" }}
+          locale={{
+            emptyText: <span>No data available, please add some data.</span>,
+          }}
+          summary={(record) => {
+            return (
+              <>
+                {listPayment.length > 0 && (
+                  <>
+                    <Table.Summary.Row>
+                      <Table.Summary.Cell
+                        index={0}
+                        colSpan={4}
+                      ></Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        index={4}
+                        align="end"
+                        className="!pe-4"
+                      >
+                        Total
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        className="!pe-4 text-end border-right-0"
+                        style={{ borderRigth: "0px solid" }}
+                      >
+                        <Typography.Text type="danger">
+                          {comma(Number(formDetail?.total_pay || 0), 2, 2)}
+                        </Typography.Text>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell>Baht</Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  </>
+                )}
+              </>
+            );
+          }}
+        />
+      </Flex>
+    </>
   );
 
   const SectionOther = (
@@ -518,25 +658,25 @@ function ReceiptManage() {
       </Col>
       <Col span={12} style={{ paddingInline: 0 }}>
         <Flex gap={4} justify="end">
-          {formDetail.doc_status !== "ยกเลิก" && (
-            <Popconfirm
-              placement="topRight"
-              title="ยืนยันการยกเลิก"
-              description="คุณแน่ใจที่จะยกเลิกใบเสร็จ?"
-              icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-              onConfirm={() => handleCancel()}
-            >
-              <Button
-                className="bn-center justify-center"
-                icon={<CloseCircleFilledIcon style={{ fontSize: "1rem" }} />}
-                type="primary"
-                style={{ width: "9.5rem" }}
-                danger
-              >
-                ยกเลิกใบเสร็จ
-              </Button>
-            </Popconfirm>
-          )}
+        {(formDetail.doc_status !== "ยกเลิก")&&
+          <Popconfirm 
+          placement="topRight"
+          title="ยืนยันการยกเลิก"  
+          description="คุณแน่ใจที่จะยกเลิกใบเสร็จ?"
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          onConfirm={() => handleCancel()}
+        >
+          <Button
+            className="bn-center justify-center"
+            icon={<CloseCircleFilledIcon style={{ fontSize: "1rem" }} />}
+            type="primary"
+            style={{ width: "9.5rem" }}
+            danger
+          >
+            ยกเลิกใบเสร็จ
+          </Button>
+        </Popconfirm>
+          }
           <Button
             className="bn-center justify-center"
             icon={<SaveFilled style={{ fontSize: "1rem" }} />}
@@ -545,7 +685,7 @@ function ReceiptManage() {
             onClick={() => {
               handleConfirm();
             }}
-            disabled={formDetail.doc_status === "ยกเลิก"}
+            disabled={(formDetail.doc_status === "ยกเลิก")}
           >
             Save
           </Button>
@@ -589,7 +729,7 @@ function ReceiptManage() {
             onClick={() => {
               handleConfirm();
             }}
-            disabled={formDetail.doc_status === "ยกเลิก"}
+            disabled={(formDetail.doc_status === "ยกเลิก")}
           >
             Save
           </Button>
@@ -629,7 +769,7 @@ function ReceiptManage() {
                         </Typography.Title>
                         <Form.Item name="redate" className="!m-0">
                           <DatePicker
-                            disabled={formDetail.doc_status === "ยกเลิก"}
+                            disabled={(formDetail.doc_status === "ยกเลิก")}
                             className="input-40"
                             allowClear={false}
                             onChange={handleQuotDate}
@@ -663,6 +803,13 @@ function ReceiptManage() {
                   </Divider>
                   <Card style={cardStyle}>{SectionProduct}</Card>
                 </Col>
+                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+                  <Divider orientation="left" className="!mb-3 !mt-1">
+                    {" "}
+                    บันทึกการชำระเงิน{" "}
+                  </Divider>
+                  <Card style={cardStyle}>{SectionPayment}</Card>
+                </Col>
               </Row>
             </Card>
           </Form>
@@ -690,6 +837,18 @@ function ReceiptManage() {
           }}
           selected={listDetail}
         ></ModalDN>
+      )}
+
+      {openPayment && (
+        <ModalPayment
+          show={openPayment}
+          close={() => setOpenPayment(false)}
+          recode={form.getFieldValue("recode")}
+          total_price={formDetail.balance}
+          values={(v) => {
+            handleChoosedPayment(v);
+          }}
+        ></ModalPayment>
       )}
     </div>
   );

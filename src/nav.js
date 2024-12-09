@@ -138,6 +138,11 @@ let _nav = [
     title: "กำลังปรับปรุง",
     type: "group",
   },
+  {
+    title: "ใบวางบิล",
+    icon: <FaUserCircle className="nav-ico" />,
+    to: "/invoice",
+  },
 ];
 
 export default _nav;

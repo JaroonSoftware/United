@@ -17,6 +17,8 @@ import { GoodsReceipt, GoodsReceiptAccess, GoodsReceiptManage } from "../pages/g
 
 import { DN, DNAccess, DNManage} from "../pages/delivery-note"
 
+import { Invoice, InvoiceAccess, InvoiceManage} from "../pages/invoice"
+
 export const WarehouseRouter = (
   <>
     <Route path="/quotation/" exact element={<Quotation />}>
@@ -49,5 +51,9 @@ export const WarehouseRouter = (
       <Route path="manage/:action" element={<DNManage />} />
     </Route>
 
+    <Route path="/invoice/" exact element={<Invoice />}>
+      <Route index element={<InvoiceAccess />} />
+      <Route path="manage/:action" element={<InvoiceManage />} />
+    </Route>
   </>
 );
