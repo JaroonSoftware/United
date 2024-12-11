@@ -332,6 +332,7 @@ export const DEFALUT_CHECK_RECEIPT = {
   redate: null,
   ivcode: null,  
   cuscode: null,
+  stcode: null,
   remark: null,
   branch: null,
   check_no: null,

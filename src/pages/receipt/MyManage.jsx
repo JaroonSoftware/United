@@ -38,7 +38,7 @@ import {
   QuestionCircleOutlined,
 } from "@ant-design/icons";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { LuPrinter } from "react-icons/lu";
+// import { LuPrinter } from "react-icons/lu";
 import { LuPackageSearch } from "react-icons/lu";
 import { CloseCircleFilledIcon } from "../../components/icon";
 const opservice = OptionService();
@@ -55,7 +55,6 @@ function ReceiptManage() {
   /** Modal handle */
   const [openCustomers, setOpenCustomers] = useState(false);
   const [openDN, setOpenDN] = useState(false);
-  const [listPayment, setListPayment] = useState([]);
   /** Receipt state */
   const [reCode, setRECode] = useState(null);
   /** Detail Data State */
@@ -74,12 +73,11 @@ function ReceiptManage() {
           .get(config?.code)
           .catch((error) => message.error("get Receipt data fail."));
         const {
-          data: { header, detail, payment },
+          data: { header, detail },
         } = res.data;
         const { recode, redate, check_date } = header;
         setFormDetail(header);
         setListDetail(detail);
-        setListPayment(payment);
         setRECode(recode);
         form.setFieldsValue({
           ...header,
@@ -109,8 +107,6 @@ function ReceiptManage() {
         setFormDetail(ininteial_value);
         // console.log(formDetail)
         form.setFieldsValue(ininteial_value);
-        form.setFieldValue("payment_method", "ชำระทั้งหมด");
-        form.setFieldValue("payment_type", "เช็คธนาคาร");
         form.setFieldValue("vat", "7");
 
         const [unitOprionRes] = await Promise.all([
@@ -129,13 +125,8 @@ function ReceiptManage() {
     if (listDetail) handleSummaryPrice();
   }, [listDetail]);
 
-  useEffect(() => {
-    if (listPayment) handleSummaryPrice();
-  }, [listPayment]);
-
   const handleSummaryPrice = () => {
     const newData = [...listDetail];
-    const payData = [...listPayment];
 
     const tmp_price = newData.reduce(
       (a, v) =>
@@ -146,16 +137,11 @@ function ReceiptManage() {
       0
     );
 
-    const payprice = payData.reduce((a, v) => (a += Number(v?.price || 0)), 0);
-
     const total_price = tmp_price;
-    const balance = tmp_price - payprice;
-    const total_pay = payprice;
+
     setFormDetail(() => ({
       ...formDetail,
       total_price,
-      balance,
-      total_pay,
     }));
     // console.log(formDetail)
   };
@@ -251,19 +237,18 @@ function ReceiptManage() {
     form
       .validateFields()
       .then((v) => {
+        if (listDetail.length < 1) throw new Error("กรุณาเพิ่ม รายการขาย");
+
         const header = {
           ...formDetail,
           recode: reCode,
           redate: dayjs(form.getFieldValue("redate")).format("YYYY-MM-DD"),
           remark: form.getFieldValue("remark"),
-          total_price: formDetail.total_price,
-          vat: form.getFieldValue("vat"),
         };
 
         // console.log(formDetail)
         const detail = listDetail;
-        const payment = listPayment;
-        const parm = { header, detail, payment };
+        const parm = { header, detail };
         // console.log(parm)
         const actions =
           config?.action !== "create" ? reservice.update : reservice.create;
@@ -309,10 +294,10 @@ function ReceiptManage() {
     // console.clear();
   };
 
-  const handlePrint = () => {
-    const newWindow = window.open("", "_blank");
-    newWindow.location.href = `/receipt/${formDetail.recode}`;
-  };
+  // const handlePrint = () => {
+  //   const newWindow = window.open("", "_blank");
+  //   newWindow.location.href = `/receipt/${formDetail.recode}`;
+  // };
 
   const handleDelete = (dncode) => {
     const itemDetail = [...listDetail];
@@ -551,7 +536,7 @@ function ReceiptManage() {
           </Button>
         </Flex>
       </Col>
-      <Col span={12} style={{ paddingInline: 0 }}>
+      {/* <Col span={12} style={{ paddingInline: 0 }}>
         <Flex gap={4} justify="end">
           {!!formDetail.ivcod && (
             <Button
@@ -565,7 +550,7 @@ function ReceiptManage() {
             </Button>
           )}
         </Flex>
-      </Col>
+      </Col> */}
     </Row>
   );
 
@@ -645,23 +630,20 @@ function ReceiptManage() {
               <Row className="m-0" gutter={[12, 12]}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
                   <Divider orientation="left" className="!mb-3 !mt-1">
-                    {" "}
-                    ข้อมูลใบเสร็จรับเงิน{" "}
+                    ข้อมูลใบเสร็จรับเงิน
                   </Divider>
-                  <Card style={cardStyle}>{SectionCustomers}</Card>
-                </Col>
-                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
-                  <Divider orientation="left" className="!mb-3 !mt-1">
-                    {" "}
-                    ข้อมูลเพิ่มเติม{" "}
-                  </Divider>
-                  <Card style={cardStyle}>{SectionOther}</Card>
+                  <Card style={cardStyle}>
+                    {SectionCustomers}
+                    {SectionOther}
+                  </Card>
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
                   <Divider orientation="left" className="!mb-3 !mt-1">
                     รายการใบส่งสินค้า
                   </Divider>
-                  <Card style={cardStyle}>{SectionProduct}</Card>
+                  <Card style={{ backgroundColor: "#f0f0f0" }}>
+                    {SectionProduct}
+                  </Card>
                 </Col>
               </Row>
             </Card>
@@ -684,10 +666,10 @@ function ReceiptManage() {
         <ModalDN
           show={openDN}
           close={() => setOpenDN(false)}
-          cuscode={form.getFieldValue("cuscode")}
           values={(v) => {
             handleChoosedDN(v);
           }}
+          // cuscode={form.getFieldValue("cuscode")}
           selected={listDetail}
         ></ModalDN>
       )}

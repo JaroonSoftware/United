@@ -329,8 +329,7 @@ export const columnsPaymentEditable = (handleEditCell,{handleRemovePayment} ) =>
 }
 export const DEFALUT_CHECK_RECEIPT = {
   ivcode: null,
-  redate: null,
-  ivcode: null,  
+  ivdate: null,
   cuscode: null,
   remark: null,
   branch: null,

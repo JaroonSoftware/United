@@ -41,7 +41,7 @@ try {
         }
 
         $sql = "
-            update ivmaster 
+            update damaster 
             set
             doc_status = 'ออกใบเสร็จแล้ว',
             updated_date = CURRENT_TIMESTAMP(),
@@ -71,115 +71,8 @@ try {
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         // $detail = $detail;  
-        foreach ($detail as $ind => $val) {
-            $val = (object)$val;
-            $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
-            $stmt->bindParam(":dncode", $val->dncode, PDO::PARAM_STR);
-            $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
-            $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
-            $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
-            $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
-            $stmt->bindParam(":discount", $val->discount, PDO::PARAM_INT);
-            if (!$stmt->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-            }
 
-            $total_price+=($val->price*$val->qty)*(1-($val->discount/100));
-        }
 
-        $sql = "insert into receipt_payment (recode,paydate,price,payment_type,bank,bank_name_th,bank_name,bank_no,remark)
-        values (:recode,:paydate,:price,:payment_type,:bank,:bank_name_th,:bank_name,:bank_no,:remark)";
-        $stmt2 = $conn->prepare($sql);
-        if (!$stmt2) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-        // $detail = $detail;  
-        
-
-        foreach ($payment as $ind => $pay) {
-            $pay = (object)$pay;
-            $stmt2->bindParam(":recode", $header->recode, PDO::PARAM_STR);
-            $stmt2->bindParam(":paydate", $pay->paydate, PDO::PARAM_STR);
-            $stmt2->bindParam(":price", $pay->price, PDO::PARAM_STR);
-            $stmt2->bindParam(":payment_type", $pay->payment_type, PDO::PARAM_STR);
-            $stmt2->bindParam(":bank", $pay->bank, PDO::PARAM_STR);
-            $stmt2->bindParam(":bank_name_th", $pay->bank_name_th, PDO::PARAM_STR);
-            $stmt2->bindParam(":bank_name", $pay->bank_name, PDO::PARAM_STR);
-            $stmt2->bindParam(":bank_no", $pay->bank_no, PDO::PARAM_STR);
-            $stmt2->bindParam(":remark", $pay->remark, PDO::PARAM_STR);
-            if (!$stmt2->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-            }
-
-            $total_pay+=$pay->price;
-        }
-
-        
-
-        if ($total_price == $total_pay) {
-            $sql = "
-            update receipt 
-            set
-            doc_status = 'ชำระแล้ว',
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where recode = :recode";
-
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-            $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);          
-
-            if (!$stmt->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-                die;
-            }
-        }
-        else if ($total_pay == 0) {
-            $sql = "
-            update receipt 
-            set
-            doc_status = 'รอชำระเงิน',
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where recode = :recode";
-
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-            $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);          
-
-            if (!$stmt->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-                die;
-            }
-        }
-        else{
-            $sql = "
-            update receipt 
-            set
-            doc_status = 'ชำระยังไม่ครบ',
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where recode = :recode";
-
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-            $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
-
-            if (!$stmt->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-                die;
-            }
-        }
 
         $conn->commit();
         http_response_code(200);
@@ -255,101 +148,10 @@ try {
             $total_price+=($val->price*$val->qty)*(1-($val->discount/100));
         }
 
-        $sql = "delete from receipt_payment where recode = :recode";
-        $stmt4 = $conn->prepare($sql);
-        if (!$stmt4->execute(['recode' => $header->recode])) {
-            $error = $conn->errorInfo();
-            throw new PDOException("Remove data error => $error");
-        }
-
-        $sql = "insert into receipt_payment (recode,paydate,price,payment_type,bank,bank_name_th,bank_name,bank_no,remark)
-        values (:recode,:paydate,:price,:payment_type,:bank,:bank_name_th,:bank_name,:bank_no,:remark)";
         $stmt2 = $conn->prepare($sql);
         if (!$stmt2) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         // $detail = $detail;  
-        foreach ($payment as $ind => $pay) {
-            $pay = (object)$pay;
-            $stmt2->bindParam(":recode", $header->recode, PDO::PARAM_STR);
-            $stmt2->bindParam(":paydate", $pay->paydate, PDO::PARAM_STR);
-            $stmt2->bindParam(":price", $pay->price, PDO::PARAM_STR);
-            $stmt2->bindParam(":payment_type", $pay->payment_type, PDO::PARAM_STR);
-            $stmt2->bindParam(":bank", $pay->bank, PDO::PARAM_STR);
-            $stmt2->bindParam(":bank_name_th", $pay->bank_name_th, PDO::PARAM_STR);
-            $stmt2->bindParam(":bank_name", $pay->bank_name, PDO::PARAM_STR);
-            $stmt2->bindParam(":bank_no", $pay->bank_no, PDO::PARAM_STR);
-            $stmt2->bindParam(":remark", $pay->remark, PDO::PARAM_STR);
-            if (!$stmt2->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-            }
-
-            $total_pay+=$pay->price;
-        }
-
-        if ($total_price == $total_pay) {
-            $sql = "
-            update receipt 
-            set
-            doc_status = 'ชำระแล้ว',
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where recode = :recode";
-
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-            $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);          
-
-            if (!$stmt->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-                die;
-            }
-        }
-        else if ($total_pay == 0) {
-            $sql = "
-            update receipt 
-            set
-            doc_status = 'รอชำระเงิน',
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where recode = :recode";
-
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-            $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);          
-
-            if (!$stmt->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-                die;
-            }
-        }
-        else{
-            $sql = "
-            update receipt 
-            set
-            doc_status = 'ชำระยังไม่ครบ',
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where recode = :recode";
-
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-            $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
-
-            if (!$stmt->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-                die;
-            }
-        }
         
         $conn->commit();
         http_response_code(200);
@@ -394,21 +196,10 @@ try {
         }
         $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT recode,paydate,price,payment_type,bank,bank_name_th,bank_name,bank_no,remark ";
-        $sql .= " FROM `receipt_payment`  ";
-        $sql .= " where recode = :code";
-
-        $stmt = $conn->prepare($sql);
-        if (!$stmt->execute(['code' => $code])) {
-            $error = $conn->errorInfo();
-            http_response_code(404);
-            throw new PDOException("Geting data error => $error");
-        }
-        $payment = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array('status' => 1, 'data' => array("header" => $header, "detail" => $detail ,"payment" => $payment)));
+        echo json_encode(array('status' => 1, 'data' => array("header" => $header, "detail" => $detail)));
     }
 
 } catch (PDOException $e) { 

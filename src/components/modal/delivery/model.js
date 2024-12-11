@@ -1,48 +1,66 @@
-import { Typography } from "antd";
-import { TagInvoiceStatus } from "../../badge-and-tag";
-import dayjs from 'dayjs';
-
 /** get items column */
-export const customersColumn = ({handleChoose})=>{
-    const Link = Typography.Link;
-    return [
-      {
-        title: "เลขที่ใบแจ้งหนี้",
-        key: "dncode",
-        width: "15%",
-        dataIndex: "dncode", 
-        render: (v, record) => <Link className="text-select" onClick={()=>handleChoose(record)}>{v}</Link>
+import { TagItemTypes } from "../../badge-and-tag";
+import { Image } from "antd";
+import { BACKEND_URL_MAIN } from '../../../utils/util';
+export const columns = ()=>{
+  return [
+    {
+      key: "code",
+      dataIndex: "code",
+      align: "left",
+      hidden: true,
+    },
+    {
+      title: "รหัสสินค้า",
+      key: "stcode",
+      dataIndex: "stcode", 
+    },
+    {
+      title: "รหัสใบขายสินค้า",
+      key: "socode",
+      dataIndex: "socode", 
+    },
+    {
+      title: "รูปประกอบ",
+      dataIndex: "file",
+      key: "file",
+      width: 120,
+      align: "center",
+      render: (im, rec) => 
+        {
+          const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/logo.png`
+          );
+          return <>
+          <Image
+        style={{ borderRadius: 10 }}
+        preview={false}
+        height={75}
+        alt={`Image ${rec.file_name}`}
+        src={`${BACKEND_URL_MAIN}` + img}
+      />
+      </>
       },
+    },
+    {
+      title: "ชื่อสินค้า",
+      dataIndex: "stname",
+      key: "stname",
+    },
+    {
+      title: "จำนวนที่ขาย",
+      dataIndex: "qty",
+      key: "qty",
+    },
       {
-        title: "วันที่ใบแจ้งหนี้",
-        key: "dndate",
-        width: "15%",
-        dataIndex: "dndate", 
-        render: (v, record) => <Link className="text-select" onClick={()=>handleChoose(record)}>{dayjs(v).format("DD/MM/YYYY")}</Link>
+        title: "จำนวนที่ส่งแล้ว",
+        dataIndex: "delamount",
+        key: "delamount",
       },
-      {
-        title: "รหัสลูกค้า",
-        key: "cuscode",
-        width: "15%",
-        dataIndex: "cuscode", 
-        render: (v, record) => <Link className="text-select" onClick={()=>handleChoose(record)}>{v}</Link>
-      },
-      {
-        title: "ชื่อลูกค้า",
-        dataIndex: "cusname",
-        width: "35%",
-        key: "cusname",
-        render: (v, record) => <Link className="text-select" onClick={()=>handleChoose(record)}> {v}</Link>
-      },
-      {
-        title: "สถานะ",
-        dataIndex: "doc_status",
-        key: "doc_status", 
-        width: '20%',
-        align: "center",
-        sorter: (a, b) => a.doc_status.localeCompare(b.doc_status),
-        sortDirections: ["descend", "ascend"],
-        render: (data) => <TagInvoiceStatus result={data} />,
-      },
-    ]
-  };
+    {      
+      title: "หน่วย",
+      dataIndex: "unit",
+      key: "unit",
+      render: (h)=><TagItemTypes data={h} />,
+    },
+  ]
+};

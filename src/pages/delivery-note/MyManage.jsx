@@ -142,7 +142,44 @@ function InvoiceManage() {
     }));
     // console.log(formDetail)
   };
+  const handleConfirm = () => {
+    form
+      .validateFields()
+      .then((v) => {
+        if (listDetail.length < 1) throw new Error("กรุณาเพิ่ม รายการขาย");
 
+        const header = {
+          ...formDetail,
+          dncode: dnCode,
+          sodate: dayjs(form.getFieldValue("sodate")).format("YYYY-MM-DD"),
+          remark: form.getFieldValue("remark"),
+        };
+
+        const detail = listDetail;
+        // console.log(formDetail);
+        const parm = { header, detail };
+        // console.log(parm);
+
+        const actions =
+          config?.action !== "create" ? dnservice.update : dnservice.create;
+        actions(parm)
+          .then((r) => {
+            handleClose().then((r) => {
+              message.success("Request Delivery Note success.");
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            message.error(err.response.data.message);
+          });
+      })
+      .catch((err) => {
+        Modal.error({
+          title: "This is an error message",
+          content: "คุณกรอกข้อมูล ไม่ครบถ้วน",
+        });
+      });
+  };
   const handleCalculatePrice = (day, date) => {
     const newDateAfterAdding = dayjs(date || new Date()).add(
       Number(day),
@@ -444,44 +481,7 @@ function InvoiceManage() {
       </Flex>
     </>
   );
-  const handleConfirm = () => {
-    form
-      .validateFields()
-      .then((v) => {
-        if (listDetail.length < 1) throw new Error("กรุณาเพิ่ม รายการขาย");
-
-        const header = {
-          ...formDetail,
-          dncode: dnCode,
-          sodate: dayjs(form.getFieldValue("sodate")).format("YYYY-MM-DD"),
-          remark: form.getFieldValue("remark"),
-        };
-
-        const detail = listDetail;
-        // console.log(formDetail);
-        const parm = { header, detail };
-        // console.log(parm);
-
-        const actions =
-          config?.action !== "create" ? dnservice.update : dnservice.create;
-        actions(parm)
-          .then((r) => {
-            handleClose().then((r) => {
-              message.success("Request Delivery Note success.");
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-            message.error(err.response.data.message);
-          });
-      })
-      .catch((err) => {
-        Modal.error({
-          title: "This is an error message",
-          content: "คุณกรอกข้อมูล ไม่ครบถ้วน",
-        });
-      });
-  };
+ 
   const handleClose = async () => {
     navigate(gotoFrom, { replace: true });
     await delay(300);
