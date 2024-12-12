@@ -57,6 +57,7 @@ export default function ModalSO({show, close, values, selected}) {
             stcode:m.stcode,
             stname:m.stname,
             socode:m.socode,
+            dncode:m.dncode,
             kind_name:m.kind_name,
             price: Number(m?.buyprice || 0),
             cost: Number(m?.amtprice || 0),
