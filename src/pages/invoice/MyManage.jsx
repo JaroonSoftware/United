@@ -317,7 +317,7 @@ function ReceiptManage() {
       .deleted(config?.code)
       .then((_) => {
         handleClose().then((r) => {
-          message.success("ยกเลิกใบเสร็จเรียบร้อย.");
+          message.success("ยกเลิกใบวางบิล.");
         });
       })
       .catch((err) => {
@@ -536,7 +536,7 @@ function ReceiptManage() {
               setOpenDN(true);
             }}
           >
-            Choose Delivery Note
+            Choose Receipt
           </Button>
         </Flex>
       </Col>
@@ -755,7 +755,7 @@ function ReceiptManage() {
                   <Row className="m-0 py-3 sm:py-0" gutter={[12, 12]}>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                       <Typography.Title level={3} className="m-0">
-                        เลขที่ใบเสร็จรับเงิน : {reCode}
+                        เลขที่ใบวางบิล : {reCode}
                       </Typography.Title>
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
@@ -765,7 +765,7 @@ function ReceiptManage() {
                         className="justify-start sm:justify-end"
                       >
                         <Typography.Title level={3} className="m-0">
-                          วันที่ใบเสร็จรับเงิน :{" "}
+                          วันที่ใบวางบิล :{" "}
                         </Typography.Title>
                         <Form.Item name="redate" className="!m-0">
                           <DatePicker
@@ -786,7 +786,7 @@ function ReceiptManage() {
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
                   <Divider orientation="left" className="!mb-3 !mt-1">
                     {" "}
-                    ข้อมูลใบเสร็จรับเงิน{" "}
+                    ข้อมูลใบวางบิล{" "}
                   </Divider>
                   <Card style={cardStyle}>{SectionCustomers}</Card>
                 </Col>

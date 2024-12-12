@@ -47,13 +47,13 @@ export default function ModalSO({show, close, values, selected}) {
         setItemsList([...itemsList, newData]);
     };
 
-    const handleCheckDuplicate = (itemCode) => !!selected.find( (item) =>  item?.dncode === itemCode ) ; 
+    const handleCheckDuplicate = (itemCode) => !!selected.find( (item) =>  item?.code === itemCode ) ; 
 
     const handleConfirm = () => { 
-        const choosed = selected.map( m => m.dncode );
-        const itemsChoose = (soData.filter( f => itemsRowKeySelect.includes(f.dncode) && !choosed.includes(f.dncode) )).map( (m, i) => (
+        const choosed = selected.map( m => m.code );
+        const itemsChoose = (soData.filter( f => itemsRowKeySelect.includes(f.code) && !choosed.includes(f.code) )).map( (m, i) => (
         {
-            dncode:m.dncode,
+            code:m.code,
             stcode:m.stcode,
             stname:m.stname,
             socode:m.socode,
@@ -90,16 +90,16 @@ export default function ModalSO({show, close, values, selected}) {
         },
         getCheckboxProps: (record) => { 
             return {
-                disabled: handleCheckDuplicate(record.dncode), 
-                name: record.dncode,
+                disabled: handleCheckDuplicate(record.code), 
+                name: record.code,
             }
         },
         onSelect: (record, selected, selectedRows, nativeEvent) => {
             //console.log(record, selected, selectedRows, nativeEvent);
             if( selected ){
-                setItemsRowKeySelect([...new Set([...itemsRowKeySelect, record.dncode])]);
+                setItemsRowKeySelect([...new Set([...itemsRowKeySelect, record.code])]);
             } else {
-                const ind = itemsRowKeySelect.findIndex( d => d === record.dncode);
+                const ind = itemsRowKeySelect.findIndex( d => d === record.code);
                 const tval = [...itemsRowKeySelect];
                 tval.splice(ind, 1);
                 setItemsRowKeySelect([...tval]);
@@ -116,13 +116,13 @@ export default function ModalSO({show, close, values, selected}) {
     useEffect( () => {
         const onload = () =>{
             setLoading(true);
-            opnService.optionsDN({p:'dnmaster'}).then((res) => {
+            opnService.optionsDN({p:'items'}).then((res) => {
                 let { status, data } = res;
                 if (status === 200) {
                     setSOData(data.data);
                     setSODataWrap(data.data);
 
-                    const keySeleted = selected.map( m => m.dncode );
+                    const keySeleted = selected.map( m => m.code );
 
                     setItemsRowKeySelect([...keySeleted]);
                     // console.log(selected);
@@ -137,7 +137,7 @@ export default function ModalSO({show, close, values, selected}) {
 
         if( !!show ){
             onload();
-            // console.log("modal-select-dnmaster");          
+            // console.log("modal-select-items");          
         } 
     }, [selected,show]);
 
@@ -160,7 +160,7 @@ export default function ModalSO({show, close, values, selected}) {
             maskClosable={false}
             style={{ top: 20 }}
             width={1200}
-            className='sample-request-modal-dnmaster'
+            className='sample-request-modal-items'
         >
             <Spin spinning={loading} >
                 <Space direction="vertical" size="middle" style={{ display: 'flex', position: 'relative'}}  >
@@ -181,10 +181,10 @@ export default function ModalSO({show, close, values, selected}) {
                             dataSource={soDataWrap}
                             columns={column} 
                             rowSelection={itemSelection}
-                            rowKey="dncode"
+                            rowKey="code"
                             pagination={{ 
                                 total:soDataWrap.length, 
-                                showTotal:(_, range) => `${range[0]}-${range[1]} of ${soData.length} dnmaster`,
+                                showTotal:(_, range) => `${range[0]}-${range[1]} of ${soData.length} items`,
                                 defaultPageSize:10,
                                 pageSizeOptions:[10,25,35,50,100]
                             }}

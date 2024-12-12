@@ -127,7 +127,7 @@ export const productColumn = ({handleRemove,handleSelectChange}) => [
     render: (im, rc, index) => <>{index + 1}</>,
   },
   {
-    title: "รหัสใบแจ้งหนี้",
+    title: "รหัสใบวางบิล",
     dataIndex: "ivcode",
     key: "ivcode",
     width: 120, 

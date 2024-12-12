@@ -16,9 +16,9 @@ export const columns = ()=>{
       dataIndex: "stcode", 
     },
     {
-      title: "รหัสใบขายสินค้า",
-      key: "socode",
-      dataIndex: "socode", 
+      title: "รหัสใบส่งสินค้า",
+      key: "dncode",
+      dataIndex: "dncode", 
     },
     {
       title: "รูปประกอบ",

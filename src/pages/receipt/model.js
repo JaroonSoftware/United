@@ -1,14 +1,13 @@
 import { Button, Space } from "antd"; 
 import "../../assets/styles/banks.css"
-import { Typography,Flex } from "antd"; 
 // import { Popconfirm, Button } from "antd";
-import { Tooltip } from "antd";
+import { Tooltip, Image } from "antd";
 // import { EditOutlined, QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons"; 
 import { EditableRow, EditableCell } from "../../components/table/TableEditAble";
 import { TagReceiptStatus } from "../../components/badge-and-tag/";
 import dayjs from 'dayjs';
 import {  EditOutlined, PrinterOutlined } from "@ant-design/icons";
-import { comma } from '../../utils/util';
+import { comma, BACKEND_URL_MAIN } from '../../utils/util';
 
 const calTotalDiscount = (rec) => {
   const total =  Number(rec?.qty ||  0) * Number(rec?.price ||  0);
@@ -117,35 +116,65 @@ export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrint}
   }, 
 ];
 
-export const productColumn = ({handleRemove,handleSelectChange}) => [
+export const productColumn = ({handleRemove,handleSelectChange},optionsItems) => [
   {
     title: "ลำดับ",
-    dataIndex: "code",
-    key: "code",
+    dataIndex: "ind",
+    key: "ind",
     align: "center",
-    width: 80, 
+    width: 60, 
     render: (im, rc, index) => <>{index + 1}</>,
   },
   {
-    title: "รหัสใบแจ้งหนี้",
-    dataIndex: "ivcode",
-    key: "ivcode",
-    width: 120, 
+    title: "รูปประกอบ",
+    dataIndex: "file",
+    key: "file",
+    width: 120,
     align: "center",
+    render: (im, rec) => 
+      {
+        const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/logo.png`
+        );
+        return <>
+        <Image
+      style={{ borderRadius: 10 }}
+      preview={false}
+      height={75}
+      alt={`Image ${rec.file_name}`}
+      src={`${BACKEND_URL_MAIN}` + img}
+    />
+    </>
+    },
   },
   {
     title: "รหัสสินค้า",
     dataIndex: "stcode",
     key: "stcode",
-    width: 120, 
+    width: 140, 
     align: "center",
   },
   {
     title: "ชื่อสินค้า",
-    dataIndex: "purdetail",
-    key: "purdetail", 
+    dataIndex: "stname",
+    key: "stname", 
     align: "left", 
     render: (_, rec) => rec.stname,
+  },
+  {
+    title: "ชนิดสินค้า",
+    dataIndex: "kind_name",
+    key: "kind_name", 
+    align: "center", 
+    width: "6%",
+    render: (_, rec) => rec.kind_name,
+  },  
+  {
+    title: "ใบส่งสินค้า",
+    dataIndex: "socode",
+    key: "socode",
+    width: "8%",
+    align: "right",
+    className: "!pe-3",
   },
   {
     title: "จำนวน",
@@ -154,8 +183,10 @@ export const productColumn = ({handleRemove,handleSelectChange}) => [
     width: "8%",
     align: "right",
     className: "!pe-3",
+    editable: true,
+    required: true,
     type:'number',
-    render: (_, rec) => <>{ comma( Number(rec?.qty ||  0),  0, 0 )}</>,
+    render: (_, rec) => <>{ comma( Number(rec?.qty ||  0),  2, 2 )}</>,
   },
   {
     title: "ราคาขาย",
@@ -164,8 +195,19 @@ export const productColumn = ({handleRemove,handleSelectChange}) => [
     width: "8%",
     align: "right",
     className: "!pe-3",
+    editable: true,
+    required: true,
     type:'number',
     render: (_, rec) => <>{ comma( Number(rec?.price ||  0),  2, 2 )}</>,
+  },
+  {
+    title: "ต้นทุน",
+    dataIndex: "cost",
+    key: "cost", 
+    width: "8%",
+    align: "right",
+    className: "!pe-3",        
+    // hidden: true,
   },
   {
     title: "หน่วยสินค้า",
@@ -173,15 +215,22 @@ export const productColumn = ({handleRemove,handleSelectChange}) => [
     key: "unit", 
       align: "right", 
       width: "8%",
+      editable: true,
       type:'select',    
+      optionsItems,
+      render: (v) => {
+        return optionsItems?.find( f  => f.value === v )?.label
+      },
   },
   {
     title: "ส่วนลด(%)",
     dataIndex: "discount",
     key: "discount",
-    width: "10%",
+    width: "7%",
     align: "right",
     className: "!pe-3",
+    editable: true,
+    type:'number',
     render: (_, rec) => <>{ comma( Number(rec?.discount ||  0),  2, 2 )}</>,
   },
   {
@@ -192,94 +241,18 @@ export const productColumn = ({handleRemove,handleSelectChange}) => [
     align: "right",
     className: "!pe-3",
     render: (_, rec) => <>{ comma( calTotalDiscount(rec),  2, 2 )}</>,
-  },
+  },  
   {
     title: "ตัวเลือก",
     align: "center",
     key: "operation",
     dataIndex: "operation",
     render: (_, record, idx) => handleRemove(record),
-    width: '90px',
+    width: '80px',
     fixed: 'right',
   },
 ];
 
-export const paymentColumn = ({handleRemovePayment,handleSelectChange}) => [
-  {
-    title: "ลำดับ",
-    dataIndex: "code",
-    key: "code",
-    align: "center",
-    width: 80, 
-    render: (im, rc, index) => <>{index + 1}</>,
-  },
-  {
-    title: "วันที่รับชำระ",
-    dataIndex: "paydate",
-    key: "paydate",
-    width: 140,
-    sorter: (a, b) => (a.paydate).localeCompare(b.paydate),
-    render: (v) => dayjs(v).format("DD/MM/YYYY"),
-  }, 
-  {
-    title: "ช่องทางรับชำระ",
-    dataIndex: "payment_type",
-    key: "payment_type", 
-    align: "left", 
-    width: "15%",  
-    render: (_, rec) => rec.payment_type,
-  },
-  {
-    title: "เลขที่บัญชี",
-    dataIndex: "bank_no",
-    key: "bank_no", 
-    align: "left", 
-    width: "15%",  
-    render: (_, rec) => rec.bank_no,
-  },
-  
-  {
-    title: "ธนาคาร",
-    key: "bank",
-    dataIndex: "bank",
-    align: "left",  
-    width: "25%",  
-    render: (_,record) => (<>
-      {record.bank!==undefined?<Flex align='center' gap={8}>
-          <i className={`bank bank-${record.bank} shadow huge`} style={{height:24, width:24, marginTop: 4}}></i>
-          <Flex align='start' gap={1} vertical>
-              <Typography.Text ellipsis style={{ fontSize: 13 }}>{record.bank_name_th}</Typography.Text> 
-              <Typography.Text ellipsis style={{ fontSize: 9, color:'#8c8386' }}>{record.bank_name}</Typography.Text> 
-          </Flex>
-      </Flex>: <></>}
-    </>)
-  },
-  
-  {
-    title: "หมายเหตุ",
-    dataIndex: "remark",
-    key: "remark", 
-    align: "left", 
-  },  
-  {
-    title: "ยอดรับชำระ",
-    dataIndex: "price",
-    key: "price",
-    width: "15%",  
-    align: "right",
-    className: "!pe-3",
-    render: (_, rec) => <>{ comma( Number(rec?.price ||  0),  2, 2 )}</>,
-  },
-  {
-    title: "ตัวเลือก",
-    align: "center",
-    key: "operation",
-    dataIndex: "operation",
-    render: (_, record, idx) => handleRemovePayment(idx),
-    width: '90px',
-    fixed: 'right',
-  },
-];
 
 export const columnsParametersEditable = (handleEditCell,optionsItems,{handleRemove} ) =>{
   const col = productColumn({handleRemove});
@@ -299,29 +272,6 @@ export const columnsParametersEditable = (handleEditCell,optionsItems,{handleRem
               type: col?.type || "input",
               handleEditCell,
               optionsItems,
-            }
-          },
-      };
-  }); 
-}
-
-export const columnsPaymentEditable = (handleEditCell,{handleRemovePayment} ) =>{
-  const col = paymentColumn({handleRemovePayment});
-  return col.map((col, ind) => {
-      if (!col.editable) return col; 
-      
-      return {
-          ...col,
-          onCell: (record) => {
-            // console.log(record);
-            return {
-              record,
-              editable: col.editable,
-              dataIndex: col.dataIndex,
-              title: col.title,
-              // required: !!col?.required,
-              type: col?.type || "input",
-              handleEditCell,
             }
           },
       };
