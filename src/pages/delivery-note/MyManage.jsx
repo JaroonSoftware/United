@@ -175,7 +175,7 @@ function InvoiceManage() {
       })
       .catch((err) => {
         Modal.error({
-          title: "This is an error message",
+          title: "ข้อมูลยังไม่ครบถ้วน",
           content: "คุณกรอกข้อมูล ไม่ครบถ้วน",
         });
       });
@@ -232,7 +232,7 @@ function InvoiceManage() {
     // setListDetail([]);
   };
   const handleSOChoosed = (value) => {
-    // console.log(value);
+    console.log(value);
     setListDetail(value);
     handleSummaryPrice();
   };
@@ -624,6 +624,7 @@ function InvoiceManage() {
         <ModalItems
           show={openProduct}
           close={() => setOpenProduct(false)}
+          cuscode={form.getFieldValue("cuscode")}
           values={(v) => {
             handleSOChoosed(v);
           }}

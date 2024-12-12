@@ -191,8 +191,8 @@ try {
         throw new PDOException("Geting data error => $error");
     }
     $header = $stmt->fetch(PDO::FETCH_ASSOC);
-    $sql = "SELECT a.qtcode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname,s.amtprice as cost ";
-    $sql .= " FROM `qtdetail` as a inner join `items` as i on (a.stcode=i.stcode) left outer join items_stock as s on (i.stcode=s.stcode)   ";        
+    $sql = "SELECT a.qtcode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname,s.amtprice as cost,k.kind_name ";
+    $sql .= " FROM `qtdetail` as a inner join `items` as i on (a.stcode=i.stcode) left outer join items_stock as s on (i.stcode=s.stcode) left outer join kind k on (i.kind_code=k.kind_code)   ";        
     $sql .= " where a.qtcode = :code";
     
     $stmt = $conn->prepare($sql); 
@@ -213,7 +213,8 @@ try {
         $nestedObject->unit = $row['unit'];
         $nestedObject->qty = $row['qty']; 
         $nestedObject->discount = $row['discount'];   
-        $nestedObject->cost = $row['cost'];           
+        $nestedObject->cost = $row['cost'];        
+        $nestedObject->kind_name = $row['kind_name'];           
             
         //echo $row['prod_id'];
         $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");

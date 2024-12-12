@@ -265,8 +265,8 @@ function ReceiptManage() {
       })
       .catch((err) => {
         Modal.error({
-          title: "This is an error message",
-          content: "Please enter require data",
+          title: "ข้อมูลยังไม่ครบถ้วน",
+          content: "กรุณากรอกข้อมูลให้ครบ",
         });
       });
   };

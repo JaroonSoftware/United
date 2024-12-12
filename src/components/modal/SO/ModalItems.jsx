@@ -10,7 +10,7 @@ import { columns } from "./modal-items.model";
 import OptionService from "../../../service/Options.service"
 
 const opnService = OptionService();
-export default function ModalSO({show, close, values, selected}) {
+export default function ModalSO({show, close,cuscode, values, selected}) {
     const [form] = Form.useForm();
     /** handle state */
     const [soData, setSOData] = useState([]);
@@ -58,12 +58,12 @@ export default function ModalSO({show, close, values, selected}) {
             stname:m.stname,
             socode:m.socode,
             kind_name:m.kind_name,
-            price: Number(m?.buyprice || 0),
+            price: Number(m?.price || 0),
             cost: Number(m?.amtprice || 0),
             qty: Number(m?.qty-m?.delamount || 0),
             delamount:m.delamount,
             unit:m.unit,
-            discount:0,
+            discount:m.discount,
         }));
         
         // const trans = selected.filter( (item) =>  item?.socode === "" );
@@ -116,7 +116,7 @@ export default function ModalSO({show, close, values, selected}) {
     useEffect( () => {
         const onload = () =>{
             setLoading(true);
-            opnService.optionsSO({p:'items'}).then((res) => {
+            opnService.optionsSO({cuscode:cuscode}).then((res) => {
                 let { status, data } = res;
                 if (status === 200) {
                     setSOData(data.data);

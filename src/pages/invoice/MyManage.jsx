@@ -237,40 +237,10 @@ function ReceiptManage() {
 
   const handleChoosedRE = async (val) => {
     // console.log(val);
-    const res = await dnservice.get(val.dncode);
-    const {
-      data: { header, detail },
-    } = res.data;
-    setListDetail(detail);
+    setListDetail(val);
     handleSummaryPrice();
-    // console.log(header.balance)
 
     // console.log(val)
-    const fvalue = form.getFieldsValue();
-    const addr = [
-      !!val?.idno ? `${val.idno} ` : "",
-      !!val?.road ? `${val?.road} ` : "",
-      !!val?.subdistrict ? `${val.subdistrict} ` : "",
-      !!val?.district ? `${val.district} ` : "",
-      !!val?.province ? `${val.province} ` : "",
-      !!val?.zipcode ? `${val.zipcode} ` : "",
-      !!val?.country ? `(${val.country})` : "",
-    ];
-    const cusname = [
-      !!val?.prename ? `${val.prename} ` : "",
-      !!val?.cusname ? `${val.cusname} ` : "",
-    ];
-    const delivery = {
-      ...val,
-      cusname: cusname.join(""),
-      address: addr.join(""),
-      contact: val.contact,
-      price: header.balance,
-      tel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
-    };
-
-    setFormDetail((state) => ({ ...state, ...delivery }));
-    form.setFieldsValue({ ...fvalue, ...delivery });
   };
 
   const handleConfirm = () => {
@@ -306,8 +276,8 @@ function ReceiptManage() {
       })
       .catch((err) => {
         Modal.error({
-          title: "This is an error message",
-          content: "Please enter require data",
+          title: "ข้อมูลยังไม่ครบถ้วน",
+          content: "กรุณากรอกข้อมูลให้ครบ",
         });
       });
   };

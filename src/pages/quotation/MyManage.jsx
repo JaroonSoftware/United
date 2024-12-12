@@ -16,7 +16,7 @@ import { Card, Col, Divider, Flex, Row, Space,Popconfirm } from "antd";
 import OptionService from "../../service/Options.service";
 import QuotationService from "../../service/Quotation.service";
 import { SaveFilled, SearchOutlined,QuestionCircleOutlined } from "@ant-design/icons";
-import ModalCustomers from "../../components/modal/customers/ModalCustomers";
+import ModalCustomersInsurance from "../../components/modal/customersInsurance/ModalCustomersInsurance";
 
 import {
   quotationForm,
@@ -236,8 +236,8 @@ function QuotationManage() {
       })
       .catch((err) => {
         Modal.error({
-          title: "This is an error message",
-          content: "Please enter require data",
+          title: "ข้อมูลยังไม่ครบถ้วน",
+          content: "กรุณากรอกข้อมูลให้ครบ",
         });
       });
   };
@@ -642,13 +642,13 @@ function QuotationManage() {
       </div>
 
       {openCustomer && (
-        <ModalCustomers
+        <ModalCustomersInsurance
           show={openCustomer}
           close={() => setOpenCustomer(false)}
           values={(v) => {
             handleChoosedCustomer(v);
           }}
-        ></ModalCustomers>
+        ></ModalCustomersInsurance>
       )}
 
       {openProduct && (

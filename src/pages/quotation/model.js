@@ -145,6 +145,13 @@ export const productColumn = ({handleRemove},optionsItems) => [
     align: "left",
   },
   {
+    title: "ชื่อสินค้า",
+    dataIndex: "stname",
+    key: "stname", 
+    align: "left", 
+    render: (_, rec) => rec.stname,
+  },
+  {
     title: "ชนิดสินค้า",
     dataIndex: "kind_name",
     key: "kind_name", 

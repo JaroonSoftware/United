@@ -8,14 +8,14 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     // $type_code = !empty($type) ? "and i.typecode = '$type'" : "";
     try {
         $sql = "
-			SELECT a.code,a.socode, a.stcode,i.stname, a.qty, i.buyprice,s.amtprice, a.unit, a.discount,IF(a.delamount IS NULL,0,a.delamount) as delamount, k.kind_name
+			SELECT a.code,a.socode, a.stcode,i.stname, a.qty, a.price,a.discount,s.amtprice, a.unit, a.discount,IF(a.delamount IS NULL,0,a.delamount) as delamount, k.kind_name
             FROM sodetail a 
             inner join somaster b on (a.socode=b.socode)
             inner join items i on (a.stcode=i.stcode)
             inner join items_stock s on (s.stcode=i.stcode)
             left outer join kind k on (i.kind_code=k.kind_code)
-            where IF(a.delamount IS NULL,0,a.delamount) < a.qty and b.doc_status != 'ยกเลิก' "; 
-
+            where b.cuscode= '$cuscode' and IF(a.delamount IS NULL,0,a.delamount) < a.qty and b.doc_status != 'ยกเลิก' "; 
+            
             $stmt = $conn->prepare($sql); 
             $stmt->execute();
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -28,10 +28,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $nestedObject->socode = $row['socode'];
                 $nestedObject->stcode = $row['stcode'];
                 $nestedObject->stname = $row['stname'];
-                $nestedObject->buyprice = $row['buyprice'];
+                $nestedObject->price = $row['price'];
                 $nestedObject->amtprice = $row['amtprice'];
                 $nestedObject->unit = $row['unit'];
                 $nestedObject->qty = $row['qty'];
+                $nestedObject->discount = $row['discount'];
                 $nestedObject->delamount = $row['delamount'];
                 $nestedObject->kind_name = $row['kind_name'];
                 //echo $row['prod_id'];

@@ -180,7 +180,7 @@ function ReceiptManage() {
       })
       .catch((err) => {
         Modal.error({
-          title: "This is an error message",
+          title: "ข้อมูลยังไม่ครบถ้วน",
           content: "คุณกรอกข้อมูล ไม่ครบถ้วน",
         });
       });

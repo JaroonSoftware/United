@@ -36,7 +36,7 @@ const OptionService = () => {
   const optionsBrand = () => api.get(`${API_URL.OPTION_BRAND}`, { ignoreLoading : true });
   const optionsModel = () => api.get(`${API_URL.OPTION_MODEL}`, { ignoreLoading : true });
   const optionsCarmodel = () => api.get(`${API_URL.OPTION_CARMODEL}`, { ignoreLoading : true });
-  const optionsSO = () => api.get(`${API_URL.OPTION_SO}`, { ignoreLoading : true });
+  const optionsSO = (parm = {}) => api.get(`${API_URL.OPTION_SO}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsReceipt = (parm = {}) => api.get(`${API_URL.OPTION_RECEIPT}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsInvoice = (parm = {}) => api.get(`${API_URL.OPTION_INVOICE}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsDN = () => api.get(`${API_URL.OPTION_DN}`, { ignoreLoading : true });
