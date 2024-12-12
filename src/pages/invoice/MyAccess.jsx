@@ -245,7 +245,7 @@ const MyAccess = () => {
     </Flex>
   );
   return (
-    <div className="so-access" id="area">
+    <div className="invoice-access" id="area">
       <Space
         direction="vertical"
         size="middle"

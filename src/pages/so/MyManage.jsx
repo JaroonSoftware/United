@@ -17,7 +17,7 @@ import SOService from "../../service/SO.service";
 import QuotationService from "../../service/Quotation.service";
 
 import { SaveFilled, SearchOutlined } from "@ant-design/icons";
-import ModalCustomers from "../../components/modal/customersSO/ModalCustomersSO";
+import ModalCustomersInsurance from "../../components/modal/customersInsurance/ModalCustomersInsurance";
 import ModalDelivery from "../../components/modal/DeliveryCustomers/ModalDeliveryCustomers";
 import ModalQuotation from "../../components/modal/quotation/MyModal";
 
@@ -894,13 +894,13 @@ function MyManage() {
       </div>
 
       {openCustomer && (
-        <ModalCustomers
+        <ModalCustomersInsurance
           show={openCustomer}
           close={() => setOpenCustomer(false)}
           values={(v) => {
             handleChoosedCustomer(v);
           }}
-        ></ModalCustomers>
+        ></ModalCustomersInsurance>
       )}
       {openModalDelivery && (
         <ModalDelivery

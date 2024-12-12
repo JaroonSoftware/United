@@ -18,11 +18,11 @@ import {
   Radio,
   Popconfirm
 } from "antd";
-import ModalCustomers from "../../components/modal/customers/ModalCustomers";
-import ModalDN from "../../components/modal/delivery/MyModal";
+import ModalCustomersInsurance from "../../components/modal/customersInsurance/ModalCustomersInsurance";
+import ModalReceipt from "../../components/modal/receipt/MyModal";
 import ModalPayment from "../../components/modal/payment/MyModal";
 import OptionService from "../../service/Options.service";
-import ReceiptService from "../../service/Receipt.service";
+import InvoiceService from "../../service/Invoice.service";
 import DNService from "../../service/DeliveryNote.service";
 
 import {
@@ -49,10 +49,10 @@ import { LuPackageSearch } from "react-icons/lu";
 import { CloseCircleFilledIcon } from '../../components/icon';
 
 const opservice = OptionService();
-const reservice = ReceiptService();
+const ivservice = InvoiceService();
 const dnservice = DNService();
 
-const gotoFrom = "/receipt";
+const gotoFrom = "/invoice";
 const dateFormat = "DD/MM/YYYY";
 
 function ReceiptManage() {
@@ -63,14 +63,14 @@ function ReceiptManage() {
   const [form] = Form.useForm();
 
   /** Modal handle */
-  const [openCustomers, setOpenCustomers] = useState(false);
-  const [openDN, setOpenDN] = useState(false);
+  const [openCustomersInsurance, setOpenCustomersInsurance] = useState(false);
+  const [openRE, setOpenRE] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
 
   const [listPayment, setListPayment] = useState([]);
 
   /** Receipt state */
-  const [reCode, setRECode] = useState(null);
+  const [ivCode, setIVCode] = useState(null);
 
   /** Detail Data State */
   const [listDetail, setListDetail] = useState([]);
@@ -86,7 +86,7 @@ function ReceiptManage() {
   useEffect(() => {
     const initial = async () => {
       if (config?.action !== "create") {
-        const res = await reservice
+        const res = await ivservice
           .get(config?.code)
           .catch((error) => message.error("get Receipt data fail."));
         const {
@@ -96,7 +96,7 @@ function ReceiptManage() {
         setFormDetail(header);
         setListDetail(detail);
         setListPayment(payment);
-        setRECode(recode);
+        setIVCode(recode);
         form.setFieldsValue({
           ...header,
           redate: dayjs(redate),
@@ -108,11 +108,11 @@ function ReceiptManage() {
         // handleChoosedCustomers(head);
       } else {
         const { data: code } = (
-          await reservice.code().catch((e) => {
+          await ivservice.code().catch((e) => {
             message.error("get Receipt code fail.");
           })
         ).data;
-        setRECode(code);
+        setIVCode(code);
 
         const ininteial_value = {
           ...formDetail,
@@ -235,7 +235,7 @@ function ReceiptManage() {
     setListDetail([]);
   };
 
-  const handleChoosedDN = async (val) => {
+  const handleChoosedRE = async (val) => {
     // console.log(val);
     const res = await dnservice.get(val.dncode);
     const {
@@ -279,7 +279,7 @@ function ReceiptManage() {
       .then((v) => {
         const header = {
           ...formDetail,
-          recode: reCode,
+          recode: ivCode,
           redate: dayjs(form.getFieldValue("redate")).format("YYYY-MM-DD"),
           remark: form.getFieldValue("remark"),
           total_price: formDetail.total_price,
@@ -292,7 +292,7 @@ function ReceiptManage() {
         const parm = { header, detail, payment };
         // console.log(parm)
         const actions =
-          config?.action !== "create" ? reservice.update : reservice.create;
+          config?.action !== "create" ? ivservice.update : ivservice.create;
         actions(parm)
           .then((r) => {
             handleClose().then((r) => {
@@ -313,7 +313,7 @@ function ReceiptManage() {
   };
 
   const handleCancel = () => {
-    reservice
+    ivservice
       .deleted(config?.code)
       .then((_) => {
         handleClose().then((r) => {
@@ -337,7 +337,7 @@ function ReceiptManage() {
 
   const handlePrint = () => {
     const newWindow = window.open("", "_blank");
-    newWindow.location.href = `/receipt/${formDetail.recode}`;
+    newWindow.location.href = `/invoice/${formDetail.recode}`;
   };
 
   const handleDelete = (dncode) => {
@@ -439,7 +439,7 @@ function ReceiptManage() {
                   <Button
                     type="primary"
                     icon={<SearchOutlined />}
-                    onClick={() => setOpenCustomers(true)}
+                    onClick={() => setOpenCustomersInsurance(true)}
                     style={{ minWidth: 40 }}
                   ></Button>
                 )}
@@ -533,7 +533,7 @@ function ReceiptManage() {
             className="bn-center justify-center bn-primary-outline"
             disabled={(formDetail.doc_status === "ยกเลิก")}
             onClick={() => {
-              setOpenDN(true);
+              setOpenRE(true);
             }}
           >
             Choose Receipt
@@ -662,7 +662,7 @@ function ReceiptManage() {
           <Popconfirm 
           placement="topRight"
           title="ยืนยันการยกเลิก"  
-          description="คุณแน่ใจที่จะยกเลิกใบเสร็จ?"
+          description="คุณแน่ใจที่จะยกเลิกใบวางบิล?"
           icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
           onConfirm={() => handleCancel()}
         >
@@ -673,7 +673,7 @@ function ReceiptManage() {
             style={{ width: "9.5rem" }}
             danger
           >
-            ยกเลิกใบเสร็จ
+            ยกเลิกใบวางบิล
           </Button>
         </Popconfirm>
           }
@@ -739,8 +739,8 @@ function ReceiptManage() {
   );
 
   return (
-    <div className="goodsreceipt-manage">
-      <div id="goodsreceipt-manage" className="px-0 sm:px-0 md:px-8 lg:px-8">
+    <div className="invoice-manage">
+      <div id="invoice-manage" className="px-0 sm:px-0 md:px-8 lg:px-8">
         <Space direction="vertical" className="flex gap-4">
           {SectionTop}
           <Form
@@ -755,7 +755,7 @@ function ReceiptManage() {
                   <Row className="m-0 py-3 sm:py-0" gutter={[12, 12]}>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                       <Typography.Title level={3} className="m-0">
-                        เลขที่ใบวางบิล : {reCode}
+                        เลขที่ใบวางบิล : {ivCode}
                       </Typography.Title>
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
@@ -799,7 +799,7 @@ function ReceiptManage() {
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
                   <Divider orientation="left" className="!mb-3 !mt-1">
-                    รายการใบส่งสินค้า
+                    รายการใบวางบิล
                   </Divider>
                   <Card style={cardStyle}>{SectionProduct}</Card>
                 </Col>
@@ -817,26 +817,26 @@ function ReceiptManage() {
         </Space>
       </div>
 
-      {openCustomers && (
-        <ModalCustomers
-          show={openCustomers}
-          close={() => setOpenCustomers(false)}
+      {openCustomersInsurance && (
+        <ModalCustomersInsurance
+          show={openCustomersInsurance}
+          close={() => setOpenCustomersInsurance(false)}
           values={(v) => {
             handleChoosedCustomers(v);
           }}
-        ></ModalCustomers>
+        ></ModalCustomersInsurance>
       )}
 
-      {openDN && (
-        <ModalDN
-          show={openDN}
-          close={() => setOpenDN(false)}
+      {openRE && (
+        <ModalReceipt
+          show={openRE}
+          close={() => setOpenRE(false)}
           cuscode={form.getFieldValue("cuscode")}
           values={(v) => {
-            handleChoosedDN(v);
+            handleChoosedRE(v);
           }}
           selected={listDetail}
-        ></ModalDN>
+        ></ModalReceipt>
       )}
 
       {openPayment && (

@@ -147,6 +147,26 @@ const ModalCustomersManage = ({ submit }) => {
           <Input placeholder="Enter Tax Number." />
         </Form.Item>
       </Col>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={6}>
+        <Form.Item label="ประเภทลูกค้า" name="cus_type" rules={[{ required: true, message: "กรุณากรอกข้อมูล!" }]}>
+          <Select
+            size="large"
+            placeholder="เลือกประเภทลูกค้า"
+            showSearch
+            filterOption={filterOption}
+            options={[
+              {
+                value: "ลูกค้าประกัน",
+                label: "ลูกค้าประกัน",
+              },
+              {
+                value: "ลูกค้าอู่ซ่อมรถ",
+                label: "ลูกค้าอู่ซ่อมรถ",
+              },              
+            ]}
+          ></Select>
+        </Form.Item>
+      </Col>
     </Row>
   );
 
