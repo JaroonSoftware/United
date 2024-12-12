@@ -260,7 +260,8 @@ try {
         echo json_encode(array("status" => 1));
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
-        $sql = "SELECT a.dncode,a.cuscode,a.dndate,a.remark,c.prename,c.cusname,CONCAT(COALESCE(c.idno, '') ,' ', COALESCE(c.road, ''),' ', COALESCE(c.subdistrict, ''),' ', COALESCE(c.district, ''),' ',COALESCE(c.zipcode, '') ) as address";
+        $sql = "SELECT a.dncode,a.cuscode,a.dndate,a.remark,c.prename,c.cusname,a.vat
+        ,CONCAT(COALESCE(c.idno, '') ,' ', COALESCE(c.road, ''),' ', COALESCE(c.subdistrict, ''),' ', COALESCE(c.district, ''),' ',COALESCE(c.zipcode, '') ) as address";
         $sql .= " FROM `dnmaster` as a ";
         $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";
         $sql .= " where a.dncode = :code";
@@ -273,7 +274,7 @@ try {
         }
         $header = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.dncode,a.stcode,a.socode, a.price, a.unit, a.qty ,i.stname,a.discount,s.delamount, k.kind_name ";
+        $sql = "SELECT a.code,a.dncode,a.stcode,a.socode, a.price, a.unit, a.qty ,i.stname,a.discount,s.delamount, k.kind_name ";
         $sql .= " FROM `dndetail` as a";
         $sql .= " inner join `items` as i on (a.stcode=i.stcode)  ";
         $sql .= " left outer join `sodetail` as s on (a.stcode=s.stcode) and a.socode=s.socode  ";
@@ -292,6 +293,7 @@ try {
         //$dataFile = array();
         foreach ($data as $row) {
             $nestedObject = new stdClass();
+            $nestedObject->code = $row['code'];
             $nestedObject->stcode = $row['stcode'];
             $nestedObject->stname = $row['stname'];
             $nestedObject->price = $row['price'];

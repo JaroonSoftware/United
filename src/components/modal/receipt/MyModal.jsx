@@ -116,7 +116,7 @@ export default function ModalReceipt({show, close, values, selected}) {
     useEffect( () => {
         const onload = () =>{
             setLoading(true);
-            opnService.optionsRE().then((res) => {
+            opnService.optionsReceipt().then((res) => {
                 let { status, data } = res;
                 if (status === 200) {
                     setREData(data.data);
