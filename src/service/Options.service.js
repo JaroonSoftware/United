@@ -15,6 +15,7 @@ const API_URL = {
   OPTION_MODEL: `/common/options-model.php`,
   OPTION_CARMODEL: `/common/options-carmodel.php`,
   OPTION_SO: `/common/options-so.php`,
+  OPTION_RECEIPT: `/common/options-receipt.php`,  
   OPTION_INVOICE: `/common/options-invoice.php`,
   OPTION_DN: `/common/options-delivery-note.php`,
 };
@@ -36,6 +37,7 @@ const OptionService = () => {
   const optionsModel = () => api.get(`${API_URL.OPTION_MODEL}`, { ignoreLoading : true });
   const optionsCarmodel = () => api.get(`${API_URL.OPTION_CARMODEL}`, { ignoreLoading : true });
   const optionsSO = () => api.get(`${API_URL.OPTION_SO}`, { ignoreLoading : true });
+  const optionsReceipt = () => api.get(`${API_URL.OPTION_RECEIPT}`, { ignoreLoading : true });
   const optionsInvoice = (parm = {}) => api.get(`${API_URL.OPTION_INVOICE}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsDN = () => api.get(`${API_URL.OPTION_DN}`, { ignoreLoading : true });
   return {
@@ -54,6 +56,7 @@ const OptionService = () => {
     optionsModel,
     optionsCarmodel,
     optionsSO,
+    optionsReceipt,
     optionsInvoice,
     optionsDN,
   };

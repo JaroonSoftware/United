@@ -277,7 +277,7 @@ function request_ivcode($pdo){
     while(true){
         $code = sprintf("%03s", ( $number) );
         $format = $prefix.$code;
-        $sql = "SELECT 1 r FROM ivmaster where ivcode = '$format'"; 
+        $sql = "SELECT 1 r FROM iv_master where ivcode = '$format'"; 
         $stmt = $pdo->prepare($sql); 
         $stmt->execute(); 
         if ($stmt->rowCount() > 0){
