@@ -20,7 +20,7 @@ try {
         // var_dump($_POST);
         $sql = "insert receipt (`recode`, `redate`, `cuscode`,
        `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
-        values (:recode,:redate,:cuscode,:total_price,:vat,:grand_total_price,:remark,:action_user,:action_user)";
+        values (:recode,:redate,:cuscode,:total_price,:vat,:grand_total_price,   :remark,:action_user,:action_user)";
       
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
@@ -68,8 +68,8 @@ try {
         $code = $conn->lastInsertId();
         // var_dump($master); exit;
 
-        $sql = "insert into receipt_detail (recode,stcode,qty,price,unit,discount)
-        values (:recode,:stcode,:qty,:price,:unit,:discount)";
+        $sql = "insert into receipt_detail (recode,dncode,stcode,qty,price,unit,discount)
+        values (:recode,:dncode,:stcode,:qty,:price,:unit,:discount)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -77,6 +77,7 @@ try {
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
             $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
+            $stmt->bindParam(":dncode", $val->dncode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
             $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
@@ -106,11 +107,6 @@ try {
         total_price = :total_price,
         vat = :vat,
         grand_total_price = :grand_total_price,
-        claim_no = :claim_no,
-        require_no = :require_no,
-        car_engineno = :car_engineno,
-        car_model_code = :car_model_code,
-        car_no = :car_no,
         remark = :remark,
         updated_date = CURRENT_TIMESTAMP(),
         updated_by = :action_user
@@ -125,11 +121,6 @@ try {
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
         $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
         $stmt->bindParam(":grand_total_price", $header->grand_total_price, PDO::PARAM_STR);
-        $stmt->bindParam(":claim_no", $header->claim_no, PDO::PARAM_STR);
-        $stmt->bindParam(":require_no", $header->require_no, PDO::PARAM_STR);
-        $stmt->bindParam(":car_engineno", $header->car_engineno, PDO::PARAM_STR);
-        $stmt->bindParam(":car_model_code", $header->car_model_code, PDO::PARAM_STR);
-        $stmt->bindParam(":car_no", $header->car_no, PDO::PARAM_STR);
         $stmt->bindParam(":remark", $header->remark, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
         $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
@@ -209,8 +200,9 @@ try {
         }
         $header = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.recode,a.stcode, a.price, a.discount, a.unit, a.qty ,i.stname  ,i.kind_code";
+        $sql = "SELECT a.recode,a.stcode,a.dncode, a.price, a.discount, a.unit, a.qty ,i.stname,k.kind_name ";
         $sql .= " FROM `receipt_detail` as a inner join `items` as i on (a.stcode=i.stcode)  ";
+        $sql .= " left outer join kind k on (i.kind_code=k.kind_code)  ";
         $sql .= " where a.recode = :code";
 
         $stmt = $conn->prepare($sql);
