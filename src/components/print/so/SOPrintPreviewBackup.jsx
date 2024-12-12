@@ -7,7 +7,7 @@ import { Flex, Modal, Table, Typography } from 'antd';
 
 import dayjs from "dayjs";
 import EstimationService from '../../../service/Estimation.service';
-import {column} from "./quo.model";
+import {column} from "./so.model";
 import { formatCommaNumber } from '../../../utils/util';
 
 const estservice = EstimationService();

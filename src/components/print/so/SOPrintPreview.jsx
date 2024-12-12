@@ -3,22 +3,21 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useParams } from 'react-router-dom';
 // import ReactDOMServer from "react-dom/server";
 import { useReactToPrint } from 'react-to-print';
-
-import "./quo.css";
-import logo from "../../../assets/images/logo_nsf.png";
+import "./so.css";
+// import logo from "../../../assets/images/logo_nsf.png";
  
 import { Button, Flex,  Table, Typography, message } from 'antd';
-import { column} from './quo.model';
+import { column} from './so.model';
 
 import dayjs from "dayjs";
 import { comma } from "../../../utils/util";
 import { PiPrinterFill } from 'react-icons/pi';
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from 'antd';
-import QuotationService from '../../../service/Quotation.service';
+import SOService from '../../../service/SO.service';
 
 
-const quoservice = QuotationService();
+const soservice = SOService();
 
 function QuoPrintPreview() {
     const { code } = useParams();
@@ -50,7 +49,7 @@ function QuoPrintPreview() {
 
     useEffect( () =>  {
         const init = () => {
-            quoservice.get( code ).then( async res => {
+            soservice.get( code ).then( async res => {
               const { data : { header, detail } } = res.data; 
            
               setHData( header );
@@ -65,22 +64,6 @@ function QuoPrintPreview() {
         return () => {}
     }, []);
 
-    const HeaderForm = () => {
-        return (
-            <div className='print-head' style={{height:90}}> 
-                <div className='print-title flex gap-5'> 
-                    <div className='grow'>
-                        <img src={logo} alt="" style={{paddingInline: 10, height: '100%'}}  />  
-                    </div>
-                    <div className='flex grow-0 justify-end items-center' style={{width: 278}}>
-                        <Flex className='mb-0 '>
-                            <Typography.Title level={3} align='end' className='m-0 min-w-28 text-end'>ใบเสนอราคา</Typography.Title> 
-                        </Flex> 
-                    </div> 
-                </div> 
-            </div>  
-        )
-    }
 
     const FooterForm = ({page}) => {
         return (
@@ -96,30 +79,31 @@ function QuoPrintPreview() {
     }
 
     
-    const ContentHead = () => {
+    const ContentHead = ({page}) => {
         return ( 
         <div className='content-head in-sample flex flex-col'> 
             <div className='print-title flex pb-2'>
-                <div className='flex ps-3 grow-0' style={{width:600}}>
+                <div className='flex ps-3 grow-0'>
                     <Flex className='mb-1.5' vertical >
-                        <Typography.Text className='tx-title min-w-48 weight600' strong>บริษัท วีระ ไดรคัทติ้ง จำกัด</Typography.Text>
-                        <Typography.Text className='tx-info' strong>VEERA DRYCUTTING CO., LTD</Typography.Text> 
-                        <Typography.Text className='tx-info' >102  หมู่  1  ถนนโพธิ์พระยาท่าเรือ  ตำบลบางนา</Typography.Text> 
-                        <Typography.Text className='tx-info' >อำเภอมหาราช  จังหวัดพระนครศรีอยุธยา 13150</Typography.Text> 
-                        <Typography.Text className='tx-info' >โทร. 081-948-3963 E-mail :gtopgta@gmail.com</Typography.Text> 
-                        <Typography.Text className='tx-info' >เลขประจำตัวผู้เสียภาษี     0145546001142 (สำนักงานใหญ่)</Typography.Text> 
+                        <Typography.Text className='tx-title min-w-70 weight600' strong>บริษัท ยูไนเต็ด ออโตสแปร์พาร์ท จำกัด</Typography.Text>
+                        <Typography.Text style={{paddingTop: 8}} className='tx-info' >29/14-15 ถ.บรมราชชนนี แขวงศาลาธรรมสพน์ เขตทวีวัฒนา</Typography.Text> 
+                        <Typography.Text className='tx-info' >กรุงเทพมหานคร 10170</Typography.Text> 
+                        <Typography.Text className='tx-info' >โทรศัพท์ 094-923-7111 แฟกซ์</Typography.Text> 
+                        <Typography.Text className='tx-info' >เลขประจำตัวผู้เสียภาษี 0105562202122</Typography.Text> 
                     </Flex> 
                 </div>                 
-                <div className='flex ps-3 grow'>
-                    <Flex className='mb-1.5' vertical>
-                        {/* <Typography.Text className='tx-title min-w-48' strong>Info</Typography.Text> */}
-                        <Flex justify='space-between'>
-                            <Typography.Text className='tx-info' strong>เลขที่</Typography.Text> 
-                            <Typography.Text className='tx-info'>&nbsp; {hData?.qtcode}</Typography.Text>  
+                <div className='flex ps-3 grow'style={{paddingLeft: 200}}>
+                        <Flex className='mb-1.5' vertical>
+                        <Typography.Text style={{textAlign: 'right'}}>หน้า {page}</Typography.Text> 
+                        <Typography.Text className='tx-title min-w-48' strong style={{textAlign: 'center', fontSize: 20}}>ใบสั่งขายสินค้า</Typography.Text>
+                        <Typography.Text className='tx-title min-w-48' style={{textAlign: 'center', fontSize: 20}}  strong>Sale Order </Typography.Text> 
+                        <Flex justify='space-between min-w-70' >
+                            <Typography.Text className='tx-info' strong>เลขที่ใบสั่งขายสินค้า </Typography.Text> 
+                            <Typography.Text className='tx-info' style={{textAlign: 'center'}}>&nbsp; {hData?.socode}22</Typography.Text>  
                         </Flex>
                         <Flex justify='space-between'>
-                            <Typography.Text className='tx-info' strong>วันที่</Typography.Text> 
-                            <Typography.Text className='tx-info'>{dayjs(hData?.qtdate).format("DD/MM/YYYY")}</Typography.Text>  
+                            <Typography.Text className='tx-info'  strong>วันที่</Typography.Text> 
+                            <Typography.Text className='tx-info'>{dayjs(hData?.sodate).format("DD/MM/YYYY")}</Typography.Text>  
                         </Flex>
                     </Flex>
                 </div> 
@@ -279,10 +263,10 @@ function QuoPrintPreview() {
 
     
 
-    const Pages = () => (
+    const Pages = ({pageNum = 1, total = 1}) => (
         <div ref={componentRef}> 
             <ContentData> 
-                <ContentHead />
+                <ContentHead page={`${pageNum} of ${total}`}/>
                 <ContentHead2 />
                 <ContentBody />
             </ContentData>
@@ -292,7 +276,6 @@ function QuoPrintPreview() {
     const ContentData = ({ children, pageNum = 1, total = 1 }) => {
         return ( 
             <div className='quo-pages flex flex-col'>
-                <HeaderForm />
                 <div className='print-content grow'> 
                     {children}
                 </div>
