@@ -10,7 +10,7 @@ import { columns } from "./model";
 import OptionService from "../../../service/Options.service"
 
 const opnService = OptionService();
-export default function ModalReceipt({show, close, values, selected}) {
+export default function ModalReceipt({show, close,cuscode, values, selected}) {
     const [form] = Form.useForm();
     /** handle state */
     const [reData, setREData] = useState([]);
@@ -116,7 +116,7 @@ export default function ModalReceipt({show, close, values, selected}) {
     useEffect( () => {
         const onload = () =>{
             setLoading(true);
-            opnService.optionsRE().then((res) => {
+            opnService.optionsReceipt({cuscode:cuscode}).then((res) => {
                 let { status, data } = res;
                 if (status === 200) {
                     setREData(data.data);

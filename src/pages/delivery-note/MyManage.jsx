@@ -15,7 +15,7 @@ import OptionService from "../../service/Options.service";
 import DeliveryNoteService from "../../service/DeliveryNote.service";
 // import QuotationService from "../../service/Quotation.service";
 import { SearchOutlined, SaveFilled } from "@ant-design/icons";
-import ModalCustomers from "../../components/modal/customers/ModalCustomers";
+import ModalCustomersInsurance from "../../components/modal/customersInsurance/ModalCustomersInsurance";
 // import ModalQuotation from "../../components/modal/quotation/MyModal";
 import { ModalItems } from "../../components/modal/SO/modal-items";
 
@@ -611,13 +611,13 @@ function InvoiceManage() {
       </div>
 
       {openCustomers && (
-        <ModalCustomers
+        <ModalCustomersInsurance
           show={openCustomers}
           close={() => setOpenCustomers(false)}
           values={(v) => {
             handleChoosedCustomers(v);
           }}
-        ></ModalCustomers>
+        ></ModalCustomersInsurance>
       )}
 
       {openProduct && (

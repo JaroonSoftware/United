@@ -119,9 +119,15 @@ export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrint}
 
 export const productColumn = ({handleRemove,handleSelectChange}) => [
   {
-    title: "ลำดับ",
-    dataIndex: "code",
     key: "code",
+    dataIndex: "code",
+    align: "left",
+    hidden: true,
+  },
+  {
+    title: "ลำดับ",
+    dataIndex: "ind",
+    key: "ind",
     align: "center",
     width: 80, 
     render: (im, rc, index) => <>{index + 1}</>,
@@ -207,8 +213,8 @@ export const productColumn = ({handleRemove,handleSelectChange}) => [
 export const paymentColumn = ({handleRemovePayment,handleSelectChange}) => [
   {
     title: "ลำดับ",
-    dataIndex: "code",
-    key: "code",
+    dataIndex: "ind",
+    key: "ind",
     align: "center",
     width: 80, 
     render: (im, rc, index) => <>{index + 1}</>,

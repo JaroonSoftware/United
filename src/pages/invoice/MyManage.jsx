@@ -533,7 +533,11 @@ function ReceiptManage() {
             className="bn-center justify-center bn-primary-outline"
             disabled={(formDetail.doc_status === "ยกเลิก")}
             onClick={() => {
+              handleSummaryPrice();
+              form.validateFields().then((v) => {
+             
               setOpenRE(true);
+              });
             }}
           >
             Choose Receipt

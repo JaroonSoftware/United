@@ -81,7 +81,7 @@ export default function ModalCustomers({ show, close, values, selected }) {
     <>
       <Modal
         open={openModal}
-        title="เลือกลูกค้า"
+        title="เลือกลูกค้าที่จัดส่ง"
         afterClose={() => handleClose()}
         onCancel={() => setOpenModel(false)}
         okText="เลือก"
