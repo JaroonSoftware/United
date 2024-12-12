@@ -51,7 +51,7 @@ function ReceiptManage() {
   // const [openQuotation, setOpenQuotation] = useState(false);
 
   /** Invoice state */
-  const [dnCode, setDNCode] = useState(null);
+  const [reCode, setRECode] = useState(null);
 
   /** Detail Data State */
   const [listDetail, setListDetail] = useState([]);
@@ -70,45 +70,50 @@ function ReceiptManage() {
       if (config?.action !== "create") {
         const res = await reservice
           .get(config?.code)
-          .catch((error) => message.error("get Invoice data fail."));
-          const { header, detail } = res.data;
-        const { dncode, dndate, deldate } = header;
+          .catch((error) => message.error("get Receipt data fail."));
+        const {
+          data: { header, detail },
+        } = res.data;
+        const { recode, redate, check_date } = header;
         setFormDetail(header);
         setListDetail(detail);
-        setDNCode(dncode);
+        setRECode(recode);
         form.setFieldsValue({
           ...header,
-          dndate: dayjs(dndate),
-          deldate: dayjs(deldate),
+          redate: dayjs(redate),
+          check_date: dayjs(check_date),
+          dateFormat,
         });
 
-        // console.log(dncode)
-        // setTimeout( () => {  handleCalculatePrice(head?.valid_grand_total_price_until, head?.dated_grand_total_price_until) }, 200);
+        // setTimeout( () => {  handleCalculatePrice(head?.valid_price_until, head?.dated_price_until) }, 200);
         // handleChoosedCustomers(head);
       } else {
         const { data: code } = (
           await reservice.code().catch((e) => {
-            message.error("get Quotation code fail.");
+            message.error("get Receipt code fail.");
           })
         ).data;
-        setDNCode(code);
+        setRECode(code);
+
         const ininteial_value = {
           ...formDetail,
-          dncode: code,
-          dndate: dayjs(new Date()),
-          // doc_status:"กำลังรอดำเนินการ",
+          recode: code,
+          redate: dayjs(new Date()),
+          check_date: dayjs(new Date()),
+          doc_status: "รอออกแจ้งหนี้",
         };
-        // console.log(ininteial_value);
+
         setFormDetail(ininteial_value);
+        // console.log(formDetail)
         form.setFieldsValue(ininteial_value);
         form.setFieldValue("vat", "7");
-      }
 
-      const [unitOprionRes] = await Promise.all([
-        opservice.optionsUnit({ p: "unit-option" }),
-      ]);
-      // console.log(unitOprionRes.data.data)
-      setUnitOption(unitOprionRes.data.data);
+        const [unitOprionRes] = await Promise.all([
+          opservice.optionsUnit({ p: "unit-option" }),
+        ]);
+        // console.log(unitOprionRes.data.data)
+        setUnitOption(unitOprionRes.data.data);
+      }
     };
 
     initial();
@@ -150,8 +155,8 @@ function ReceiptManage() {
 
         const header = {
           ...formDetail,
-          dncode: dnCode,
-          sodate: dayjs(form.getFieldValue("sodate")).format("YYYY-MM-DD"),
+          recode: reCode,
+          redate: dayjs(form.getFieldValue("redate")).format("YYYY-MM-DD"),
           remark: form.getFieldValue("remark"),
         };
 
@@ -220,7 +225,7 @@ function ReceiptManage() {
     ];
     const customers = {
       ...val,
-      dncode: "",
+      recode: "",
       cusname: cusname.join(""),
       address: addr.join(""),
       contact: val.contact,
@@ -561,7 +566,7 @@ function ReceiptManage() {
                   <Row className="m-0 py-3 sm:py-0" gutter={[12, 12]}>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                       <Typography.Title level={3} className="m-0">
-                        เลขที่ใบเสร็จรับเงิน : {dnCode}
+                        เลขที่ใบเสร็จรับเงิน : {reCode}
                       </Typography.Title>
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
@@ -573,7 +578,7 @@ function ReceiptManage() {
                         <Typography.Title level={3} className="m-0">
                           วันที่ใบเสร็จรับเงิน :{" "}
                         </Typography.Title>
-                        <Form.Item name="dndate" className="!m-0">
+                        <Form.Item name="redate" className="!m-0">
                           <DatePicker
                             className="input-40"
                             allowClear={false}

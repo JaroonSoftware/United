@@ -170,11 +170,12 @@ export const productColumn = ({handleRemove,handleSelectChange},optionsItems) =>
   },  
   {
     title: "ใบส่งสินค้า",
-    dataIndex: "socode",
-    key: "socode",
+    dataIndex: "dncode",
+    key: "dncode",
     width: "8%",
     align: "right",
     className: "!pe-3",
+    render: (_, rec) => rec.dncode,
   },
   {
     title: "จำนวน",
