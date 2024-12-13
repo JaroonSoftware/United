@@ -184,7 +184,6 @@ export const productColumn = ({handleRemove,handleSelectChange},optionsItems) =>
     width: "8%",
     align: "right",
     className: "!pe-3",
-    editable: true,
     required: true,
     type:'number',
     render: (_, rec) => <>{ comma( Number(rec?.qty ||  0),  2, 2 )}</>,
@@ -196,19 +195,9 @@ export const productColumn = ({handleRemove,handleSelectChange},optionsItems) =>
     width: "8%",
     align: "right",
     className: "!pe-3",
-    editable: true,
     required: true,
     type:'number',
     render: (_, rec) => <>{ comma( Number(rec?.price ||  0),  2, 2 )}</>,
-  },
-  {
-    title: "ต้นทุน",
-    dataIndex: "cost",
-    key: "cost", 
-    width: "8%",
-    align: "right",
-    className: "!pe-3",        
-    // hidden: true,
   },
   {
     title: "หน่วยสินค้า",
@@ -216,7 +205,6 @@ export const productColumn = ({handleRemove,handleSelectChange},optionsItems) =>
     key: "unit", 
       align: "right", 
       width: "8%",
-      editable: true,
       type:'select',    
       optionsItems,
       render: (v) => {
@@ -230,7 +218,6 @@ export const productColumn = ({handleRemove,handleSelectChange},optionsItems) =>
     width: "7%",
     align: "right",
     className: "!pe-3",
-    editable: true,
     type:'number',
     render: (_, rec) => <>{ comma( Number(rec?.discount ||  0),  2, 2 )}</>,
   },
@@ -256,7 +243,7 @@ export const productColumn = ({handleRemove,handleSelectChange},optionsItems) =>
 
 
 export const columnsParametersEditable = (handleEditCell,optionsItems,{handleRemove} ) =>{
-  const col = productColumn({handleRemove});
+  const col = productColumn({handleRemove},optionsItems);
   return col.map((col, ind) => {
       if (!col.editable) return col; 
       

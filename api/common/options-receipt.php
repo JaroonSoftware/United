@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             inner join items i on (a.stcode=i.stcode)
             inner join items_stock s on (s.stcode=i.stcode)
             left outer join kind k on (i.kind_code=k.kind_code)
-            where b.cuscode= '$cuscode'  "; 
+            where b.cuscode= '$cuscode' and b.doc_status = 'รอออกใบวางบิล' "; 
             
             $stmt = $conn->prepare($sql); 
             $stmt->execute();

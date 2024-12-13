@@ -236,11 +236,12 @@ function ReceiptManage() {
     form.setFieldsValue({ ...fvalue, ...customers });
     // setListDetail([]);
   };
-  const handleSOChoosed = (value) => {
-    // console.log(value);
+  const handleDNChoosed = (value) => {
+    console.log(value);
     setListDetail(value);
     handleSummaryPrice();
   };
+
   const handleDelete = (code) => {
     const itemDetail = [...listDetail];
     const newData = itemDetail.filter((item) => item?.code !== code);
@@ -347,7 +348,7 @@ function ReceiptManage() {
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายการใบขายสินค้า
+            รายการสินค้า
           </Typography.Title>
         </Flex>
       </Col>
@@ -391,7 +392,7 @@ function ReceiptManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={10}
+                        colSpan={9}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -413,7 +414,7 @@ function ReceiptManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={9}
+                        colSpan={8}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -458,7 +459,7 @@ function ReceiptManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={10}
+                        colSpan={9}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -602,7 +603,7 @@ function ReceiptManage() {
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
                   <Divider orientation="left" className="!my-0">
-                    รายการใบส่งสินค้า
+                    รายการใบเสร็จรับเงิน
                   </Divider>
                   <Card style={{ backgroundColor: "#f0f0f0" }}>
                     {SectionProduct}
@@ -629,8 +630,9 @@ function ReceiptManage() {
         <ModalDN
           show={openProduct}
           close={() => setOpenProduct(false)}
+          cuscode={form.getFieldValue("cuscode")}
           values={(v) => {
-            handleSOChoosed(v);
+            handleDNChoosed(v);
           }}
           selected={listDetail}
         ></ModalDN>

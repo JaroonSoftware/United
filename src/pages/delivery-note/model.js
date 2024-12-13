@@ -262,7 +262,6 @@ export const columnsParametersEditable = (handleEditCell,optionsItems,{handleRem
               editable: col.editable,
               dataIndex: col.dataIndex,
               title: col.title,
-              // required: !!col?.required,
               type: col?.type || "input",
               handleEditCell,
               optionsItems,

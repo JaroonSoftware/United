@@ -10,7 +10,7 @@ import { columns } from "./model";
 import OptionService from "../../../service/Options.service"
 
 const opnService = OptionService();
-export default function ModalSO({show, close, values, selected}) {
+export default function ModalDN({show, close,cuscode, values, selected}) {
     const [form] = Form.useForm();
     /** handle state */
     const [soData, setSOData] = useState([]);
@@ -47,11 +47,11 @@ export default function ModalSO({show, close, values, selected}) {
         setItemsList([...itemsList, newData]);
     };
 
-    const handleCheckDuplicate = (itemCode) => !!selected.find( (item) =>  item?.code === itemCode ) ; 
+    const handleCheckDuplicate = (itemCode) => !!selected.find( (item) =>  item?.dncode === itemCode ) ; 
 
     const handleConfirm = () => { 
-        const choosed = selected.map( m => m.code );
-        const itemsChoose = (soData.filter( f => itemsRowKeySelect.includes(f.code) && !choosed.includes(f.code) )).map( (m, i) => (
+        const choosed = selected.map( m => m.dncode );
+        const itemsChoose = (soData.filter( f => itemsRowKeySelect.includes(f.dncode) && !choosed.includes(f.dncode) )).map( (m, i) => (
         {
             code:m.code,
             stcode:m.stcode,
@@ -59,9 +59,8 @@ export default function ModalSO({show, close, values, selected}) {
             socode:m.socode,
             dncode:m.dncode,
             kind_name:m.kind_name,
-            price: Number(m?.buyprice || 0),
-            cost: Number(m?.amtprice || 0),
-            qty: Number(m?.qty-m?.delamount || 0),
+            price: Number(m?.price || 0),
+            qty: Number(m?.qty || 0),
             delamount:m.delamount,
             unit:m.unit,
             discount:0,
@@ -91,16 +90,16 @@ export default function ModalSO({show, close, values, selected}) {
         },
         getCheckboxProps: (record) => { 
             return {
-                disabled: handleCheckDuplicate(record.code), 
-                name: record.code,
+                disabled: handleCheckDuplicate(record.dncode), 
+                name: record.dncode,
             }
         },
         onSelect: (record, selected, selectedRows, nativeEvent) => {
             //console.log(record, selected, selectedRows, nativeEvent);
             if( selected ){
-                setItemsRowKeySelect([...new Set([...itemsRowKeySelect, record.code])]);
+                setItemsRowKeySelect([...new Set([...itemsRowKeySelect, record.dncode])]);
             } else {
-                const ind = itemsRowKeySelect.findIndex( d => d === record.code);
+                const ind = itemsRowKeySelect.findIndex( d => d === record.dncode);
                 const tval = [...itemsRowKeySelect];
                 tval.splice(ind, 1);
                 setItemsRowKeySelect([...tval]);
@@ -117,13 +116,13 @@ export default function ModalSO({show, close, values, selected}) {
     useEffect( () => {
         const onload = () =>{
             setLoading(true);
-            opnService.optionsDN({p:'items'}).then((res) => {
+            opnService.optionsDN({cuscode:cuscode}).then((res) => {
                 let { status, data } = res;
                 if (status === 200) {
                     setSOData(data.data);
                     setSODataWrap(data.data);
 
-                    const keySeleted = selected.map( m => m.code );
+                    const keySeleted = selected.map( m => m.dncode );
 
                     setItemsRowKeySelect([...keySeleted]);
                     // console.log(selected);
@@ -182,7 +181,7 @@ export default function ModalSO({show, close, values, selected}) {
                             dataSource={soDataWrap}
                             columns={column} 
                             rowSelection={itemSelection}
-                            rowKey="code"
+                            rowKey="dncode"
                             pagination={{ 
                                 total:soDataWrap.length, 
                                 showTotal:(_, range) => `${range[0]}-${range[1]} of ${soData.length} items`,

@@ -342,7 +342,7 @@ function InvoiceManage() {
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายการใบขายสินค้า
+            รายการสินค้า
           </Typography.Title>
         </Flex>
       </Col>

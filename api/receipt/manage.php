@@ -101,7 +101,6 @@ try {
         $sql = "
         update receipt 
         set
-        dncode = :dncode,
         redate = :redate,
         cuscode = :cuscode,
         total_price = :total_price,
@@ -123,7 +122,6 @@ try {
         $stmt->bindParam(":grand_total_price", $header->grand_total_price, PDO::PARAM_STR);
         $stmt->bindParam(":remark", $header->remark, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-        $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
         $stmt->bindParam(":redate", $header->redate, PDO::PARAM_STR);
         $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
 
@@ -140,8 +138,8 @@ try {
             throw new PDOException("Remove data error => $error");
         }
 
-        $sql = "insert into receipt_detail (recode,stcode,unit,qty,price,discount)
-        values (:recode,:stcode,:unit,:qty,:price,:discount)";
+        $sql = "insert into receipt_detail (recode,stcode,dncode,unit,qty,price,discount)
+        values (:recode,:stcode,:dncode,:unit,:qty,:price,:discount)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -150,6 +148,7 @@ try {
             $val = (object)$val;
             $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
+            $stmt->bindParam(":dncode", $val->dncode, PDO::PARAM_STR);
             $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
             $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
