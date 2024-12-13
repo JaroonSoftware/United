@@ -39,7 +39,7 @@ export const column = [
     ),
     align: "left",
     key: "stname",
-    width: "40%",
+    width: "30%",
     dataIndex: "stname",
   },
   {
@@ -61,53 +61,17 @@ export const column = [
   {
     title: (
       <div style={{textAlign: "center"}}>
-        ราคาต่อหน่วย
+        หมายเหตุ
         <br />
-        Unit Price
+        Remark
       </div>
     ),
     align: "right",
-    width: "10%",
-    key: "price",
-    dataIndex: "price",
+    width: "30%",
+    key: "remark",
+    dataIndex: "remark",
     render: (v) => (
       <Typography.Text className="tx-info">{comma(Number(v))}</Typography.Text>
     ),
-  },
-  {
-    title: (
-      <div style={{textAlign: "center"}}>
-        ส่วนลด
-        <br />
-        Discount(%)
-      </div>
-    ),
-    align: "right",
-    width:  "10%",
-    key: "discount",
-    dataIndex: "discount",
-  },
-  {
-    title: (
-      <div style={{textAlign: "center"}}>
-        จำนวนเงิน
-        <br />
-        Total
-      </div>
-    ),
-    align: "right",
-    width:  "10%",
-    key: "amount",
-    dataIndex: "amount",
-    onCell: () => ({
-      style: {
-       borderRight: "1px solid "
-      },
-    }),
-    render: (_, record) => (
-      <Typography.Text className="tx-info">
-        {comma(Number(record.price * record.qty), 2, 2)}
-      </Typography.Text>
-    ),
-  },
+  }
 ];
