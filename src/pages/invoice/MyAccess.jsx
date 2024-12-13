@@ -197,7 +197,7 @@ const MyAccess = () => {
   };
 
   const handlePrint = (code) => { 
-    const url = `/receipt/${code.recode}`;
+    const url = `/iv-print/${code.recode}`;
     const newWindow = window.open('', url, url);
     newWindow.location.href = url;
   }
