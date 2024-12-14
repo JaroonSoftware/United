@@ -241,26 +241,52 @@ try {
         // $code = $_DELETE["code"];
         $code = $_GET["code"];
 
-        $sql = "delete from packingset where code = :code";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt->execute(['code' => $code])) {
-            $error = $conn->errorInfo();
-            throw new PDOException("Remove data error => $error");
-        }
+        $strSQL = "SELECT socode FROM dndetail where dncode = :code ";
+        $stmt5 = $conn->prepare($strSQL);
+        if (!$stmt5) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
-        $sql = "delete from packingset_detail where packingsetcode = :code";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt->execute(['code' => $code])) {
+        $stmt5->bindParam(":code", $code, PDO::PARAM_STR);
+
+            if (!$stmt5->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }            
+
+            $res = $stmt5->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($res as $row) {
+
+                $sql = "update somaster set doc_status = 'รอออกใบส่งของ' where socode = :code";
+                $stmt2 = $conn->prepare($sql);
+                if (!$stmt2->execute(['code' => $row['socode']])) {
+                    $error = $conn->errorInfo();
+                    throw new PDOException("Remove data error => $error");
+                }
+
+                $sql = "update sodetail set delamount = 0 where socode = :code";
+                $stmt2 = $conn->prepare($sql);
+                if (!$stmt2->execute(['code' => $row['socode']])) {
+                    $error = $conn->errorInfo();
+                    throw new PDOException("Remove data error => $error");
+                }
+
+            }
+       
+        
+        $sql = "update dnmaster set doc_status = 'ยกเลิก' where dncode = :code";
+        $stmt = $conn->prepare($sql); 
+        if (!$stmt->execute([ 'code' => $code ])){
             $error = $conn->errorInfo();
             throw new PDOException("Remove data error => $error");
-        }
+        }       
 
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array("status" => 1));
+        echo json_encode(array("status"=> 1));
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
-        $sql = "SELECT a.dncode,a.cuscode,a.dndate,a.remark,c.prename,c.cusname,a.vat
+        $sql = "SELECT a.dncode,a.cuscode,a.dndate,a.remark,c.prename,c.cusname,a.vat,a.doc_status
         ,CONCAT(COALESCE(c.idno, '') ,' ', COALESCE(c.road, ''),' ', COALESCE(c.subdistrict, ''),' ', COALESCE(c.district, ''),' ',COALESCE(c.zipcode, '') ) as address";
         $sql .= " FROM `dnmaster` as a ";
         $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";

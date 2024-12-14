@@ -10,11 +10,11 @@ import {
   message,
   Modal,
 } from "antd";
-import { Card, Col, Divider, Flex, Row, Space, InputNumber } from "antd";
+import { Card, Col, Divider, Flex, Row, Space, InputNumber,Popconfirm } from "antd";
 import OptionService from "../../service/Options.service";
 import DeliveryNoteService from "../../service/DeliveryNote.service";
 // import QuotationService from "../../service/Quotation.service";
-import { SearchOutlined, SaveFilled } from "@ant-design/icons";
+import { SearchOutlined, SaveFilled,QuestionCircleOutlined } from "@ant-design/icons";
 import ModalCustomersInsurance from "../../components/modal/customersInsurance/ModalCustomersInsurance";
 // import ModalQuotation from "../../components/modal/quotation/MyModal";
 import { ModalItems } from "../../components/modal/SO/modal-items";
@@ -31,6 +31,8 @@ import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuPackageSearch } from "react-icons/lu";
+import { TbExclamationCircle } from "react-icons/tb";
+import { CloseCircleFilledIcon } from "../../components/icon";
 const opservice = OptionService();
 const dnservice = DeliveryNoteService();
 // const qtservice = QuotationService();
@@ -96,7 +98,7 @@ function InvoiceManage() {
           ...formDetail,
           dncode: code,
           dndate: dayjs(new Date()),
-          // doc_status:"กำลังรอดำเนินการ",
+          doc_status: "รอออกใบเสร็จรับเงิน",
         };
         // console.log(ininteial_value);
         setFormDetail(ininteial_value);
@@ -253,10 +255,41 @@ function InvoiceManage() {
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
         onClick={() => handleDelete(record?.code)}
-        disabled={!record?.code}
+        disabled={formDetail.doc_status !== "รอออกใบเสร็จรับเงิน"}
       />
     ) : null;
   };
+
+  const handleCancleSO = () => {
+      Modal.confirm({
+        title: (
+          <Flex align="center" gap={2} className="text-red-700">
+            <TbExclamationCircle style={{ fontSize: "1.5rem" }} />
+            {"ยืนยันที่จะยกเลิกใบส่งสินค้า"}
+          </Flex>
+        ),
+        icon: <></>,
+        content: "ต้องการยกเลิกใบส่งสินค้า ใช่หรือไม่",
+        okText: "ยืนยัน",
+        okType: "danger",
+        cancelText: "ยกเลิก",
+        onOk() {
+          dnservice
+            .deleted(formDetail.dncode)
+            .then((r) => {
+              handleClose().then((r) => {
+                message.success("ยกเลิกใบส่งสินค้าสำเร็จ");
+              });
+            })
+            .catch((err) => {
+              message.error("Request Delivery Note fail.");
+              console.warn(err);
+            });
+          // setListSouce((state) => state.filter( soc => soc.stcode !== key));
+        },
+        // onCancel() { },
+      });
+    };
 
   const handleEditCell = (row) => {
     const newData = (r) => {
@@ -354,6 +387,7 @@ function InvoiceManage() {
             onClick={() => {
               setOpenProduct(true);
             }}
+            disabled={formDetail.doc_status !== "รอออกใบเสร็จรับเงิน"}
           >
             เลือกใบขายสินค้า
           </Button>
@@ -501,6 +535,26 @@ function InvoiceManage() {
       </Col>
       <Col span={12} className="p-0">
         <Flex gap={4} justify="end">
+        {formDetail.doc_status === "รอออกใบเสร็จรับเงิน" &&
+            config?.action !== "create" && (
+              <Popconfirm
+                placement="topRight"
+                title="ยืนยันการยกเลิก"
+                description="คุณแน่ใจที่จะยกเลิกใบส่งสินค้า?"
+                icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                onConfirm={() => handleCancleSO()}
+              >
+                <Button
+                  className="bn-center justify-center"
+                  icon={<CloseCircleFilledIcon style={{ fontSize: "1rem" }} />}
+                  type="primary"
+                  style={{ width: "9.5rem" }}
+                  danger
+                >
+                  ยกเลิกใบส่งสินค้า
+                </Button>
+              </Popconfirm>
+            )}
           <Button
             className="bn-center justify-center"
             icon={<SaveFilled style={{ fontSize: "1rem" }} />}
@@ -509,6 +563,7 @@ function InvoiceManage() {
             onClick={() => {
               handleConfirm();
             }}
+            disabled={formDetail.doc_status !== "รอออกใบเสร็จรับเงิน"}
           >
             Save
           </Button>
@@ -536,6 +591,7 @@ function InvoiceManage() {
             onClick={() => {
               handleConfirm();
             }}
+            disabled={formDetail.doc_status !== "รอออกใบเสร็จรับเงิน"}
           >
             Save
           </Button>
