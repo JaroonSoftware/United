@@ -159,19 +159,12 @@ try {
         // $code = $_DELETE["code"];
         $code = $_GET["code"];
         
-        $sql = "delete from packingset where code = :code";
+        $sql = "update qtmaster set doc_status = 'ยกเลิก' where qtcode = :code";
         $stmt = $conn->prepare($sql); 
         if (!$stmt->execute([ 'code' => $code ])){
             $error = $conn->errorInfo();
             throw new PDOException("Remove data error => $error");
         }            
-        
-        $sql = "delete from packingset_detail where packingsetcode = :code";
-        $stmt = $conn->prepare($sql); 
-        if (!$stmt->execute([ 'code' => $code ])){
-            $error = $conn->errorInfo();
-            throw new PDOException("Remove data error => $error");
-        }
 
         $conn->commit();
         http_response_code(200);

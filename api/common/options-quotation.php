@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
     try { 
         $res = null;
         
-        $sql = "SELECT q.qtcode,q.qtdate,c.cuscode, c.cusname, c.prename, c.contact, c.tel ,c.idno, c.road, c.subdistrict, c.district, c.province, c.zipcode,q.doc_status
+        $sql = "SELECT q.qtcode,q.qtdate,c.cuscode, c.cusname, c.prename, c.contact, c.tel ,c.idno, c.road, c.subdistrict, c.district, c.province, c.zipcode
          FROM qtmaster as q inner join `customer` as c on (q.cuscode=c.cuscode) where q.doc_status = 'กำลังรอดำเนินการ' ";
             // $type_code
             $stmt = $conn->prepare($sql); 

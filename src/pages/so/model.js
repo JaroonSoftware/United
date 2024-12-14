@@ -256,6 +256,7 @@ export const soForm = {
   total_price: 0,
   vat: 7,
   grand_total_price: 0,
+  doc_status:null,
 }
 
 export const quotationDetailForm = {  

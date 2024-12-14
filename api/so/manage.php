@@ -185,30 +185,29 @@ try {
     } else  if ($_SERVER["REQUEST_METHOD"] == "DELETE") {
         // $code = $_DELETE["code"];
         $code = $_GET["code"];
-
-        $sql = "delete from packingset where code = :code";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt->execute(['code' => $code])) {
+        
+        $sql = "update somaster set doc_status = 'ยกเลิก' where socode = :code";
+        $stmt = $conn->prepare($sql); 
+        if (!$stmt->execute([ 'code' => $code ])){
             $error = $conn->errorInfo();
             throw new PDOException("Remove data error => $error");
-        }
-
-        $sql = "delete from packingset_detail where packingsetcode = :code";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt->execute(['code' => $code])) {
-            $error = $conn->errorInfo();
-            throw new PDOException("Remove data error => $error");
-        }
+        }            
 
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array("status" => 1));
+        echo json_encode(array("status"=> 1));
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
-        $sql = "SELECT a.socode,a.sodate,a.qtcode,a.delcode,a.cuscode,a.claim_no,a.require_no,a.car_engineno,a.car_model_code,a.car_no,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
-        ,c.zipcode,c.contact,c.tel,c.fax,a.total_price,a.vat,a.grand_total_price,a.remark ";
+        $sql = "SELECT a.socode,a.sodate,a.qtcode,a.delcode,a.cuscode,a.claim_no,a.require_no,a.car_engineno,a.car_model_code,a.car_no,c.prename,c.cusname,CONCAT(COALESCE(c.idno, '') ,' ', COALESCE(c.road, ''),' ', COALESCE(c.subdistrict, ''),' ', COALESCE(c.district, ''),' ',COALESCE(c.zipcode, '') ) as address
+        ,c.zipcode,c.contact,c.tel,c.fax,c.contact,c.tel,CONCAT(COALESCE(d.idno, '') ,' ', COALESCE(d.road, ''),' ', COALESCE(d.subdistrict, ''),' ', COALESCE(d.district, ''),' ',COALESCE(d.zipcode, '') )  as deladdress
+        ,d.contact as delcontact,d.tel as deltel,a.total_price,a.vat,a.grand_total_price,a.remark,CONCAT(d.prename,' ',d.cusname) as delname,a.doc_status 
+        ,m.car_model_code,m.brand_code,m.model_code,m.year";
         $sql .= " FROM `somaster` as a ";
-        $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";
+        $sql .= " left outer join `customer` as c on (a.cuscode)=(c.cuscode)";
+        $sql .= " left outer join `customer` as d on (a.delcode)=(d.cuscode)";
+        $sql .= " left outer join `car_model` as m on (a.car_model_code)=(m.car_model_code)";
+        // $sql .= " left outer join `brand` as b on (b.brand_code)=(m.brand_code)";
+        // $sql .= " left outer join `model_table` as mo on (mo.model_code)=(m.model_code)";
         $sql .= " where a.socode = :code";
 
         $stmt = $conn->prepare($sql);
@@ -231,23 +230,9 @@ try {
         }
         $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT a.delcode,a.sodate,c.prename,c.cusname,c.cuscode,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
-        ,c.contact,c.tel";
-        $sql .= " FROM `somaster` as a ";
-        $sql .= " inner join `customer` as c on (a.delcode)=(c.cuscode)";
-        $sql .= " where a.socode = :code";
-
-        $stmt = $conn->prepare($sql);
-        if (!$stmt->execute(['code' => $code])) {
-            $error = $conn->errorInfo();
-            http_response_code(404);
-            throw new PDOException("Geting data error => $error");
-        }
-        $delcode = $stmt->fetch(PDO::FETCH_ASSOC);
-
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array('status' => 1, 'data' => array("header" => $header, "detail" => $detail,  "delcode" => $delcode)));
+        echo json_encode(array('status' => 1, 'data' => array("header" => $header, "detail" => $detail)));
     }
 } catch (PDOException $e) {
     $conn->rollback();

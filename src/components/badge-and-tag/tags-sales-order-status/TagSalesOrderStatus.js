@@ -12,13 +12,13 @@ function TagSalesOrderStatus({ result }) {
       elementToRender = <Tag icon={<CheckCircleFilled />} color="#87d068"> ชำระครบแล้ว </Tag>;
       break;
     case 'รอชำระเงิน':
-      elementToRender = <Tag icon={<ClockCircleFilled />} color="#347C98"> รอชำระเงิน </Tag>;
+      elementToRender = <Tag icon={<ClockCircleFilled />} color="#ffab47"> รอชำระเงิน </Tag>;
       break;
     case 'รอออกใบส่งของ':
-      elementToRender = <Tag icon={<ClockCircleFilled />} color="#ffab47"> รอออกใบส่งของ </Tag>;
+      elementToRender = <Tag icon={<ClockCircleFilled />} color="#347C98"> รอออกใบส่งของ </Tag>;
       break;
     case 'รอออกใบเสร็จรับเงิน':
-      elementToRender = <Tag icon={<ClockCircleFilled />} color="#347C98"> รอออกใบเสร็จรับเงิน </Tag>;
+      elementToRender = <Tag icon={<ClockCircleFilled />} color="#ffab47"> รอออกใบเสร็จรับเงิน </Tag>;
       break;
     case 'ยกเลิก':
       elementToRender = <Tag icon={<CloseCircleFilledIcon />} color="#ababab"> ยกเลิก </Tag>;

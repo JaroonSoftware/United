@@ -270,7 +270,7 @@ function QuotationManage() {
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
         onClick={() => handleDelete(record?.stcode)}
-        disabled={!record?.stcode || formDetail.doc_status !== "กำลังรอดำเนินการ"}
+        disabled={formDetail.doc_status !== "กำลังรอดำเนินการ"}
       />
     ) : null;
   };
@@ -400,7 +400,7 @@ function QuotationManage() {
             onClick={() => {
               setOpenProduct(true);
             }}
-            disabled={config?.action !== "create"}
+            disabled={formDetail.doc_status !== "กำลังรอดำเนินการ"}
           >
             เลือกสินค้า
           </Button>

@@ -9,14 +9,29 @@ import {
   Table,
   Typography,
   message,
+  Select,
 } from "antd";
-import { Card, Col, Divider, Flex, Row, Space, InputNumber } from "antd";
+import {
+  Card,
+  Col,
+  Divider,
+  Flex,
+  Row,
+  Space,
+  InputNumber,
+  Popconfirm,
+} from "antd";
 
 import OptionService from "../../service/Options.service";
 import SOService from "../../service/SO.service";
 import QuotationService from "../../service/Quotation.service";
+import CarModelsService from "../../service/CarModel.Service";
 
-import { SaveFilled, SearchOutlined } from "@ant-design/icons";
+import {
+  SaveFilled,
+  SearchOutlined,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
 import ModalCustomersInsurance from "../../components/modal/customersInsurance/ModalCustomersInsurance";
 import ModalDelivery from "../../components/modal/DeliveryCustomers/ModalDeliveryCustomers";
 import ModalQuotation from "../../components/modal/quotation/MyModal";
@@ -27,13 +42,15 @@ import dayjs from "dayjs";
 import { delay, comma } from "../../utils/util";
 import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router-dom";
-import { TbSquareRoundedX, TbExclamationCircle } from "react-icons/tb";
+import { TbExclamationCircle } from "react-icons/tb";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuPackageSearch } from "react-icons/lu";
+import { CloseCircleFilledIcon } from "../../components/icon";
 
 const opservice = OptionService();
 const soservice = SOService();
 const qtservice = QuotationService();
+const carmodelservice = CarModelsService();
 
 const gotoFrom = "/sales-order";
 const dateFormat = "DD/MM/YYYY";
@@ -57,7 +74,10 @@ function MyManage() {
 
   const [formDetail, setFormDetail] = useState(soForm);
   const [DeliveryDetail, setFomDeliveryDetail] = useState([]);
-  const [unitOption, setUnitOption] = React.useState([]);
+  const [unitOption, setUnitOption] = useState([]);
+  const [modelCarOption, setCarModelOption] = useState([]);
+  const [optionBrand, setOptionBrand] = useState([]);
+  const [optionModel, setOptionModel] = useState([]);
 
   const cardStyle = {
     backgroundColor: "#f0f0f0",
@@ -80,18 +100,9 @@ function MyManage() {
         setSOCode(socode);
         form.setFieldsValue({
           ...DeliveryDetail,
-          delname: delcode?.prename + " " + delcode?.cusname,
+          ...header,
+          sodate: dayjs(sodate),
         });
-        form.setFieldsValue({
-          ...DeliveryDetail,
-          deladdress: delcode?.address,
-        });
-        form.setFieldsValue({
-          ...DeliveryDetail,
-          delcontact: delcode?.contact,
-        });
-        form.setFieldsValue({ ...DeliveryDetail, deltel: delcode?.tel });
-        form.setFieldsValue({ ...header, sodate: dayjs(sodate) });
 
         // setTimeout( () => {  handleCalculatePrice(head?.valid_price_until, head?.dated_price_until) }, 200);
         // handleChoosedCustomer(head);
@@ -107,15 +118,24 @@ function MyManage() {
           ...formDetail,
           socode: code,
           sodate: dayjs(new Date()),
+          doc_status: "รอออกใบส่งของ",
         };
         setFormDetail(ininteial_value);
         form.setFieldsValue(ininteial_value);
       }
+
+      GetBrand();
+      GetModel();
       const [unitOprionRes] = await Promise.all([
         opservice.optionsUnit({ p: "unit-option" }),
       ]);
       // console.log(unitOprionRes.data.data)
       setUnitOption(unitOprionRes.data.data);
+
+      const [modelCarOprionRes] = await Promise.all([
+        opservice.optionsCarmodel({ p: "unit-option" }),
+      ]);
+      setCarModelOption(modelCarOprionRes.data.data);
     };
 
     initial();
@@ -125,6 +145,20 @@ function MyManage() {
   useEffect(() => {
     if (listDetail) handleSummaryPrice();
   }, [listDetail]);
+
+  const GetBrand = () => {
+    opservice.optionsBrand().then((res) => {
+      let { data } = res.data;
+      setOptionBrand(data);
+    });
+  };
+
+  const GetModel = () => {
+    opservice.optionsModel().then((res) => {
+      let { data } = res.data;
+      setOptionModel(data);
+    });
+  };
 
   const handleSummaryPrice = () => {
     const newData = [...listDetail];
@@ -167,6 +201,7 @@ function MyManage() {
       handleCalculatePrice(valid_price_until || 0, e || new Date());
     }
   };
+
   const handleChoosedCustomer = (val) => {
     console.log(val);
     const fvalue = form.getFieldsValue();
@@ -224,7 +259,7 @@ function MyManage() {
       deltel: val?.tel?.replace(/[^(0-9, \-, \s, \\,)]/g, "")?.trim(),
     };
     // console.log(val.contact)
-    setFormDetail((state1) => ({ ...state1, ...Cus }));
+    setFormDetail((state) => ({ ...state, ...Cus }));
     form.setFieldsValue({ ...favalue, ...Cus });
   };
 
@@ -262,6 +297,21 @@ function MyManage() {
     form.setFieldsValue({ ...fvalue, ...quotation });
 
     // alert(formDetail.doc_status)
+  };
+
+  const GetDataCarModel = (v) => {
+    // alert(v)
+    carmodelservice
+      .get(v)
+      .then(async (res) => {
+        const { data } = res.data;
+        setFormDetail((state) => ({ ...state, ...data }));
+        form.setFieldsValue({ ...data });
+      })
+      .catch((err) => {
+        console.log(err);
+        message.error("Error getting infomation Product.");
+      });
   };
 
   const handleItemsChoosed = (value) => {
@@ -312,6 +362,8 @@ function MyManage() {
         });
       });
   };
+  const filterOption = (input, option) =>
+    (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
   const handleClose = async () => {
     navigate(gotoFrom, { replace: true });
@@ -336,7 +388,7 @@ function MyManage() {
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
         onClick={() => handleDelete(record?.stcode)}
-        disabled={!record?.stcode || config.action !== "create"}
+        disabled={formDetail.doc_status !== "รอออกใบส่งของ"}
       />
     ) : null;
   };
@@ -557,6 +609,7 @@ function MyManage() {
             onClick={() => {
               setOpenProduct(true);
             }}
+            disabled={formDetail.doc_status !== "รอออกใบส่งของ"}
           >
             เลือกสินค้า
           </Button>
@@ -705,18 +758,65 @@ function MyManage() {
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={6} lg={6}>
-            <Form.Item className="" name="car_model_code" label="แบบรถ">
-              <Input placeholder="แบบรถ" />
+            <Form.Item name="car_model_code" label="แบบรถ" rules={[{ required: true, message: "กรูณาเลือกข้อมูล" }]}>
+              <Select
+                size="large"
+                showSearch
+                filterOption={filterOption}
+                placeholder="เลือกหน่วยสินค้า"
+                options={modelCarOption.map((item) => ({
+                  value: item.car_model_code,
+                  label: item.car_model_name,
+                }))}
+                onChange={GetDataCarModel}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={6} lg={6}>
             <Form.Item
-              className=""
               name="car_no"
               label="ทะเบียนรถ"
               rules={[{ required: true, message: "กรูณาใส่ข้อมูล" }]}
             >
               <Input placeholder="ทะเบียนรถ" />
+            </Form.Item>
+          </Col>          
+          <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+            <Form.Item label="ยี่ห้อสินค้า" name="brand_code">
+              <Select
+                size="large"
+                showSearch
+                filterOption={filterOption}
+                className="!bg-white"
+                style={{
+                  color:'red',
+                }}
+                options={optionBrand.map((item) => ({
+                  value: item.brand_code,
+                  label: item.brand_name,
+                }))}
+                disabled                
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+            <Form.Item label="รุ่นรถ" name="model_code">
+              <Select
+                size="large"
+                showSearch
+                filterOption={filterOption}
+                className="!bg-white"
+                options={optionModel.map((item) => ({
+                  value: item.model_code,
+                  label: item.model_name,
+                }))}
+                disabled
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+            <Form.Item label="ปี" name="year">
+              <Input disabled className="!bg-white"/>
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={6} lg={6}>
@@ -743,20 +843,26 @@ function MyManage() {
       </Col>
       <Col span={12} className="p-0">
         <Flex gap={4} justify="end">
-          {formDetail.active_status === "Y" ? (
-            <Button
-              icon={<TbSquareRoundedX style={{ fontSize: "1.4rem" }} />}
-              type="primary"
-              onClick={() => handleCancleSO()}
-              className="bn-center justify-center"
-              style={{ width: "9.5rem" }}
-              danger
-            >
-              ยกเลิกใบขายสินค้า
-            </Button>
-          ) : (
-            <></>
-          )}
+          {formDetail.doc_status === "รอออกใบส่งของ" &&
+            config?.action !== "create" && (
+              <Popconfirm
+                placement="topRight"
+                title="ยืนยันการยกเลิก"
+                description="คุณแน่ใจที่จะยกเลิกใบขายสินค้า?"
+                icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                onConfirm={() => handleCancleSO()}
+              >
+                <Button
+                  className="bn-center justify-center"
+                  icon={<CloseCircleFilledIcon style={{ fontSize: "1rem" }} />}
+                  type="primary"
+                  style={{ width: "9.5rem" }}
+                  danger
+                >
+                  ยกเลิกใบขายสินค้า
+                </Button>
+              </Popconfirm>
+            )}
 
           <Button
             className="bn-center justify-center"
@@ -766,6 +872,7 @@ function MyManage() {
             onClick={() => {
               handleConfirm();
             }}
+            disabled={formDetail.doc_status !== "รอออกใบส่งของ"}
           >
             Save
           </Button>
@@ -785,21 +892,6 @@ function MyManage() {
       </Col>
       <Col span={12} className="p-0">
         <Flex gap={4} justify="end">
-          {formDetail.active_status === "Y" ? (
-            <Button
-              icon={<TbSquareRoundedX style={{ fontSize: "1.4rem" }} />}
-              type="primary"
-              onClick={() => handleCancleSO()}
-              className="bn-center justify-center"
-              style={{ width: "9.5rem" }}
-              danger
-            >
-              ยกเลิกใบขายสินค้า
-            </Button>
-          ) : (
-            <></>
-          )}
-
           <Button
             className="bn-center justify-center"
             icon={<SaveFilled style={{ fontSize: "1rem" }} />}
@@ -808,6 +900,7 @@ function MyManage() {
             onClick={() => {
               handleConfirm();
             }}
+            disabled={formDetail.doc_status !== "รอออกใบส่งของ"}
           >
             Save
           </Button>
