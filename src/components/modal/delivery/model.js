@@ -1,7 +1,7 @@
 /** get items column */
-import { TagItemTypes } from "../../badge-and-tag";
-import { Image } from "antd";
-import { BACKEND_URL_MAIN } from '../../../utils/util';
+import dayjs from 'dayjs';
+import { TagDeliveryNoteStatus } from "../../../components/badge-and-tag/";
+
 export const columns = ()=>{
   return [
     {
@@ -11,56 +11,32 @@ export const columns = ()=>{
       hidden: true,
     },
     {
-      title: "รหัสสินค้า",
-      key: "stcode",
-      dataIndex: "stcode", 
-    },
-    {
       title: "รหัสใบส่งสินค้า",
       key: "dncode",
       dataIndex: "dncode", 
     },
     {
-      title: "รูปประกอบ",
-      dataIndex: "file",
-      key: "file",
-      width: 120,
-      align: "center",
-      render: (im, rec) => 
-        {
-          const img = (!!rec.file_name ? `/uploads/` + rec.file_name : `/logo.png`
-          );
-          return <>
-          <Image
-        style={{ borderRadius: 10 }}
-        preview={false}
-        height={75}
-        alt={`Image ${rec.file_name}`}
-        src={`${BACKEND_URL_MAIN}` + img}
-      />
-      </>
-      },
+      title: "วันที่ใบส่งสินค้า",
+      key: "dndate",
+      dataIndex: "dndate", 
+      render: (v) => dayjs(v).format("DD/MM/YYYY"),
     },
     {
-      title: "ชื่อสินค้า",
-      dataIndex: "stname",
-      key: "stname",
-    },
-    {
-      title: "จำนวนที่ขาย",
-      dataIndex: "qty",
-      key: "qty",
+      title: "Vat",
+      dataIndex: "vat",
+      key: "vat",
     },
       {
-        title: "จำนวนที่ส่งแล้ว",
-        dataIndex: "delamount",
-        key: "delamount",
+        title: "ราคารวม",
+        dataIndex: "grand_total_price",
+        key: "grand_total_price",
       },
-    {      
-      title: "หน่วย",
-      dataIndex: "unit",
-      key: "unit",
-      render: (h)=><TagItemTypes data={h} />,
+    {
+      title: "สถานะ",
+      dataIndex: "doc_status",
+      key: "doc_status", 
+      width: '13%',
+      render: (data) => <TagDeliveryNoteStatus result={data} />,
     },
   ]
 };

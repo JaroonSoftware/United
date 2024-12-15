@@ -53,17 +53,7 @@ export default function ModalDN({show, close,cuscode, values, selected}) {
         const choosed = selected.map( m => m.dncode );
         const itemsChoose = (soData.filter( f => itemsRowKeySelect.includes(f.dncode) && !choosed.includes(f.dncode) )).map( (m, i) => (
         {
-            code:m.code,
-            stcode:m.stcode,
-            stname:m.stname,
-            socode:m.socode,
             dncode:m.dncode,
-            kind_name:m.kind_name,
-            price: Number(m?.price || 0),
-            qty: Number(m?.qty || 0),
-            delamount:m.delamount,
-            unit:m.unit,
-            discount:0,
         }));
         
         // const trans = selected.filter( (item) =>  item?.socode === "" );

@@ -10,11 +10,25 @@ import {
   message,
   Modal,
 } from "antd";
-import { Card, Col, Divider, Flex, Row, Space, InputNumber } from "antd";
+import {
+  Card,
+  Col,
+  Divider,
+  Flex,
+  Row,
+  Space,
+  InputNumber,
+  Popconfirm,
+} from "antd";
 import OptionService from "../../service/Options.service";
 import ReceiptService from "../../service/Receipt.service";
+import DeliveryNoteService from "../../service/DeliveryNote.service";
 // import QuotationService from "../../service/Quotation.service";
-import { SearchOutlined, SaveFilled } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  SaveFilled,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
 import ModalCustomers from "../../components/modal/customers/ModalCustomers";
 // import ModalQuotation from "../../components/modal/quotation/MyModal";
 import { ModalDN } from "../../components/modal/delivery/index";
@@ -31,8 +45,11 @@ import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuPackageSearch } from "react-icons/lu";
+import { TbExclamationCircle } from "react-icons/tb";
+import { CloseCircleFilledIcon } from "../../components/icon";
 const opservice = OptionService();
 const reservice = ReceiptService();
+const dnservice = DeliveryNoteService();
 // const qtservice = QuotationService();
 
 const gotoFrom = "/receipt";
@@ -236,15 +253,23 @@ function ReceiptManage() {
     form.setFieldsValue({ ...fvalue, ...customers });
     // setListDetail([]);
   };
-  const handleDNChoosed = (value) => {
-    console.log(value);
-    setListDetail(value);
-    handleSummaryPrice();
+  const handleDNChoosed = (v) => {
+
+    let value = {detail:v}
+    dnservice
+      .getdetail(value).then((res) => {
+        // console.log(res.data)
+        const { detail } = res.data;    
+        
+        setListDetail(detail);
+          })
+      .catch((error) => message.error("get Invoice data fail."));
+      
   };
 
   const handleDelete = (code) => {
     const itemDetail = [...listDetail];
-    const newData = itemDetail.filter((item) => item?.code !== code);
+    const newData = itemDetail.filter((item) => item?.dncode !== code);
     setListDetail([...newData]);
   };
 
@@ -258,10 +283,41 @@ function ReceiptManage() {
         icon={
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
-        onClick={() => handleDelete(record?.code)}
-        disabled={!record?.code}
+        onClick={() => handleDelete(record?.dncode)}
+        disabled={!record?.dncode}
       />
     ) : null;
+  };
+
+  const handleCancleRE = () => {
+    Modal.confirm({
+      title: (
+        <Flex align="center" gap={2} className="text-red-700">
+          <TbExclamationCircle style={{ fontSize: "1.5rem" }} />
+          {"ยืนยันที่จะยกเลิกใบเสร็จรับเงิน"}
+        </Flex>
+      ),
+      icon: <></>,
+      content: "ต้องการยกเลิกใบเสร็จรับเงิน ใช่หรือไม่",
+      okText: "ยืนยัน",
+      okType: "danger",
+      cancelText: "ยกเลิก",
+      onOk() {
+        reservice
+          .deleted(formDetail.recode)
+          .then((r) => {
+            handleClose().then((r) => {
+              message.success("ยกเลิกใบเสร็จรับเงินสำเร็จ");
+            });
+          })
+          .catch((err) => {
+            message.error("Request Receipt fail.");
+            console.warn(err);
+          });
+        // setListSouce((state) => state.filter( soc => soc.stcode !== key));
+      },
+      // onCancel() { },
+    });
   };
 
   const handleEditCell = (row) => {
@@ -305,7 +361,7 @@ function ReceiptManage() {
                   readOnly
                   placeholder="เลือกลูกค้า"
                   id="cuscode-1"
-                  value={formDetail.cuscode}
+                  value={form.getFieldValue("cuscode")}
                   className="!bg-white"
                 />
                 {config?.action !== "create" ? (
@@ -487,7 +543,7 @@ function ReceiptManage() {
       </Flex>
     </>
   );
- 
+
   const handleClose = async () => {
     navigate(gotoFrom, { replace: true });
     await delay(300);
@@ -507,6 +563,26 @@ function ReceiptManage() {
       </Col>
       <Col span={12} className="p-0">
         <Flex gap={4} justify="end">
+          {formDetail.doc_status === "รอออกใบวางบิล" &&
+            config?.action !== "create" && (
+              <Popconfirm
+                placement="topRight"
+                title="ยืนยันการยกเลิก"
+                description="คุณแน่ใจที่จะยกเลิกใบเสร็จรับเงิน?"
+                icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                onConfirm={() => handleCancleRE()}
+              >
+                <Button
+                  className="bn-center justify-center"
+                  icon={<CloseCircleFilledIcon style={{ fontSize: "1rem" }} />}
+                  type="primary"
+                  style={{ width: "9.5rem" }}
+                  danger
+                >
+                  ยกเลิกใบเสร็จรับเงิน
+                </Button>
+              </Popconfirm>
+            )}
           <Button
             className="bn-center justify-center"
             icon={<SaveFilled style={{ fontSize: "1rem" }} />}

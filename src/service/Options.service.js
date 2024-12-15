@@ -39,7 +39,7 @@ const OptionService = () => {
   const optionsSO = (parm = {}) => api.get(`${API_URL.OPTION_SO}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsReceipt = (parm = {}) => api.get(`${API_URL.OPTION_RECEIPT}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsInvoice = (parm = {}) => api.get(`${API_URL.OPTION_INVOICE}?${getParmeter(parm)}`, { ignoreLoading : true });
-  const optionsDN = () => api.get(`${API_URL.OPTION_DN}`, { ignoreLoading : true });
+  const optionsDN = (parm = {}) => api.get(`${API_URL.OPTION_DN}?${getParmeter(parm)}`, { ignoreLoading : true });
   return {
     optionsItems,
     optionsSupplier,

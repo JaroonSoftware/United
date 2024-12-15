@@ -42,8 +42,8 @@ try {
         }
 
         // var_dump($_POST);
-        $sql = "insert dnmaster (`dncode`, `dndate`, `cuscode`,`vat`,`remark`,created_by,updated_by) 
-        values (:dncode,:dndate,:cuscode,:vat,:remark,:action_user,:action_user)";
+        $sql = "insert dnmaster (`dncode`, `dndate`, `cuscode`,`total_price`,`vat`,`grand_total_price`,`remark`,created_by,updated_by) 
+        values (:dncode,:dndate,:cuscode,:total_price,:vat,:grand_total_price,:remark,:action_user,:action_user)";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
@@ -52,7 +52,9 @@ try {
         $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
         $stmt->bindParam(":dndate", $header->dndate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
+        $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
         $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
+        $stmt->bindParam(":grand_total_price", $header->grand_total_price, PDO::PARAM_STR);
         $stmt->bindParam(":remark", $header->remark, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_STR);
 
@@ -178,7 +180,9 @@ try {
         dndate = :dndate,
         socode = :socode,
         remark = :remark,
+        total_price = :total_price,
         vat = :vat,
+        grand_total_price = :grand_total_price,
         updated_date = CURRENT_TIMESTAMP(),
         updated_by = :action_user
         where dncode = :dncode";
@@ -190,7 +194,9 @@ try {
 
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":remark", $header->remark, PDO::PARAM_STR);
+        $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
         $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
+        $stmt->bindParam(":grand_total_price", $header->grand_total_price, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
         $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
         $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR);

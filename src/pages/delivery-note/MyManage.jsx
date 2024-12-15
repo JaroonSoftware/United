@@ -260,7 +260,7 @@ function InvoiceManage() {
     ) : null;
   };
 
-  const handleCancleSO = () => {
+  const handleCancleDN = () => {
       Modal.confirm({
         title: (
           <Flex align="center" gap={2} className="text-red-700">
@@ -542,7 +542,7 @@ function InvoiceManage() {
                 title="ยืนยันการยกเลิก"
                 description="คุณแน่ใจที่จะยกเลิกใบส่งสินค้า?"
                 icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                onConfirm={() => handleCancleSO()}
+                onConfirm={() => handleCancleDN()}
               >
                 <Button
                   className="bn-center justify-center"

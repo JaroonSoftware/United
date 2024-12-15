@@ -166,27 +166,46 @@ try {
         // $code = $_DELETE["code"];
         $code = $_GET["code"];
 
-        $sql = "delete from packingset where code = :code";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt->execute(['code' => $code])) {
-            $error = $conn->errorInfo();
-            throw new PDOException("Remove data error => $error");
-        }
+        $strSQL = "SELECT dncode FROM receipt_detail where recode = :code ";
+        $stmt5 = $conn->prepare($strSQL);
+        if (!$stmt5) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
-        $sql = "delete from packingset_detail where packingsetcode = :code";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt->execute(['code' => $code])) {
+        $stmt5->bindParam(":code", $code, PDO::PARAM_STR);
+
+            if (!$stmt5->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }            
+
+            $res = $stmt5->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($res as $row) {
+
+                $sql = "update dnmaster set doc_status = 'รอออกใบส่งของ' where dncode = :code";
+                $stmt2 = $conn->prepare($sql);
+                if (!$stmt2->execute(['code' => $row['dncode']])) {
+                    $error = $conn->errorInfo();
+                    throw new PDOException("Remove data error => $error");
+                }
+
+            }
+       
+        
+        $sql = "update receipt set doc_status = 'ยกเลิก' where recode = :code";
+        $stmt = $conn->prepare($sql); 
+        if (!$stmt->execute([ 'code' => $code ])){
             $error = $conn->errorInfo();
             throw new PDOException("Remove data error => $error");
-        }
+        }       
 
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array("status" => 1));
+        echo json_encode(array("status"=> 1));
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
         $sql = "SELECT a.recode,a.redate,a.cuscode,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
-        ,c.zipcode,c.contact,c.tel,c.fax,a.total_price,a.vat,a.grand_total_price,a.remark ";
+        ,c.zipcode,c.contact,c.tel,c.fax,a.total_price,a.vat,a.grand_total_price,a.remark,a.doc_status ";
         $sql .= " FROM `receipt` as a ";
         $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";
         $sql .= " where a.recode = :code";
