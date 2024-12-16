@@ -126,6 +126,15 @@ const CountyAccess = () => {
                 <Row gutter={[8, 8]}>
                   <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Form.Item
+                      label="รหัสเขตขนส่ง"
+                      name="county_code"
+                      onChange={handleSearch}
+                    >
+                      <Input placeholder="กรอกรหัสเขตขนส่ง" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Form.Item
                       label="ชื่อเขตขนส่ง"
                       name="county_name"
                       onChange={handleSearch}
