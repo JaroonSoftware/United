@@ -1,18 +1,18 @@
-import { Button, Space } from "antd"; 
+import { Button, Space } from "antd";
 import "../../assets/styles/banks.css"
-import { Typography,Flex } from "antd"; 
+import { Typography, Flex } from "antd";
 // import { Popconfirm, Button } from "antd";
 import { Tooltip } from "antd";
 // import { EditOutlined, QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons"; 
 import { EditableRow, EditableCell } from "../../components/table/TableEditAble";
 import { TagReceiptStatus } from "../../components/badge-and-tag/";
 import dayjs from 'dayjs';
-import {  EditOutlined, PrinterOutlined } from "@ant-design/icons";
+import { EditOutlined, PrinterOutlined } from "@ant-design/icons";
 import { comma } from '../../utils/util';
 
 const calTotalDiscount = (rec) => {
-  const total =  Number(rec?.qty ||  0) * Number(rec?.price ||  0);
-  const discount = 1 - ( Number(rec?.discount ||  0) / 100 );
+  const total = Number(rec?.qty || 0) * Number(rec?.price || 0);
+  const discount = 1 - (Number(rec?.discount || 0) / 100);
 
   return total * discount;
 }
@@ -22,13 +22,13 @@ export const componentsEditable = {
 };
 
 /** get sample column */
-export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrint}) => [
+export const accessColumn = ({ handleEdit, handleDelete, handleView, handlePrint }) => [
   {
     title: "เลขที่ใบวางบิล",
     key: "ivcode",
     dataIndex: "ivcode",
     align: "left",
-    width:140,
+    width: 140,
   },
   {
     title: "วันที่ใบวางบิล",
@@ -48,45 +48,45 @@ export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrint}
   {
     title: "ชื่อลูกค้า",
     dataIndex: "cusname",
-    key: "cusname", 
+    key: "cusname",
     sorter: (a, b) => (a.cusname).localeCompare(b.cusname),
     ellipsis: {
       showTitle: false,
     },
-    render: (v) => <Tooltip placement="topLeft" title={v}>{v}</Tooltip>, 
+    render: (v) => <Tooltip placement="topLeft" title={v}>{v}</Tooltip>,
   },
   {
     title: "สถานะ",
     dataIndex: "doc_status",
-    key: "doc_status", 
+    key: "doc_status",
     width: '13%',
     sorter: (a, b) => a.doc_status.localeCompare(b.doc_status),
     sortDirections: ["descend", "ascend"],
     render: (data) => <TagReceiptStatus result={data} />,
   },
-  { 
+  {
     title: "จัดทำโดย",
     dataIndex: "created_name",
-    key: "created_name", 
+    key: "created_name",
     width: '15%',
     sorter: (a, b) => (a.created_name).localeCompare(b.created_name),
     ellipsis: {
       showTitle: false,
     },
-    render: (v) => <Tooltip placement="topLeft" title={v}>{v}</Tooltip>, 
+    render: (v) => <Tooltip placement="topLeft" title={v}>{v}</Tooltip>,
   },
   {
     title: "Action",
-    key: "operation", 
+    key: "operation",
     fixed: 'right',
     width: 100,
     render: (text, record) => (
       <Space >
         <Button
-          icon={<EditOutlined />} 
+          icon={<EditOutlined />}
           className='bn-primary-outline'
-          style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-          onClick={(e) => handleEdit(record) }
+          style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={(e) => handleEdit(record)}
           size="small"
         />
 
@@ -105,19 +105,19 @@ export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrint}
           />
         </Popconfirm> */}
         <Button
-          icon={<PrinterOutlined />} 
+          icon={<PrinterOutlined />}
           className='bn-warning-outline'
-          style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-          onClick={(e) => handlePrint(record) }
+          style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={(e) => handlePrint(record)}
           size="small"
-        />        
+        />
         {/* <ButtonAttachFiles code={record.srcode} refs='Sample Request' showExpire={true} /> */}
       </Space>
     ),
-  }, 
+  },
 ];
 
-export const productColumn = ({handleRemove,handleSelectChange}) => [
+export const productColumn = ({ handleRemove, handleSelectChange }) => [
   {
     key: "code",
     dataIndex: "code",
@@ -129,75 +129,50 @@ export const productColumn = ({handleRemove,handleSelectChange}) => [
     dataIndex: "ind",
     key: "ind",
     align: "center",
-    width: 80, 
+    width: 80,
     render: (im, rc, index) => <>{index + 1}</>,
   },
   {
-    title: "รหัสใบวางบิล",
+    title: "เลขที่ใบกำกับ",
     dataIndex: "ivcode",
     key: "ivcode",
-    width: 120, 
+    width: 150,
     align: "center",
   },
   {
-    title: "รหัสสินค้า",
-    dataIndex: "stcode",
-    key: "stcode",
-    width: 120, 
+    title: "ลงวันที่",
+    key: "redate",
+    dataIndex: "redate",
+    width: 120,
+    render: (v, rec) => !!rec.redate ? dayjs(v).format("DD/MM/YYYY") : '',
+  },
+  {
+    title: "วันที่ครบกำหนด",
+    key: "duedate",
+    dataIndex: "duedate",
+    width: 120,
+    render: (v, rec) => !!rec.duedate ? dayjs(v).format("DD/MM/YYYY") : '',
+  },
+  {
+    title: "จำนวนเงิน",
+    dataIndex: "grand_total_price",
+    key: "grand_total_price",
+    width: "10%",
+    align: "right",
+    className: "!pe-3",
+    render: (rec) => <>{comma(calTotalDiscount(rec), 2, 2)}</>,
+  },
+  {
+    title: "หมายเหตุ",
+    dataIndex: "remark",
+    key: "remark",
     align: "center",
-  },
+  },  
   {
-    title: "ชื่อสินค้า",
-    dataIndex: "purdetail",
-    key: "purdetail", 
-    align: "left", 
-    render: (_, rec) => rec.stname,
-  },
-  {
-    title: "จำนวน",
-    dataIndex: "qty",
-    key: "qty", 
-    width: "8%",
-    align: "right",
-    className: "!pe-3",
-    type:'number',
-    render: (_, rec) => <>{ comma( Number(rec?.qty ||  0),  0, 0 )}</>,
-  },
-  {
-    title: "ราคาขาย",
-    dataIndex: "price",
-    key: "price", 
-    width: "8%",
-    align: "right",
-    className: "!pe-3",
-    type:'number',
-    render: (_, rec) => <>{ comma( Number(rec?.price ||  0),  2, 2 )}</>,
-  },
-  {
-    title: "หน่วยสินค้า",
-    dataIndex: "unit",
-    key: "unit", 
-      align: "right", 
-      width: "8%",
-      type:'select',    
-  },
-  {
-    title: "ส่วนลด(%)",
-    dataIndex: "discount",
-    key: "discount",
-    width: "10%",
-    align: "right",
-    className: "!pe-3",
-    render: (_, rec) => <>{ comma( Number(rec?.discount ||  0),  2, 2 )}</>,
-  },
-  {
-    title: "ราคารวม",
-    dataIndex: "total",
-    key: "total",
-    width: "10%",
-    align: "right",
-    className: "!pe-3",
-    render: (_, rec) => <>{ comma( calTotalDiscount(rec),  2, 2 )}</>,
+    title: "",
+    dataIndex: "txt",
+    width: '90px',
+    key: "txt",
   },
   {
     title: "ตัวเลือก",
@@ -210,13 +185,13 @@ export const productColumn = ({handleRemove,handleSelectChange}) => [
   },
 ];
 
-export const paymentColumn = ({handleRemovePayment,handleSelectChange}) => [
+export const paymentColumn = ({ handleRemovePayment, handleSelectChange }) => [
   {
     title: "ลำดับ",
     dataIndex: "ind",
     key: "ind",
     align: "center",
-    width: 80, 
+    width: 80,
     render: (im, rc, index) => <>{index + 1}</>,
   },
   {
@@ -226,55 +201,55 @@ export const paymentColumn = ({handleRemovePayment,handleSelectChange}) => [
     width: 140,
     sorter: (a, b) => (a.paydate).localeCompare(b.paydate),
     render: (v) => dayjs(v).format("DD/MM/YYYY"),
-  }, 
+  },
   {
     title: "ช่องทางรับชำระ",
     dataIndex: "payment_type",
-    key: "payment_type", 
-    align: "left", 
-    width: "15%",  
+    key: "payment_type",
+    align: "left",
+    width: "15%",
     render: (_, rec) => rec.payment_type,
   },
   {
     title: "เลขที่บัญชี",
     dataIndex: "bank_no",
-    key: "bank_no", 
-    align: "left", 
-    width: "15%",  
+    key: "bank_no",
+    align: "left",
+    width: "15%",
     render: (_, rec) => rec.bank_no,
   },
-  
+
   {
     title: "ธนาคาร",
     key: "bank",
     dataIndex: "bank",
-    align: "left",  
-    width: "25%",  
-    render: (_,record) => (<>
-      {record.bank!==undefined?<Flex align='center' gap={8}>
-          <i className={`bank bank-${record.bank} shadow huge`} style={{height:24, width:24, marginTop: 4}}></i>
-          <Flex align='start' gap={1} vertical>
-              <Typography.Text ellipsis style={{ fontSize: 13 }}>{record.bank_name_th}</Typography.Text> 
-              <Typography.Text ellipsis style={{ fontSize: 9, color:'#8c8386' }}>{record.bank_name}</Typography.Text> 
-          </Flex>
-      </Flex>: <></>}
+    align: "left",
+    width: "25%",
+    render: (_, record) => (<>
+      {record.bank !== undefined ? <Flex align='center' gap={8}>
+        <i className={`bank bank-${record.bank} shadow huge`} style={{ height: 24, width: 24, marginTop: 4 }}></i>
+        <Flex align='start' gap={1} vertical>
+          <Typography.Text ellipsis style={{ fontSize: 13 }}>{record.bank_name_th}</Typography.Text>
+          <Typography.Text ellipsis style={{ fontSize: 9, color: '#8c8386' }}>{record.bank_name}</Typography.Text>
+        </Flex>
+      </Flex> : <></>}
     </>)
   },
-  
+
   {
     title: "หมายเหตุ",
     dataIndex: "remark",
-    key: "remark", 
-    align: "left", 
-  },  
+    key: "remark",
+    align: "left",
+  },
   {
     title: "ยอดรับชำระ",
     dataIndex: "price",
     key: "price",
-    width: "15%",  
+    width: "15%",
     align: "right",
     className: "!pe-3",
-    render: (_, rec) => <>{ comma( Number(rec?.price ||  0),  2, 2 )}</>,
+    render: (_, rec) => <>{comma(Number(rec?.price || 0), 2, 2)}</>,
   },
   {
     title: "ตัวเลือก",
@@ -287,51 +262,51 @@ export const paymentColumn = ({handleRemovePayment,handleSelectChange}) => [
   },
 ];
 
-export const columnsParametersEditable = (handleEditCell,optionsItems,{handleRemove} ) =>{
-  const col = productColumn({handleRemove});
+export const columnsParametersEditable = (handleEditCell, optionsItems, { handleRemove }) => {
+  const col = productColumn({ handleRemove });
   return col.map((col, ind) => {
-      if (!col.editable) return col; 
-      
-      return {
-          ...col,
-          onCell: (record) => {
-            // console.log(record);
-            return {
-              record,
-              editable: col.editable,
-              dataIndex: col.dataIndex,
-              title: col.title,
-              // required: !!col?.required,
-              type: col?.type || "input",
-              handleEditCell,
-              optionsItems,
-            }
-          },
-      };
-  }); 
+    if (!col.editable) return col;
+
+    return {
+      ...col,
+      onCell: (record) => {
+        // console.log(record);
+        return {
+          record,
+          editable: col.editable,
+          dataIndex: col.dataIndex,
+          title: col.title,
+          // required: !!col?.required,
+          type: col?.type || "input",
+          handleEditCell,
+          optionsItems,
+        }
+      },
+    };
+  });
 }
 
-export const columnsPaymentEditable = (handleEditCell,{handleRemovePayment} ) =>{
-  const col = paymentColumn({handleRemovePayment});
+export const columnsPaymentEditable = (handleEditCell, { handleRemovePayment }) => {
+  const col = paymentColumn({ handleRemovePayment });
   return col.map((col, ind) => {
-      if (!col.editable) return col; 
-      
-      return {
-          ...col,
-          onCell: (record) => {
-            // console.log(record);
-            return {
-              record,
-              editable: col.editable,
-              dataIndex: col.dataIndex,
-              title: col.title,
-              // required: !!col?.required,
-              type: col?.type || "input",
-              handleEditCell,
-            }
-          },
-      };
-  }); 
+    if (!col.editable) return col;
+
+    return {
+      ...col,
+      onCell: (record) => {
+        // console.log(record);
+        return {
+          record,
+          editable: col.editable,
+          dataIndex: col.dataIndex,
+          title: col.title,
+          // required: !!col?.required,
+          type: col?.type || "input",
+          handleEditCell,
+        }
+      },
+    };
+  });
 }
 export const DEFALUT_CHECK_RECEIPT = {
   ivcode: null,

@@ -10,11 +10,11 @@ import { columns } from "./model";
 import OptionService from "../../../service/Options.service"
 
 const opnService = OptionService();
-export default function ModalReceipt({show, close,cuscode, values, selected}) {
+export default function ModalRE({show, close,cuscode, values, selected}) {
     const [form] = Form.useForm();
     /** handle state */
-    const [reData, setREData] = useState([]);
-    const [reDataWrap, setREDataWrap] = useState([]);
+    const [soData, setSOData] = useState([]);
+    const [soDataWrap, setSODataWrap] = useState([]);
     
     const [itemsList, setItemsList] = useState(selected || []);
     const [itemsRowKeySelect, setItemsRowKeySelect] = useState([]);
@@ -26,11 +26,11 @@ export default function ModalReceipt({show, close,cuscode, values, selected}) {
  
     const handleSearch = (value) => {
         if(!!value){    
-            const f = reData.filter( d => ( (d.stcode?.includes(value)) || (d.stname?.includes(value)) ) );
+            const f = soData.filter( d => ( (d.stcode?.includes(value)) || (d.recode?.includes(value)) ) );
              
-            setREDataWrap(f);            
+            setSODataWrap(f);            
         } else { 
-            setREDataWrap(reData);            
+            setSODataWrap(soData);            
         }
 
     }
@@ -47,28 +47,19 @@ export default function ModalReceipt({show, close,cuscode, values, selected}) {
         setItemsList([...itemsList, newData]);
     };
 
-    const handleCheckDuplicate = (itemCode) => !!selected.find( (item) =>  item?.code === itemCode ) ; 
+    const handleCheckDuplicate = (itemCode) => !!selected.find( (item) =>  item?.recode === itemCode ) ; 
 
     const handleConfirm = () => { 
-        const choosed = selected.map( m => m.code );
-        const itemsChoose = (reData.filter( f => itemsRowKeySelect.includes(f.code) && !choosed.includes(f.code) )).map( (m, i) => (
+        const choosed = selected.map( m => m.recode );
+        const itemsChoose = (soData.filter( f => itemsRowKeySelect.includes(f.recode) && !choosed.includes(f.recode) )).map( (m, i) => (
         {
-            code:m.code,
-            stcode:m.stcode,
-            stname:m.stname,
-            socode:m.socode,
-            kind_name:m.kind_name,
-            price: Number(m?.buyprice || 0),
-            cost: Number(m?.amtprice || 0),
-            qty: Number(m?.qty-m?.delamount || 0),
-            delamount:m.delamount,
-            unit:m.unit,
-            discount:0,
+            recode:m.recode,
+            redate:m.redate,
+            duedate:m.duedate,
+            grand_total_price:m.grand_total_price,         
+            remark:m.remark,  
         }));
         
-        // const trans = selected.filter( (item) =>  item?.socode === "" );
-        // const rawdt = selected.filter( (item) =>  item?.socode !== "" );
-        // console.log(itemsChoose, rawdt, trans); 
 
         values([...selected, ...itemsChoose]);
         
@@ -90,16 +81,16 @@ export default function ModalReceipt({show, close,cuscode, values, selected}) {
         },
         getCheckboxProps: (record) => { 
             return {
-                disabled: handleCheckDuplicate(record.code), 
-                name: record.code,
+                disabled: handleCheckDuplicate(record.recode), 
+                name: record.recode,
             }
         },
         onSelect: (record, selected, selectedRows, nativeEvent) => {
             //console.log(record, selected, selectedRows, nativeEvent);
             if( selected ){
-                setItemsRowKeySelect([...new Set([...itemsRowKeySelect, record.code])]);
+                setItemsRowKeySelect([...new Set([...itemsRowKeySelect, record.recode])]);
             } else {
-                const ind = itemsRowKeySelect.findIndex( d => d === record.code);
+                const ind = itemsRowKeySelect.findIndex( d => d === record.recode);
                 const tval = [...itemsRowKeySelect];
                 tval.splice(ind, 1);
                 setItemsRowKeySelect([...tval]);
@@ -119,10 +110,10 @@ export default function ModalReceipt({show, close,cuscode, values, selected}) {
             opnService.optionsReceipt({cuscode:cuscode}).then((res) => {
                 let { status, data } = res;
                 if (status === 200) {
-                    setREData(data.data);
-                    setREDataWrap(data.data);
+                    setSOData(data.data);
+                    setSODataWrap(data.data);
 
-                    const keySeleted = selected.map( m => m.code );
+                    const keySeleted = selected.map( m => m.recode );
 
                     setItemsRowKeySelect([...keySeleted]);
                     // console.log(selected);
@@ -146,7 +137,7 @@ export default function ModalReceipt({show, close,cuscode, values, selected}) {
         <Space direction="horizontal" size="middle" >
             
             <Button onClick={() => handleClose() }>ปิด</Button>
-            <Button type='primary' onClick={() => handleConfirm() }>ยืนยันการเลือกใบขาย</Button>
+            <Button type='primary' onClick={() => handleConfirm() }>ยืนยันการเลือกใบส่งสินค้า</Button>
         </Space>
     )
     /** */
@@ -154,7 +145,7 @@ export default function ModalReceipt({show, close,cuscode, values, selected}) {
         <>
         <Modal
             open={show}
-            title="เลือกใบเสร็จรับเงิน"
+            title="เลือกใบส่งสินค้า"
             onCancel={() => handleClose() } 
             footer={ButtonModal}
             maskClosable={false}
@@ -169,7 +160,7 @@ export default function ModalReceipt({show, close,cuscode, values, selected}) {
                             <Row gutter={[{xs:32, sm:32, md:32, lg:12, xl:12}, 8]} className='m-0'>
                                 <Col span={24}>
                                     <Form.Item label="ค้นหา"  >
-                                        <Input suffix={<SearchOutlined />} onChange={ (e) => { handleSearch(e.target.value) } } placeholder='ค้นหาชื่อ หรือ รหัสสินค้า'/>
+                                        <Input suffix={<SearchOutlined />} onChange={ (e) => { handleSearch(e.target.value) } } placeholder='ค้นหาชื่อ หรือ รหัสใบส่งสินค้า'/>
                                     </Form.Item>                        
                                 </Col> 
                             </Row> 
@@ -178,13 +169,13 @@ export default function ModalReceipt({show, close,cuscode, values, selected}) {
                     <Card>
                         <Table  
                             bordered
-                            dataSource={reDataWrap}
+                            dataSource={soDataWrap}
                             columns={column} 
                             rowSelection={itemSelection}
-                            rowKey="code"
+                            rowKey="recode"
                             pagination={{ 
-                                total:reDataWrap.length, 
-                                showTotal:(_, range) => `${range[0]}-${range[1]} of ${reData.length} items`,
+                                total:soDataWrap.length, 
+                                showTotal:(_, range) => `${range[0]}-${range[1]} of ${soData.length} items`,
                                 defaultPageSize:10,
                                 pageSizeOptions:[10,25,35,50,100]
                             }}

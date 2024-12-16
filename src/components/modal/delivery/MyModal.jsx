@@ -26,7 +26,7 @@ export default function ModalDN({show, close,cuscode, values, selected}) {
  
     const handleSearch = (value) => {
         if(!!value){    
-            const f = soData.filter( d => ( (d.stcode?.includes(value)) || (d.stname?.includes(value)) ) );
+            const f = soData.filter( d => ( (d.stcode?.includes(value)) || (d.dncode?.includes(value)) ) );
              
             setSODataWrap(f);            
         } else { 
@@ -136,7 +136,7 @@ export default function ModalDN({show, close,cuscode, values, selected}) {
         <Space direction="horizontal" size="middle" >
             
             <Button onClick={() => handleClose() }>ปิด</Button>
-            <Button type='primary' onClick={() => handleConfirm() }>ยืนยันการเลือกใบขาย</Button>
+            <Button type='primary' onClick={() => handleConfirm() }>ยืนยันการเลือกใบส่งสินค้า</Button>
         </Space>
     )
     /** */
@@ -144,7 +144,7 @@ export default function ModalDN({show, close,cuscode, values, selected}) {
         <>
         <Modal
             open={show}
-            title="เลือกใบขาย"
+            title="เลือกใบส่งสินค้า"
             onCancel={() => handleClose() } 
             footer={ButtonModal}
             maskClosable={false}
@@ -159,7 +159,7 @@ export default function ModalDN({show, close,cuscode, values, selected}) {
                             <Row gutter={[{xs:32, sm:32, md:32, lg:12, xl:12}, 8]} className='m-0'>
                                 <Col span={24}>
                                     <Form.Item label="ค้นหา"  >
-                                        <Input suffix={<SearchOutlined />} onChange={ (e) => { handleSearch(e.target.value) } } placeholder='ค้นหาชื่อ หรือ รหัสใบขาย'/>
+                                        <Input suffix={<SearchOutlined />} onChange={ (e) => { handleSearch(e.target.value) } } placeholder='ค้นหาชื่อ หรือ รหัสใบส่งสินค้า'/>
                                     </Form.Item>                        
                                 </Col> 
                             </Row> 

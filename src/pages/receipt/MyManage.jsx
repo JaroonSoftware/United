@@ -91,14 +91,14 @@ function ReceiptManage() {
         const {
           data: { header, detail },
         } = res.data;
-        const { recode, redate, check_date } = header;
+        const { recode, redate, duedate } = header;
         setFormDetail(header);
         setListDetail(detail);
         setRECode(recode);
         form.setFieldsValue({
           ...header,
           redate: dayjs(redate),
-          check_date: dayjs(check_date),
+          duedate: dayjs(duedate),
           dateFormat,
         });
 
@@ -116,8 +116,8 @@ function ReceiptManage() {
           ...formDetail,
           recode: code,
           redate: dayjs(new Date()),
-          check_date: dayjs(new Date()),
-          doc_status: "รอออกแจ้งหนี้",
+          duedate: dayjs(new Date()),
+          doc_status: "รอออกใบวางบิล",
         };
 
         setFormDetail(ininteial_value);
@@ -174,6 +174,7 @@ function ReceiptManage() {
           ...formDetail,
           recode: reCode,
           redate: dayjs(form.getFieldValue("redate")).format("YYYY-MM-DD"),
+          duedate: dayjs(form.getFieldValue("duedate")).format("YYYY-MM-DD"),
           remark: form.getFieldValue("remark"),
         };
 
@@ -253,18 +254,17 @@ function ReceiptManage() {
     form.setFieldsValue({ ...fvalue, ...customers });
     // setListDetail([]);
   };
-  const handleDNChoosed = (v) => {
-
-    let value = {detail:v}
+  const handleChoosedRE = (v) => {
+    let value = { detail: v };
     dnservice
-      .getdetail(value).then((res) => {
+      .getdetail(value)
+      .then((res) => {
         // console.log(res.data)
-        const { detail } = res.data;    
-        
+        const { detail } = res.data;
+
         setListDetail(detail);
-          })
+      })
       .catch((error) => message.error("get Invoice data fail."));
-      
   };
 
   const handleDelete = (code) => {
@@ -382,14 +382,25 @@ function ReceiptManage() {
               <Input placeholder="ชื่อลูกค้า" readOnly />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={24}>
+          <Col xs={24} sm={24} md={6} lg={6}>
+            <Form.Item label="วันที่ครบกำหนด	" name="duedate" className="!m-0">
+              <DatePicker
+                size="large"
+                placeholder="วันที่ครบกำหนด	."
+                className="input-40"
+                style={{ width: "100%" }}
+                format={dateFormat}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={18} lg={18}>
             <Form.Item name="address" label="ที่อยู่" className="!mb-1">
               <Input placeholder="ที่อยู่" readOnly />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={[8, 8]} className="m-0">
-          <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+          <Col xs={24} sm={24} md={24} lg={24}>
             <Form.Item className="" name="remark" label="หมายเหตุ">
               <Input.TextArea placeholder="Enter Remark" rows={4} />
             </Form.Item>
@@ -414,7 +425,10 @@ function ReceiptManage() {
             icon={<LuPackageSearch style={{ fontSize: "1.2rem" }} />}
             className="bn-center justify-center bn-primary-outline"
             onClick={() => {
-              setOpenProduct(true);
+              handleSummaryPrice();
+              form.validateFields().then((v) => {
+                setOpenProduct(true);
+              });
             }}
           >
             เลือกใบส่งสินค้า
@@ -708,7 +722,7 @@ function ReceiptManage() {
           close={() => setOpenProduct(false)}
           cuscode={form.getFieldValue("cuscode")}
           values={(v) => {
-            handleDNChoosed(v);
+            handleChoosedRE(v);
           }}
           selected={listDetail}
         ></ModalDN>

@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $cusname
         $created_by
         $qtdate
-        order by a.created_date desc ;";
+        order by a.dncode desc ;";
 
 
         $stmt = $conn->prepare($sql); 

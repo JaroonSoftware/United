@@ -16,13 +16,14 @@ import {
   Space,
   Table,
   Radio,
-  Popconfirm
+  Popconfirm,
 } from "antd";
 import ModalCustomersInsurance from "../../components/modal/customersInsurance/ModalCustomersInsurance";
 import ModalReceipt from "../../components/modal/receipt/MyModal";
 import ModalPayment from "../../components/modal/payment/MyModal";
 import OptionService from "../../service/Options.service";
 import InvoiceService from "../../service/Invoice.service";
+import ReceiptService from "../../service/Receipt.service";
 
 import {
   DEFALUT_CHECK_RECEIPT,
@@ -45,10 +46,11 @@ import {
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuPrinter } from "react-icons/lu";
 import { LuPackageSearch } from "react-icons/lu";
-import { CloseCircleFilledIcon } from '../../components/icon';
+import { CloseCircleFilledIcon } from "../../components/icon";
 
 const opservice = OptionService();
 const ivservice = InvoiceService();
+const reservice = ReceiptService();
 
 const gotoFrom = "/invoice";
 const dateFormat = "DD/MM/YYYY";
@@ -116,8 +118,8 @@ function ReceiptManage() {
           ...formDetail,
           recode: code,
           redate: dayjs(new Date()),
-          check_date: dayjs(new Date()),          
-          doc_status:"รอออกแจ้งหนี้",
+          check_date: dayjs(new Date()),
+          doc_status: "รอออกแจ้งหนี้",
         };
 
         setFormDetail(ininteial_value);
@@ -233,12 +235,19 @@ function ReceiptManage() {
     setListDetail([]);
   };
 
-  const handleChoosedRE = async (val) => {
-    // console.log(val);
-    setListDetail(val);
-    handleSummaryPrice();
+  const handleChoosedRE = async (v) => {
+    console.log(v)
+    setListDetail(v);
+    // let value = { detail: v };
+    // reservice
+    //   .getdetail(value)
+    //   .then((res) => {
+    //     // console.log(res.data)
+    //     const { detail } = res.data;
 
-    // console.log(val)
+    //     setListDetail(detail);
+    //   })
+    //   .catch((error) => message.error("get Invoice data fail."));
   };
 
   const handleConfirm = () => {
@@ -325,7 +334,7 @@ function ReceiptManage() {
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
         onClick={() => handleDelete(record?.dncode)}
-        disabled={(formDetail.doc_status === "ยกเลิก")}
+        disabled={formDetail.doc_status === "ยกเลิก"}
       />
     ) : null;
   };
@@ -456,7 +465,7 @@ function ReceiptManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={7}
+                        colSpan={5}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -490,7 +499,7 @@ function ReceiptManage() {
       <Col span={12} className="p-0">
         <Flex gap={4} justify="start" align="center">
           <Typography.Title className="m-0 !text-zinc-800" level={3}>
-            รายการสินค้า
+            รายการ
           </Typography.Title>
         </Flex>
       </Col>
@@ -499,12 +508,11 @@ function ReceiptManage() {
           <Button
             icon={<LuPackageSearch style={{ fontSize: "1.2rem" }} />}
             className="bn-center justify-center bn-primary-outline"
-            disabled={(formDetail.doc_status === "ยกเลิก")}
+            disabled={formDetail.doc_status === "ยกเลิก"}
             onClick={() => {
               handleSummaryPrice();
               form.validateFields().then((v) => {
-             
-              setOpenRE(true);
+                setOpenRE(true);
               });
             }}
           >
@@ -529,7 +537,7 @@ function ReceiptManage() {
           <Button
             icon={<CreditCardOutlined style={{ fontSize: "1.2rem" }} />}
             className="bn-center justify-center bn-primary-outline"
-            disabled={(formDetail.doc_status === "ยกเลิก")}
+            disabled={formDetail.doc_status === "ยกเลิก"}
             onClick={() => {
               handleSummaryPrice();
               form.validateFields().then((v) => {
@@ -630,25 +638,25 @@ function ReceiptManage() {
       </Col>
       <Col span={12} style={{ paddingInline: 0 }}>
         <Flex gap={4} justify="end">
-        {(formDetail.doc_status !== "ยกเลิก")&&
-          <Popconfirm 
-          placement="topRight"
-          title="ยืนยันการยกเลิก"  
-          description="คุณแน่ใจที่จะยกเลิกใบวางบิล?"
-          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-          onConfirm={() => handleCancel()}
-        >
-          <Button
-            className="bn-center justify-center"
-            icon={<CloseCircleFilledIcon style={{ fontSize: "1rem" }} />}
-            type="primary"
-            style={{ width: "9.5rem" }}
-            danger
-          >
-            ยกเลิกใบวางบิล
-          </Button>
-        </Popconfirm>
-          }
+          {formDetail.doc_status !== "ยกเลิก" && (
+            <Popconfirm
+              placement="topRight"
+              title="ยืนยันการยกเลิก"
+              description="คุณแน่ใจที่จะยกเลิกใบวางบิล?"
+              icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+              onConfirm={() => handleCancel()}
+            >
+              <Button
+                className="bn-center justify-center"
+                icon={<CloseCircleFilledIcon style={{ fontSize: "1rem" }} />}
+                type="primary"
+                style={{ width: "9.5rem" }}
+                danger
+              >
+                ยกเลิกใบวางบิล
+              </Button>
+            </Popconfirm>
+          )}
           <Button
             className="bn-center justify-center"
             icon={<SaveFilled style={{ fontSize: "1rem" }} />}
@@ -657,7 +665,7 @@ function ReceiptManage() {
             onClick={() => {
               handleConfirm();
             }}
-            disabled={(formDetail.doc_status === "ยกเลิก")}
+            disabled={formDetail.doc_status === "ยกเลิก"}
           >
             Save
           </Button>
@@ -701,7 +709,7 @@ function ReceiptManage() {
             onClick={() => {
               handleConfirm();
             }}
-            disabled={(formDetail.doc_status === "ยกเลิก")}
+            disabled={formDetail.doc_status === "ยกเลิก"}
           >
             Save
           </Button>
@@ -741,7 +749,7 @@ function ReceiptManage() {
                         </Typography.Title>
                         <Form.Item name="redate" className="!m-0">
                           <DatePicker
-                            disabled={(formDetail.doc_status === "ยกเลิก")}
+                            disabled={formDetail.doc_status === "ยกเลิก"}
                             className="input-40"
                             allowClear={false}
                             onChange={handleQuotDate}

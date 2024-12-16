@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $supname
         $created_by
         $grdate
-        order by a.created_date desc ;";
+        order by a.grcode desc ;";
 
 
         $stmt = $conn->prepare($sql); 

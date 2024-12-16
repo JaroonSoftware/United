@@ -119,7 +119,7 @@ function request_pocode($pdo ){
     $number = intval($res);
     $prefix = "PO$y$m";
     while(true){
-        $code = sprintf("%03s", ( $number) );
+        $code = sprintf("%04s", ( $number) );
         $format = $prefix.$code;
         $sql = "SELECT 1 r FROM pomaster where pocode = '$format'"; 
         $stmt = $pdo->prepare($sql); 
@@ -130,7 +130,7 @@ function request_pocode($pdo ){
             continue;
         } else break;
     } 
-    return $prefix.sprintf("%03s", ( $number) );   
+    return $prefix.sprintf("%04s", ( $number) );   
 }
 
 function request_grcode($pdo ){
@@ -158,7 +158,7 @@ function request_grcode($pdo ){
     $number = intval($res);
     $prefix = "GR$y$m";
     while(true){
-        $code = sprintf("%03s", ( $number) );
+        $code = sprintf("%04s", ( $number) );
         $format = $prefix.$code;
         $sql = "SELECT 1 r FROM grmaster where grcode = '$format'"; 
         $stmt = $pdo->prepare($sql); 
@@ -169,7 +169,7 @@ function request_grcode($pdo ){
             continue;
         } else break;
     } 
-    return $prefix.sprintf("%03s", ( $number) );   
+    return $prefix.sprintf("%04s", ( $number) );   
 }
 
 function request_qtcode($pdo){
@@ -197,7 +197,7 @@ function request_qtcode($pdo){
     $number = intval($res);
     $prefix = "QT$y$m";
     while(true){
-        $code = sprintf("%03s", ( $number) );
+        $code = sprintf("%04s", ( $number) );
         $format = $prefix.$code;
         $sql = "SELECT 1 r FROM qtmaster where qtcode = '$format'"; 
         $stmt = $pdo->prepare($sql); 
@@ -208,7 +208,7 @@ function request_qtcode($pdo){
             continue;
         } else break;
     } 
-    return $prefix.sprintf("%03s", ( $number) );   
+    return $prefix.sprintf("%04s", ( $number) );   
 }
 
 function request_socode($pdo){
@@ -236,7 +236,7 @@ function request_socode($pdo){
     $number = intval($res);
     $prefix = "SO$y$m";
     while(true){
-        $code = sprintf("%03s", ( $number) );
+        $code = sprintf("%04s", ( $number) );
         $format = $prefix.$code;
         $sql = "SELECT 1 r FROM somaster where socode = '$format'"; 
         $stmt = $pdo->prepare($sql); 
@@ -247,7 +247,7 @@ function request_socode($pdo){
             continue;
         } else break;
     } 
-    return $prefix.sprintf("%03s", ( $number) );   
+    return $prefix.sprintf("%04s", ( $number) );   
 }
 
 function request_ivcode($pdo){
@@ -275,7 +275,7 @@ function request_ivcode($pdo){
     $number = intval($res);
     $prefix = "IV$y$m";
     while(true){
-        $code = sprintf("%03s", ( $number) );
+        $code = sprintf("%04s", ( $number) );
         $format = $prefix.$code;
         $sql = "SELECT 1 r FROM iv_master where ivcode = '$format'"; 
         $stmt = $pdo->prepare($sql); 
@@ -286,7 +286,7 @@ function request_ivcode($pdo){
             continue;
         } else break;
     } 
-    return $prefix.sprintf("%03s", ( $number) );   
+    return $prefix.sprintf("%04s", ( $number) );   
 }
 
 function request_recode($pdo){
@@ -312,9 +312,9 @@ function request_recode($pdo){
     $y = substr( date("Y")+543, -2);
     $m = date("m");
     $number = intval($res);
-    $prefix = "RE$y$m";
+    $prefix = "U$y$m";
     while(true){
-        $code = sprintf("%03s", ( $number) );
+        $code = sprintf("%04s", ( $number) );
         $format = $prefix.$code;
         $sql = "SELECT 1 r FROM receipt where recode = '$format'"; 
         $stmt = $pdo->prepare($sql); 
@@ -325,7 +325,7 @@ function request_recode($pdo){
             continue;
         } else break;
     } 
-    return $prefix.sprintf("%03s", ( $number) );   
+    return $prefix.sprintf("%04s", ( $number) );   
 }
 
 function request_dncode($pdo){
@@ -353,7 +353,7 @@ function request_dncode($pdo){
     $number = intval($res);
     $prefix = "DN$y$m";
     while(true){
-        $code = sprintf("%03s", ( $number) );
+        $code = sprintf("%04s", ( $number) );
         $format = $prefix.$code;
         $sql = "SELECT 1 r FROM dnmaster where dncode = '$format'"; 
         $stmt = $pdo->prepare($sql); 
@@ -364,7 +364,7 @@ function request_dncode($pdo){
             continue;
         } else break;
     } 
-    return $prefix.sprintf("%03s", ( $number) );   
+    return $prefix.sprintf("%04s", ( $number) );   
 }
 #endregion
 

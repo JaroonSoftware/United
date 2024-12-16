@@ -233,8 +233,8 @@ function InvoiceManage() {
     form.setFieldsValue({ ...fvalue, ...customers });
     // setListDetail([]);
   };
-  const handleSOChoosed = (value) => {
-    console.log(value);
+  const handleChoosedSO = (value) => {
+    // console.log(value);
     setListDetail(value);
     handleSummaryPrice();
   };
@@ -682,7 +682,7 @@ function InvoiceManage() {
           close={() => setOpenProduct(false)}
           cuscode={form.getFieldValue("cuscode")}
           values={(v) => {
-            handleSOChoosed(v);
+            handleChoosedSO(v);
           }}
           selected={listDetail}
         ></ModalItems>

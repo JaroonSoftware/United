@@ -18,9 +18,9 @@ try {
         extract($_POST, EXTR_OVERWRITE, "_");
 
         // var_dump($_POST);
-        $sql = "insert receipt (`recode`, `redate`, `cuscode`,
+        $sql = "insert receipt (`recode`, `redate`, `duedate`, `cuscode`,
        `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
-        values (:recode,:redate,:cuscode,:total_price,:vat,:grand_total_price,   :remark,:action_user,:action_user)";
+        values (:recode,:redate,:duedate,:cuscode,:total_price,:vat,:grand_total_price,   :remark,:action_user,:action_user)";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
@@ -28,6 +28,7 @@ try {
         $header = (object)$header;
         $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
         $stmt->bindParam(":redate", $header->redate, PDO::PARAM_STR);
+        $stmt->bindParam(":duedate", $header->duedate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
         $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
@@ -124,6 +125,7 @@ try {
         update receipt 
         set
         redate = :redate,
+        duedate = :duedate,
         cuscode = :cuscode,
         total_price = :total_price,
         vat = :vat,
@@ -145,6 +147,7 @@ try {
         $stmt->bindParam(":remark", $header->remark, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
         $stmt->bindParam(":redate", $header->redate, PDO::PARAM_STR);
+        $stmt->bindParam(":duedate", $header->duedate, PDO::PARAM_STR);
         $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
 
         if (!$stmt->execute()) {
@@ -249,7 +252,7 @@ try {
         echo json_encode(array("status" => 1));
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
-        $sql = "SELECT a.recode,a.redate,a.cuscode,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
+        $sql = "SELECT a.recode,a.redate,a.duedate,a.cuscode,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address
         ,c.zipcode,c.contact,c.tel,c.fax,a.total_price,a.vat,a.grand_total_price,a.remark,a.doc_status ";
         $sql .= " FROM `receipt` as a ";
         $sql .= " inner join `customer` as c on (a.cuscode)=(c.cuscode)";

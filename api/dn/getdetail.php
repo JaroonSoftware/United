@@ -32,10 +32,10 @@ try {
 
         $code = $_GET["code"];
 
-        $sql = "SELECT a.code,a.dncode,a.stcode,a.dncode, a.price, a.unit, a.qty ,i.stname,a.discount,s.delamount, k.kind_name ";
+        $sql = "SELECT a.code,a.dncode,a.stcode,s.socode, a.price, a.unit, a.qty ,i.stname,a.discount,s.delamount, k.kind_name ";
         $sql .= " FROM `dndetail` as a";
         $sql .= " inner join `items` as i on (a.stcode=i.stcode)  ";
-        $sql .= " left outer join `sodetail` as s on (a.stcode=s.stcode) and a.socode=s.socode  ";
+        $sql .= " left outer join `sodetail` as s on a.stcode=s.stcode and a.socode=s.socode  ";
         $sql .= " left outer join kind k on (i.kind_code=k.kind_code)  ";
         $sql .= " where a.dncode IN (". implode(',',$tmp_array) . ")";
 
@@ -57,7 +57,8 @@ try {
             $nestedObject->price = $row['price'];
             $nestedObject->unit = $row['unit'];
             $nestedObject->qty = $row['qty']; 
-            $nestedObject->discount = $row['discount'];     
+            $nestedObject->discount = $row['discount']; 
+            $nestedObject->socode = $row['socode'];        
             $nestedObject->dncode = $row['dncode'];    
             $nestedObject->delamount = $row['delamount']; 
             $nestedObject->kind_name = $row['kind_name']; 

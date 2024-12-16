@@ -3,7 +3,7 @@ const API_URL = {
   API_MANAGE: `/receipt/manage.php`, 
   API_PRINT: `/receipt/print.php`, 
   API_SEARCH: `/receipt/search.php`, 
-
+  API_GETDETAIL: `/receipt/getdetail.php`, 
   API_GETCODE: `/receipt/get-recode.php`, 
 };
   
@@ -13,6 +13,7 @@ const ReceiptService = () => {
   const update = (parm = {}) => api.put(`${API_URL.API_MANAGE}`, parm);
   const deleted = (code) => api.delete(`${API_URL.API_MANAGE}?code=${code}`);
   const get = (code) => api.get(`${API_URL.API_MANAGE}?code=${code}`);
+  const getdetail = (parm = {}) => api.post(`${API_URL.API_GETDETAIL}`, parm);
 
   const code = () => api.get(`${API_URL.API_GETCODE}`);
   const getprint = (code) => api.get(`${API_URL.API_PRINT}?code=${code}`);
@@ -25,7 +26,7 @@ const ReceiptService = () => {
     update,
     deleted,
     get, 
-
+  getdetail,
     code,
     getprint,
     search,
