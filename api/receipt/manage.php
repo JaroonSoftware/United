@@ -21,7 +21,7 @@ try {
         $sql = "insert receipt (`recode`, `redate`, `cuscode`,
        `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
         values (:recode,:redate,:cuscode,:total_price,:vat,:grand_total_price,   :remark,:action_user,:action_user)";
-      
+
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -39,28 +39,6 @@ try {
             $error = $conn->errorInfo();
             throw new PDOException("Insert data error => $error");
             die;
-        }
-
-        if ($header->dncode != '') {
-            $sql = "
-            update dnmaster 
-            set
-            doc_status = 'ออกใบเสร็จรับเงินแล้ว',
-            updated_date = CURRENT_TIMESTAMP(),
-            updated_by = :action_user
-            where dncode = :dncode";
-
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
-
-            $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
-
-            if (!$stmt->execute()) {
-                $error = $conn->errorInfo();
-                throw new PDOException("Insert data error => $error");
-                die;
-            }
         }
 
         update_recode($conn);
@@ -87,6 +65,50 @@ try {
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();
                 throw new PDOException("Insert data error => $error");
+            }
+
+            $sql = "
+            update dnmaster 
+            set
+            doc_status = 'ออกใบเสร็จรับเงินแล้ว',
+            updated_date = CURRENT_TIMESTAMP(),
+            updated_by = :action_user
+            where dncode = :dncode";
+
+            $stmt1 = $conn->prepare($sql);
+            if (!$stmt1) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt1->bindParam(":action_user", $action_user, PDO::PARAM_INT);
+            $stmt1->bindParam(":dncode", $val->dncode, PDO::PARAM_STR);
+
+            if (!$stmt1->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
+
+            $strSQL = "SELECT socode FROM dndetail where dncode = :code ";
+            $stmt5 = $conn->prepare($strSQL);
+            if (!$stmt5) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt5->bindParam(":code", $val->dncode, PDO::PARAM_STR);
+
+            if (!$stmt5->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
+
+            $res = $stmt5->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($res as $row) {
+
+                $sql = "update somaster set doc_status = 'รอออกใบวางบิล' where socode = :code";
+                $stmt2 = $conn->prepare($sql);
+                if (!$stmt2->execute(['code' => $row['socode']])) {
+                    $error = $conn->errorInfo();
+                    throw new PDOException("Remove data error => $error");
+                }
             }
         }
 
@@ -115,7 +137,7 @@ try {
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         $header = (object)$header;
-    
+
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
         $stmt->bindParam(":vat", $header->vat, PDO::PARAM_STR);
@@ -172,36 +194,59 @@ try {
 
         $stmt5->bindParam(":code", $code, PDO::PARAM_STR);
 
+        if (!$stmt5->execute()) {
+            $error = $conn->errorInfo();
+            throw new PDOException("Insert data error => $error");
+            die;
+        }
+
+        $res = $stmt5->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($res as $row) {
+
+            $sql = "update dnmaster set doc_status = 'รอออกใบเสร็จรับเงิน' where dncode = :code";
+            $stmt2 = $conn->prepare($sql);
+            if (!$stmt2->execute(['code' => $row['dncode']])) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Remove data error => $error");
+            }
+
+            $strSQL = "SELECT socode FROM dndetail where dncode = :code ";
+            $stmt5 = $conn->prepare($strSQL);
+            if (!$stmt5) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            $stmt5->bindParam(":code", $row['dncode'], PDO::PARAM_STR);
+
             if (!$stmt5->execute()) {
                 $error = $conn->errorInfo();
                 throw new PDOException("Insert data error => $error");
                 die;
-            }            
+            }
 
             $res = $stmt5->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($res as $row) {
 
-                $sql = "update dnmaster set doc_status = 'รอออกใบส่งของ' where dncode = :code";
+                $sql = "update somaster set doc_status = 'รอออกใบเสร็จรับเงิน' where socode = :code";
                 $stmt2 = $conn->prepare($sql);
-                if (!$stmt2->execute(['code' => $row['dncode']])) {
+                if (!$stmt2->execute(['code' => $row['socode']])) {
                     $error = $conn->errorInfo();
                     throw new PDOException("Remove data error => $error");
                 }
-
             }
-       
-        
+        }
+
+
         $sql = "update receipt set doc_status = 'ยกเลิก' where recode = :code";
-        $stmt = $conn->prepare($sql); 
-        if (!$stmt->execute([ 'code' => $code ])){
+        $stmt = $conn->prepare($sql);
+        if (!$stmt->execute(['code' => $code])) {
             $error = $conn->errorInfo();
             throw new PDOException("Remove data error => $error");
-        }       
+        }
 
         $conn->commit();
         http_response_code(200);
-        echo json_encode(array("status"=> 1));
+        echo json_encode(array("status" => 1));
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
         $sql = "SELECT a.recode,a.redate,a.cuscode,c.prename,c.cusname,CONCAT(c.idno ,' ', c.road,' ', c.subdistrict,' ', c.district,' ', c.zipcode) as address

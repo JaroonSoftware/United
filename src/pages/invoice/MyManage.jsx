@@ -23,7 +23,6 @@ import ModalReceipt from "../../components/modal/receipt/MyModal";
 import ModalPayment from "../../components/modal/payment/MyModal";
 import OptionService from "../../service/Options.service";
 import InvoiceService from "../../service/Invoice.service";
-import DNService from "../../service/DeliveryNote.service";
 
 import {
   DEFALUT_CHECK_RECEIPT,
@@ -50,7 +49,6 @@ import { CloseCircleFilledIcon } from '../../components/icon';
 
 const opservice = OptionService();
 const ivservice = InvoiceService();
-const dnservice = DNService();
 
 const gotoFrom = "/invoice";
 const dateFormat = "DD/MM/YYYY";

@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
         $res = null;
         
         $sql = "SELECT i.dncode,i.dndate,c.cuscode, c.cusname,c.prename, c.idno, c.road, c.subdistrict, c.district, c.province, c.zipcode,i.doc_status,i.grand_total_price,i.vat
-         FROM dnmaster as i inner join `customer` as c on (i.cuscode=c.cuscode) where c.cuscode= '$cuscode' and i.doc_status != 'ยกเลิก' and i.doc_status != 'ออกใบเสร็จแล้ว'  ";
+         FROM dnmaster as i inner join `customer` as c on (i.cuscode=c.cuscode) where c.cuscode= '$cuscode' and i.doc_status != 'ยกเลิก' and i.doc_status != 'ออกใบเสร็จรับเงินแล้ว'  ";
             // $type_code
             $stmt = $conn->prepare($sql); 
             $stmt->execute();

@@ -18,8 +18,11 @@ function TagSalesOrderStatus({ result }) {
       elementToRender = <Tag icon={<ClockCircleFilled />} color="#347C98"> รอออกใบส่งของ </Tag>;
       break;
     case 'รอออกใบเสร็จรับเงิน':
-      elementToRender = <Tag icon={<ClockCircleFilled />} color="#ffab47"> รอออกใบเสร็จรับเงิน </Tag>;
+      elementToRender = <Tag icon={<ClockCircleFilled />} color="#00acc1"> รอออกใบเสร็จรับเงิน </Tag>;
       break;
+    case 'รอออกใบวางบิล':
+      elementToRender = <Tag icon={<ClockCircleFilled />} color="#BDB76B"> รอออกใบวางบิล </Tag>;
+      break;      
     case 'ยกเลิก':
       elementToRender = <Tag icon={<CloseCircleFilledIcon />} color="#ababab"> ยกเลิก </Tag>;
       break;

@@ -54,6 +54,11 @@ let _nav = [
     title: "ใบเสร็จรับเงิน",
     icon: <TbReportMoney className="nav-ico" />,
     to: "/receipt",
+  },  
+  {
+    title: "ใบวางบิล",
+    icon: <FaUserCircle className="nav-ico" />,
+    to: "/invoice",
   },
   {
     title: "ข้อมูลลูกค้า",
@@ -137,11 +142,6 @@ let _nav = [
   {
     title: "กำลังปรับปรุง",
     type: "group",
-  },
-  {
-    title: "ใบวางบิล",
-    icon: <FaUserCircle className="nav-ico" />,
-    to: "/invoice",
   },
 ];
 
