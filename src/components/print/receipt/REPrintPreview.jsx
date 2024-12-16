@@ -67,69 +67,85 @@ function REPrintPreview() {
   const ContentHead = ({ page }) => {
     return (
       <div className="content-head in-sample flex flex-col">
-        <div className="print-title flex pb-2">
-          
-          <div className="flex">
+        <div className="print-title flex">
+          <Flex>
             <Flex vertical>
-              <Typography.Text>
-                <div >
-                  <img
-                    src={logo}
-                    alt=""
-                    style={{
-                      width: "50%",
-                   marginLeft: 80
-                    }}
-                  />
-                </div>
-              </Typography.Text>
-              <Typography.Text className="tx-info" style={{ fontSize: 13, textAlign: "center" }}>
+              <Typography.Text
+                className="tx-info"
+                style={{ fontSize: 10, textAlign: "center", marginLeft: 15}}
+              >
+                <img
+                  src={logo}
+                  alt=""
+                  style={{
+                    width: 220,
+                    height: 115,
+                  }}
+                />
                 เลขประจำตัวผู้เสียภาษีอากร<br></br> 0105562202122
               </Typography.Text>
             </Flex>
-          </div>
-          <div className="flex ps-3 grow-0" style={{ marginLeft: 90}}>
-            <Flex className="mb-1.5" vertical>
-              <Typography.Text className="tx-title min-w-80  text-center" strong style={{ fontSize: 15, textAlign: "center"}}>
-             บริษัท ยูไนเต็ด ออโตสแปร์พาร์ท จำกัด
+            <Flex vertical style={{ marginLeft: 40 }}>
+              <Typography.Text
+                className="tx-title  text-center"
+                strong
+                style={{ fontSize: 18, textAlign: "center" }}
+              >
+                บริษัท ยูไนเต็ด ออโตสแปร์พาร์ท จำกัด
               </Typography.Text>
-              <Typography.Text style={{ paddingTop: 8,textAlign: "center" }} className="tx-info">
-              <span strong>สำนักงานใหญ๋ </span> : 29/14-15 ถ.บรมราชชนนี แขวงศาลาธรรมสพน์ เขตทวีวัฒนา    กรุงเทพมหานคร 10170
+              <Typography.Text
+                style={{ paddingTop: 8, textAlign: "center" }}
+                className="tx-info"
+              >
+                <span
+                  strong
+                  style={{ textDecoration: "underline", fontWeight: "bold" }}
+                >
+                  สำนักงานใหญ่
+                </span><span >
+                : 29/14-15 ถ.บรมราชชนนี แขวงศาลาธรรมสพน์เขตทวีวัฒนา
+                กรุงเทพมหานคร 10170</span>
               </Typography.Text>
               <Typography.Text
                 className="tx-info"
-                style={{ paddingTop: 4, fontSize: 13 ,textAlign: "center" }}
+                style={{ paddingTop: 4, fontSize: 13, textAlign: "center" }}
               >
                 โทรศัพท์ 094-923-7111 แฟกซ์. 02-441-3488
               </Typography.Text>
               <Typography.Text
                 className="tx-title min-w-48"
                 strong
-                style={{ textAlign: "center", fontSize: 13 }}
+                style={{ textAlign: "center", fontSize: 14 }}
               >
                 ใบเสร็จรับเงิน / ใบกำกับภาษี
               </Typography.Text>
               <Typography.Text
                 className="tx-title min-w-48"
-                style={{ textAlign: "center", fontSize: 13 }}
+                style={{ textAlign: "center", fontSize: 14 }}
                 strong
               >
-           RECEIPT / TAX INVOICE
+                RECEIPT / TAX INVOICE
               </Typography.Text>
             </Flex>
-          </div>
-          <div className="flex ps-3 grow">
-            <Flex className="mb-1.5" vertical >
-              <Typography.Text style={{ textAlign: "right" }}>
-                หน้า {page}
-              </Typography.Text>
-              
-              <Flex justify="space-between min-w-70">
-                <Typography.Text className="tx-info" strong>
-                  เลขที่ใบส่งสินค้า
+            <Flex vertical style={{ marginLeft: 120,paddingTop: 50 }}>
+              <Flex>
+                <Typography.Text
+                  className="tx-info"
+                  strong
+                  style={{
+                    border: "1px solid",
+                    borderRadius: 11,
+                    width: 120,
+                    textAlign: "center",
+                    fontSize: 15
+                  }}
+                >
+                  สำเนา<br></br>COPY
                 </Typography.Text>
-                <Typography.Text className="tx-info">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{hData?.dncode}
+              </Flex>
+              <Flex>
+                <Typography.Text className="tx-info" style={{paddingLeft: 10}}>
+                  เอกสารออกเป็นชุด
                 </Typography.Text>
               </Flex>
               {/* <Flex justify="space-between">
@@ -145,7 +161,7 @@ function REPrintPreview() {
                 </Typography.Text>
               </Flex> */}
             </Flex>
-          </div>
+          </Flex>
         </div>
       </div>
     );
