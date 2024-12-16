@@ -25,7 +25,7 @@ export const column = [
       </div>
     ),
     align: "left",
-    width:  "15%",
+    width:  "12%",
     key: "stcode",
     dataIndex: "stcode",
   },
@@ -53,7 +53,7 @@ export const column = [
     align: "center",
     key: "qty",
     dataIndex: "qty",
-    width: "10%",
+    width: "5%",
     render: (v) => (
       <Typography.Text className="tx-info">{comma(Number(v))}</Typography.Text>
     ),
@@ -66,12 +66,14 @@ export const column = [
         Remark
       </div>
     ),
-    align: "right",
+    align: "left",
     width: "30%",
     key: "remark",
     dataIndex: "remark",
-    render: (v) => (
-      <Typography.Text className="tx-info">{comma(Number(v))}</Typography.Text>
-    ),
+    onCell: () => ({
+      style: {
+       borderRight: "1px solid "
+      },
+    }),
   }
 ];

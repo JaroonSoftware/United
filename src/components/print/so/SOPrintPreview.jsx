@@ -15,7 +15,7 @@ import { PiPrinterFill } from "react-icons/pi";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
 import SOService from "../../../service/SO.service";
- 
+
 const soservice = SOService();
 
 function SOPrintPreview() {
@@ -143,20 +143,30 @@ function SOPrintPreview() {
         <div className="print-title flex pb-2">
           <div
             className="flex ps-3 grow-0"
-            style={{ border: "1px solid", borderRadius: 10, width: "60%" }}
+            style={{ border: "1px solid", borderRadius: 10, width: "75%" }}
           >
             <Flex vertical>
+              <Typography.Text className="tx-info" style={{ width: "100%" }}>
+                รหัสลูกค้า :
+              </Typography.Text>
+              <Typography.Text className="tx-info">นามลูกค้า :</Typography.Text>
+              <Typography.Text className="tx-info" style={{ height: 35 }}>
+                ที่อยู่ :
+              </Typography.Text>
+              <Typography.Text className="tx-info">หมายเหตุ :</Typography.Text>
+            </Flex>
+            <Flex vertical style={{ width: "80%", paddingLeft: 3 }}>
               <Typography.Text className="tx-info">
-                รหัสลูกค้า : <span style={{paddingLeft: 15}}>{hData?.cuscode}</span>
+                {hData?.cuscode}
               </Typography.Text>
               <Typography.Text className="tx-info">
-                นามลูกค้า :<span style={{paddingLeft: 18}}>{hData?.prename} {hData?.cusname}</span>
+                {hData?.prename} {hData?.cusname}
+              </Typography.Text>
+              <Typography.Text className="tx-info" style={{ height: 35 }}>
+                {hData?.address}
               </Typography.Text>
               <Typography.Text className="tx-info">
-                ที่อยู่ :  <span style={{paddingLeft: 42}}>{hData?.address} {hData?.zipcode}</span>
-              </Typography.Text>
-              <Typography.Text className="tx-info">
-                หมายเหตุ : <span style={{paddingLeft: 16}}>{hData?.remark}</span>
+                {hData?.remark}
               </Typography.Text>
             </Flex>
           </div>
@@ -171,16 +181,26 @@ function SOPrintPreview() {
           >
             <Flex vertical>
               <Typography.Text className="tx-info">
-                เลขเคลม :  <span style={{paddingLeft: 21}}>{hData?.claim_no}</span>
+                เลขเคลม :{" "}
+                <span style={{ paddingLeft: 1 }}>{hData?.claim_no}</span>
               </Typography.Text>
               <Typography.Text className="tx-info">
-                เลขที่รับแจ้ง :   <span style={{paddingLeft: 6}}>{hData?.require_no}</span>
+                เลขที่รับแจ้ง :{" "}
+                <span style={{ paddingLeft: 1 }}>{hData?.require_no}</span>
               </Typography.Text>
               <Typography.Text className="tx-info">
-                ทะเบียน : <span style={{paddingLeft: 26}}>{hData?.car_no}</span>
+                ทะเบียน :{" "}
+                <span style={{ paddingLeft: 1 }}>{hData?.car_no}</span>
               </Typography.Text>
               <Typography.Text className="tx-info">
-                เลขตัวถัง :  <span style={{paddingLeft: 20}}>{hData?.car_engineno}</span>
+                เลขตัวถัง :{" "}
+                <span style={{ paddingLeft: 1 }}>{hData?.car_engineno}</span>
+              </Typography.Text>
+              <Typography.Text className="tx-info">
+                <span style={{ paddingLeft: 1 }}>
+                  {hData?.car_model_name} {hData?.brand_name}{" "}
+                  {hData?.model_name} {hData?.year}
+                </span>
               </Typography.Text>
             </Flex>
           </div>
@@ -193,10 +213,13 @@ function SOPrintPreview() {
     return (
       <>
         <Table.Summary.Row>
-          <Table.Summary.Cell colSpan={3} className="!align-top !ps-0 !pt-3  ">
+          <Table.Summary.Cell colSpan={4} className="!align-top !ps-0 !pt-3  ">
             <Flex style={{ border: "1px solid", padding: 3 }}>
-              <Typography.Text className="tx-info text-center" style={{fontSize: 11,paddingLeft: 5}}>
-                บาท : {thaiBahtText((hData?.grand_total_price || 0), 2, 2 )}
+              <Typography.Text
+                className="tx-info text-center"
+                style={{ fontSize: 11, paddingLeft: 5 }}
+              >
+                บาท : {thaiBahtText(hData?.grand_total_price || 0, 2, 2)}
               </Typography.Text>
             </Flex>
             <Flex
@@ -206,16 +229,19 @@ function SOPrintPreview() {
                 marginTop: 8,
                 height: 46,
                 paddingLeft: 8,
-               
               }}
             >
-              <Typography.Text className="tx-info text-center" strong style={{ fontSize: 11}}>
+              <Typography.Text
+                className="tx-info text-center"
+                strong
+                style={{ fontSize: 11 }}
+              >
                 หมายเหตุ : {hData?.remark}
               </Typography.Text>
             </Flex>
           </Table.Summary.Cell>
           <Table.Summary.Cell
-            colSpan={3}
+            colSpan={1}
             className="!align-top !ps-0 !pt-3 !pe-0 "
           >
             <Flex
@@ -228,7 +254,9 @@ function SOPrintPreview() {
               }}
             >
               <Typography.Text className="tx-info">
-                <span>รวมเป็นเงิน</span><br></br><span>ภาษีมูลค่าเพิ่ม</span>
+                <span>รวมเป็นเงิน</span>
+                <br></br>
+                <span>ภาษีมูลค่าเพิ่ม</span>
               </Typography.Text>
             </Flex>
             <Flex
@@ -247,7 +275,7 @@ function SOPrintPreview() {
             </Flex>
           </Table.Summary.Cell>
           <Table.Summary.Cell
-            colSpan={1}
+            colSpan={2}
             className="!align-top !ps-0 !pt-3 !pe-0 "
           >
             <Flex
@@ -256,11 +284,13 @@ function SOPrintPreview() {
                 borderRight: "1px solid",
                 borderBottom: "1px solid",
                 padding: 3,
+                textAlign: "right",
               }}
             >
-              <Typography.Text className="tx-info">
-               {comma( Number(hData?.total_price || 0), 2, 2 )}
-                <br></br> <span style={{paddingLeft: 16}}>{comma( Number((hData?.vat*hData?.total_price)/100 || 0 ))}</span>
+              <Typography.Text className="tx-info" style={{ width: "100%" }}>
+                {comma(Number(hData?.total_price || 0), 2, 2)}
+                <br></br>{" "}
+                {comma(Number((hData?.vat * hData?.total_price) / 100 || 0))}
               </Typography.Text>
             </Flex>
             <Flex
@@ -270,10 +300,11 @@ function SOPrintPreview() {
                 borderBottom: "1px solid",
                 padding: 3,
                 marginTop: 8,
+                textAlign: "right"
               }}
             >
-              <Typography.Text className="tx-info" strong>
-               {comma( Number(hData?.grand_total_price || 0), 2, 2 )}
+              <Typography.Text className="tx-info" strong style={{  width: "100%"}}>
+                {comma(Number(hData?.grand_total_price || 0), 2, 2)}
               </Typography.Text>
             </Flex>
           </Table.Summary.Cell>
@@ -287,7 +318,7 @@ function SOPrintPreview() {
               <Flex vertical className="w-1/3" style={{ gap: 5 }}>
                 <Flex gap={2} style={{ paddingTop: 80 }}>
                   <Typography.Text style={{ fontSize: 10 }}>
-                    วันที่พิมพ์เอกสาร   {dayjs().format("DD/MM/YYYY HH:mm:ss")}
+                    วันที่พิมพ์เอกสาร {dayjs().format("DD/MM/YYYY HH:mm:ss")}
                   </Typography.Text>
                 </Flex>
               </Flex>
