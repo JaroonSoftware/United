@@ -10,7 +10,8 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
     key: "county_code",
     dataIndex: "county_code",
     align: "left",
-    hidden: true,
+    width: "20%",
+    // hidden: true,
     sorter: (a, b) => (a?.county_code || "").localeCompare(b?.county_code || ""),
   },
   {
@@ -28,7 +29,7 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView }) => [
     sorter: (a, b) => (a?.active_status || "").localeCompare(b?.active_status || ""),
     render: (data) => (
       <div>
-        {data === "Y" ? (
+        {data === "เปิดการใช้งาน" ? (
           <Badge status="success" text="เปิดการใช้งาน" />
         ) : (
           <Badge status="error" text="ปิดการใช้การ" />

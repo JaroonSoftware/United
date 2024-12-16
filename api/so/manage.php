@@ -201,11 +201,13 @@ try {
         $sql = "SELECT a.socode,a.sodate,a.qtcode,a.delcode,a.cuscode,a.claim_no,a.require_no,a.car_engineno,a.car_model_code,a.car_no,c.prename,c.cusname,CONCAT(COALESCE(c.idno, '') ,' ', COALESCE(c.road, ''),' ', COALESCE(c.subdistrict, ''),' ', COALESCE(c.district, ''),' ',COALESCE(c.zipcode, '') ) as address
         ,c.zipcode,c.contact,c.tel,c.fax,c.contact,c.tel,CONCAT(COALESCE(d.idno, '') ,' ', COALESCE(d.road, ''),' ', COALESCE(d.subdistrict, ''),' ', COALESCE(d.district, ''),' ',COALESCE(d.zipcode, '') )  as deladdress
         ,d.contact as delcontact,d.tel as deltel,a.total_price,a.vat,a.grand_total_price,a.remark,CONCAT(d.prename,' ',d.cusname) as delname,a.doc_status 
-        ,m.car_model_code,m.brand_code,m.model_code,m.year";
+        ,m.car_model_code,m.brand_code,m.model_code,m.year,m.car_model_name,m.model_code,m.brand_code,k.model_name,j.brand_name";
         $sql .= " FROM `somaster` as a ";
         $sql .= " left outer join `customer` as c on (a.cuscode)=(c.cuscode)";
         $sql .= " left outer join `customer` as d on (a.delcode)=(d.cuscode)";
         $sql .= " left outer join `car_model` as m on (a.car_model_code)=(m.car_model_code)";
+        $sql .= " left outer join `model_table` as k on (m.model_code)=(k.model_code)";
+        $sql .= " left outer join `brand` as j on (m.brand_code)=(j.brand_code)";
         // $sql .= " left outer join `brand` as b on (b.brand_code)=(m.brand_code)";
         // $sql .= " left outer join `model_table` as mo on (mo.model_code)=(m.model_code)";
         $sql .= " where a.socode = :code";

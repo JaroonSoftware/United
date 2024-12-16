@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
     try { 
         $res = null;
         
-        $sql = "SELECT county_code,county_name,active_status FROM county where active_status = 'Y'";
+        $sql = "SELECT county_code,county_name,active_status FROM county where active_status = 'เปิดการใช้งาน'";
             // $county_code
             $stmt = $conn->prepare($sql); 
             $stmt->execute();

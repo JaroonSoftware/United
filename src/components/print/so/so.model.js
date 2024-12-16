@@ -39,7 +39,7 @@ export const column = [
     ),
     align: "left",
     key: "stname",
-    width: "40%",
+    width: "30%",
     dataIndex: "stname",
   },
   {

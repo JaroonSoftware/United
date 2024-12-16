@@ -77,6 +77,15 @@ const CountyManage = () => {
 
   const Detail = (
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
+       <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={8}>
+        <Form.Item
+          label="รหัสเขตขนส่ง"
+          name="county_code"
+          rules={[{ required: true, message: "โปรดกรอกข้อมูล" }]}
+        >
+          <Input placeholder="กรอกชื่อเขตขนส่ง" />
+        </Form.Item>
+      </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={8}>
         <Form.Item
           label="ชื่อเขตขนส่ง"
@@ -102,11 +111,11 @@ const CountyManage = () => {
             size="large"
             options={[
               {
-                value: "Y",
+                value: "เปิดการใช้งาน",
                 label: <Badge status="success" text="เปิดการใช้งาน" />,
               },
               {
-                value: "N",
+                value: "ปิดการใช้งาน",
                 label: <Badge status="error" text="ปิดการใช้งาน" />,
               },
             ]}

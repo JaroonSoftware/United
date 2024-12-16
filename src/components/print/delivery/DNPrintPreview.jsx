@@ -42,27 +42,26 @@ function DNPrintPreview() {
     // console.log("before printing...")
   };
 
-  useEffect(() => {
-    const init = () => {
-      dnservice
-        .get(code)
-        .then(async (res) => {
-          const {
-            data: { header, detail },
-          } = res.data;
-
-          setHData(header);
-          setDetails(detail);
-        })
-        .catch((err) => {
-          console.log(err);
-          message.error("Error getting infomation Estimation.");
-        });
-    };
-
-    init();
-    return () => {};
-  }, []);
+ useEffect(() => {
+     const init = () => {
+       dnservice
+         .get(code)
+         .then(async (res) => {
+           const { header, detail } = res.data;
+ 
+           setHData(header);
+           setDetails(detail);
+         })
+         .catch((err) => {
+           console.log(err);
+           message.error("Error getting Quotation.");
+         });
+     };
+ 
+     init();
+     return () => {};
+   }, []);
+ 
 
   const ContentHead = ({ page }) => {
     return (
@@ -81,7 +80,7 @@ function DNPrintPreview() {
               </Typography.Text>
               <Typography.Text
                 className="tx-info"
-                style={{ paddingTop: 4, fontSize: 13 }}
+                style={{ paddingTop: 2, fontSize: 13 }}
               >
                 โทรศัพท์ 094-923-7111 แฟกซ์
               </Typography.Text>
@@ -90,7 +89,7 @@ function DNPrintPreview() {
               </Typography.Text>
             </Flex>
           </div>
-          <div className="flex" style={{ border: "1px solid" }}>
+          <div className="flex" style={{ border: "1px solid" ,height: "80%"}}>
             <Flex>
               <Typography.Text style={{width: 100}}>
                 <div >
@@ -99,17 +98,17 @@ function DNPrintPreview() {
                     alt=""
                     style={{
                       width: "100%",
-                      padding: 8,
-                      paddingTop: 20
+                      padding: 5,
+                      paddingTop: 5
                     }}
                   />
                  
                 </div>
               </Typography.Text>
-              <Typography.Text  style={{width: "80" ,paddingTop: 20,paddingRight: 5}}>
-              <span style={{ fontSize: 6}}>UNITED AUTOSPAREPART</span> <br></br>
-               <span style={{ fontSize: 12 }}>LINE OFFICIAL</span> <br></br>
-               <span style={{ fontSize: 9 }}>สอบถามข้อมูล/ส่งบิล</span> 
+              <Typography.Text  style={{width: 120 ,paddingTop: 11,paddingRight: 5, textAlign: "center"}}>
+              <span style={{ fontSize: 8}}>UNITED AUTOSPAREPART</span> <br></br>
+               <span style={{ fontSize: 15 }}>LINE OFFICIAL</span> <br></br>
+               <span style={{ fontSize: 11 }}>สอบถามข้อมูล/ส่งบิล</span> 
               </Typography.Text>
               
             </Flex>
@@ -137,7 +136,7 @@ function DNPrintPreview() {
                 <Typography.Text className="tx-info" strong>
                   เลขที่ใบส่งสินค้า
                 </Typography.Text>
-                <Typography.Text className="tx-info">
+                <Typography.Text className="tx-info" strong>
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{hData?.dncode}
                 </Typography.Text>
               </Flex>
@@ -166,30 +165,35 @@ function DNPrintPreview() {
         <div className="print-title flex pb-2">
           <div
             className="flex ps-3 grow-0"
-            style={{ border: "1px solid", borderRadius: 10, width: "60%" }}
+            style={{ border: "1px solid", borderRadius: 10, width: "75%" }}
           >
             <Flex vertical>
+              <Typography.Text className="tx-info" style={{ width: "100%" }}>
+               ลูกค้า :
+              </Typography.Text>
+              <Typography.Text className="tx-info" style={{ height: 35 }}>
+                ที่อยู่ลูกค้า :
+              </Typography.Text>
+              <Typography.Text className="tx-info">สถานที่จัดส่ง :</Typography.Text>
+              <Typography.Text className="tx-info" style={{ height: 35 }}>
+               ที่อยู่จัดส่ง :
+              </Typography.Text>
+            </Flex>
+            <Flex vertical style={{ width: "80%", paddingLeft: 3 }}>
               <Typography.Text className="tx-info">
-                นามลูกค้า :
-                <span style={{ paddingLeft: 18 }}>
-                  {hData?.prename} {hData?.cusname}
-                </span>
+                {hData?.cuscode} - {hData?.prename} {hData?.cusname}
               </Typography.Text>
               <Typography.Text className="tx-info">
-                ที่อยู่ลูกค้า :{" "}
-                <span style={{ paddingLeft: 42 }}>
-                  {hData?.address} {hData?.zipcode}
-                </span>
+              
+              </Typography.Text>
+              <Typography.Text className="tx-info" style={{ height: 35 }}>
+                {hData?.address}
               </Typography.Text>
               <Typography.Text className="tx-info">
-                สถานที่จัดส่ง :{" "}
-                <span style={{ paddingLeft: 42 }}>
-                  {hData?.address} {hData?.zipcode}
-                </span>
+              {hData?.delcode} - {hData?.delname}
               </Typography.Text>
-              <Typography.Text className="tx-info">
-                ที่อยู่จัดส่ง:{" "}
-                <span style={{ paddingLeft: 16 }}>{hData?.remark}</span>
+              <Typography.Text className="tx-info" style={{ height: 35 }}>
+                {hData?.deladdress} โทร.{hData?.deltel}
               </Typography.Text>
             </Flex>
           </div>
@@ -205,19 +209,26 @@ function DNPrintPreview() {
             <Flex vertical>
               <Typography.Text className="tx-info">
                 เลขเคลม :{" "}
-                <span style={{ paddingLeft: 21 }}>{hData?.claim_no}</span>
+                <span style={{ paddingLeft: 1 }}>{hData?.claim_no}</span>
               </Typography.Text>
               <Typography.Text className="tx-info">
                 เลขที่รับแจ้ง :{" "}
-                <span style={{ paddingLeft: 6 }}>{hData?.require_no}</span>
+                <span style={{ paddingLeft: 1 }}>{hData?.require_no}</span>
               </Typography.Text>
               <Typography.Text className="tx-info">
                 ทะเบียน :{" "}
-                <span style={{ paddingLeft: 26 }}>{hData?.car_no}</span>
+                <span style={{ paddingLeft: 1 }}>{hData?.car_no}</span>
               </Typography.Text>
               <Typography.Text className="tx-info">
                 เลขตัวถัง :{" "}
-                <span style={{ paddingLeft: 20 }}>{hData?.car_engineno}</span>
+                <span style={{ paddingLeft: 1 }}>{hData?.car_engineno}</span>
+              </Typography.Text>
+              <Typography.Text className="tx-info">
+              ข้อมูลรถ :{" "}
+                <span style={{ paddingLeft: 1 }}>
+                  {hData?.car_model_name} {hData?.brand_name}{" "}
+                  {hData?.model_name} {hData?.year}
+                </span>
               </Typography.Text>
             </Flex>
           </div>
@@ -225,7 +236,6 @@ function DNPrintPreview() {
       </div>
     );
   };
-
   const ReceiptSummary = (rec) => {
     return (
       <>
@@ -240,12 +250,10 @@ function DNPrintPreview() {
               </Typography.Text>
               <Typography.Text
                 className="tx-info "
-                style={{ fontSize: 8, paddingLeft: 5, paddingTop: 6 }}
+                style={{ fontSize: 8, paddingLeft: 5, paddingTop: 10 }}
               >
                 * กรุณาตรวจเช็คสินค้าว่าไม่พบ ชำรุด แตก หัก เสียหาย
-                ก่อนเซ็นรับสินค้าจากพนักงานขนส่งทุกครั้งหากพบ<br></br>
-                &nbsp;
-                &nbsp;สินค้าชำรุดเสียหายให้รีบแจ้งพนักงานขนส่งทันทีหรือแจ้งกลับทางบริษัท
+                ก่อนเซ็นรับสินค้าจากพนักงานขนส่งทุกครั้งหากพบสินค้าชำรุดเสียหายให้รีบแจ้งพนักงานขนส่งทันทีหรือแจ้งกลับทางบริษัท
                 ภายใน 3 วัน หลังจากได้รับสินค้า
               </Typography.Text>
             </Flex>
@@ -279,20 +287,12 @@ function DNPrintPreview() {
           >
             <Flex className="w-full" gap={8} justify={"center"}>
               <Flex vertical className="w-1/3" style={{ gap: 5 }}>
-                <Flex vertical gap={2} style={{ paddingTop: 20 }}>
-                  <Typography.Text style={{ fontSize: 15 }}>
-                    พนักงานขาย
-                  </Typography.Text>
-                  <Typography.Text style={{ fontSize: 10 }}>
-                    ชื่อพนักงานขาย
-                    <br></br>
-                    {dayjs().format("DD/MM/YYYY HH:mm:ss")}
-                  </Typography.Text>
-                  <Typography.Text style={{ fontSize: 10 }}>
-                    วันที่พิมพ์เอกสาร {dayjs().format("DD/MM/YYYY HH:mm:ss")}
-                  </Typography.Text>
-                </Flex>
-              </Flex>
+                            <Flex gap={2} style={{ paddingTop: 80 }}>
+                              <Typography.Text style={{ fontSize: 10 }}>
+                                วันที่พิมพ์เอกสาร {dayjs().format("DD/MM/YYYY HH:mm:ss")}
+                              </Typography.Text>
+                            </Flex>
+                          </Flex>
               <Flex
                 vertical
                 className="w-1/3"
