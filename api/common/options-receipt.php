@@ -9,8 +9,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
     try { 
         $res = null;
         
-        $sql = "SELECT i.recode,i.redate,i.duedate,c.cuscode, c.cusname,c.prename, c.idno, c.road, c.subdistrict, c.district, c.province, c.zipcode,i.doc_status,i.grand_total_price,i.vat
-         FROM receipt as i inner join `customer` as c on (i.cuscode=c.cuscode) where c.cuscode= '$cuscode' and i.doc_status != 'ยกเลิก' and i.doc_status != 'ออกใบวางบิลแล้ว'  ";
+        $sql = "SELECT i.recode,i.redate,i.duedate,c.cuscode, c.cusname,c.prename, c.idno, c.road, c.subdistrict, c.district, c.province, c.zipcode,i.doc_status,i.grand_total_price,i.vat,i.remark
+         FROM receipt as i 
+         inner join `customer` as c on (i.cuscode=c.cuscode) 
+         where c.cuscode= '$cuscode' and i.doc_status != 'ยกเลิก' and i.doc_status != 'ออกใบวางบิลแล้ว'  ";
             // $type_code
             $stmt = $conn->prepare($sql); 
             $stmt->execute();

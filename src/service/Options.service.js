@@ -18,6 +18,7 @@ const API_URL = {
   OPTION_RECEIPT: `/common/options-receipt.php`,  
   OPTION_INVOICE: `/common/options-invoice.php`,
   OPTION_DN: `/common/options-delivery-note.php`,
+  OPTION_BANKS: `/common/options-banks.php`
 };
  
 
@@ -40,6 +41,8 @@ const OptionService = () => {
   const optionsReceipt = (parm = {}) => api.get(`${API_URL.OPTION_RECEIPT}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsInvoice = (parm = {}) => api.get(`${API_URL.OPTION_INVOICE}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsDN = (parm = {}) => api.get(`${API_URL.OPTION_DN}?${getParmeter(parm)}`, { ignoreLoading : true });
+  const optionsBanks = (parm = {}) => api.get(`${API_URL.OPTION_BANKS}?${getParmeter(parm)}`, { ignoreLoading : true });
+
   return {
     optionsItems,
     optionsSupplier,
@@ -59,6 +62,7 @@ const OptionService = () => {
     optionsReceipt,
     optionsInvoice,
     optionsDN,
+    optionsBanks
   };
 };
 

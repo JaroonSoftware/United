@@ -37,12 +37,12 @@ const MyAccess = () => {
     <>
       <Row gutter={[8, 8]}>
         <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-          <Form.Item label="เลขที่ใบวางบิล" name="recode">
+          <Form.Item label="เลขที่ใบวางบิล" name="ivcode">
             <Input placeholder="Enter Invoice Code." />
           </Form.Item>
         </Col>
         <Col xs={24} sm={8} md={8} lg={8} xl={8}>
-          <Form.Item label="วันที่ใบวางบิล" name="redate">
+          <Form.Item label="วันที่ใบวางบิล" name="ivdate">
             <RangePicker
               placeholder={["เริ่มวันที่", "ถึงวันที่"]}
               style={{ width: "100%", height: 40 }}
@@ -174,7 +174,7 @@ const MyAccess = () => {
           ...mngConfig,
           title: "แก้ไขใบวางบิล",
           action: "edit",
-          code: data?.recode,
+          code: data?.ivcode,
         },
       },
       replace: true,
@@ -197,7 +197,7 @@ const MyAccess = () => {
   };
 
   const handlePrint = (code) => { 
-    const url = `/iv-print/${code.recode}`;
+    const url = `/iv-print/${code.ivcode}`;
     const newWindow = window.open('', url, url);
     newWindow.location.href = url;
   }
@@ -260,7 +260,7 @@ const MyAccess = () => {
               <Table
                 title={() => TitleTable}
                 size="small"
-                rowKey="recode"
+                rowKey="ivcode"
                 columns={column}
                 dataSource={accessData}
                 scroll={{ x: "max-content" }}

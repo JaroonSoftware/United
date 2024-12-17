@@ -56,7 +56,7 @@ export default function ModalRE({show, close,cuscode, values, selected}) {
             recode:m.recode,
             redate:m.redate,
             duedate:m.duedate,
-            grand_total_price:m.grand_total_price,         
+            price:m.grand_total_price,         
             remark:m.remark,  
         }));
         

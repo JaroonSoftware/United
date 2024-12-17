@@ -15,7 +15,6 @@ import {
   Row,
   Space,
   Table,
-  Radio,
   Popconfirm,
 } from "antd";
 import ModalCustomersInsurance from "../../components/modal/customersInsurance/ModalCustomersInsurance";
@@ -23,7 +22,7 @@ import ModalReceipt from "../../components/modal/receipt/MyModal";
 import ModalPayment from "../../components/modal/payment/MyModal";
 import OptionService from "../../service/Options.service";
 import InvoiceService from "../../service/Invoice.service";
-import ReceiptService from "../../service/Receipt.service";
+// import ReceiptService from "../../service/Receipt.service";
 
 import {
   DEFALUT_CHECK_RECEIPT,
@@ -50,7 +49,7 @@ import { CloseCircleFilledIcon } from "../../components/icon";
 
 const opservice = OptionService();
 const ivservice = InvoiceService();
-const reservice = ReceiptService();
+// const reservice = ReceiptService();
 
 const gotoFrom = "/invoice";
 const dateFormat = "DD/MM/YYYY";
@@ -92,14 +91,14 @@ function ReceiptManage() {
         const {
           data: { header, detail, payment },
         } = res.data;
-        const { recode, redate, check_date } = header;
+        const { ivcode, ivdate, check_date } = header;
         setFormDetail(header);
         setListDetail(detail);
         setListPayment(payment);
-        setIVCode(recode);
+        setIVCode(ivcode);
         form.setFieldsValue({
           ...header,
-          redate: dayjs(redate),
+          ivdate: dayjs(ivdate),
           check_date: dayjs(check_date),
           dateFormat,
         });
@@ -116,8 +115,8 @@ function ReceiptManage() {
 
         const ininteial_value = {
           ...formDetail,
-          recode: code,
-          redate: dayjs(new Date()),
+          ivcode: code,
+          ivdate: dayjs(new Date()),
           check_date: dayjs(new Date()),
           doc_status: "รอออกแจ้งหนี้",
         };
@@ -127,7 +126,6 @@ function ReceiptManage() {
         form.setFieldsValue(ininteial_value);
         form.setFieldValue("payment_method", "ชำระทั้งหมด");
         form.setFieldValue("payment_type", "เช็คธนาคาร");
-        form.setFieldValue("vat", "7");
 
         const [unitOprionRes] = await Promise.all([
           opservice.optionsUnit({ p: "unit-option" }),
@@ -156,9 +154,7 @@ function ReceiptManage() {
     const tmp_price = newData.reduce(
       (a, v) =>
         (a +=
-          Number(v.qty || 0) *
-          Number(v?.price || 0) *
-          (1 - Number(v?.discount || 0) / 100)),
+          Number(v.price || 0) ),
       0
     );
 
@@ -223,7 +219,6 @@ function ReceiptManage() {
     ];
     const customers = {
       ...val,
-      dncode: "",
       cusname: cusname.join(""),
       address: addr.join(""),
       contact: val.contact,
@@ -256,11 +251,10 @@ function ReceiptManage() {
       .then((v) => {
         const header = {
           ...formDetail,
-          recode: ivCode,
-          redate: dayjs(form.getFieldValue("redate")).format("YYYY-MM-DD"),
+          ivcode: ivCode,
+          ivdate: dayjs(form.getFieldValue("ivdate")).format("YYYY-MM-DD"),
           remark: form.getFieldValue("remark"),
           total_price: formDetail.total_price,
-          vat: form.getFieldValue("vat"),
         };
 
         // console.log(formDetail)
@@ -317,9 +311,9 @@ function ReceiptManage() {
     newWindow.location.href = `/invoice/${formDetail.recode}`;
   };
 
-  const handleDelete = (dncode) => {
+  const handleDelete = (recode) => {
     const itemDetail = [...listDetail];
-    const newData = itemDetail.filter((item) => item?.dncode !== dncode);
+    const newData = itemDetail.filter((item) => item?.recode !== recode);
     setListDetail([...newData]);
   };
 
@@ -333,7 +327,7 @@ function ReceiptManage() {
         icon={
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
-        onClick={() => handleDelete(record?.dncode)}
+        onClick={() => handleDelete(record?.recode)}
         disabled={formDetail.doc_status === "ยกเลิก"}
       />
     ) : null;
@@ -428,14 +422,14 @@ function ReceiptManage() {
               <Input placeholder="ชื่อลูกค้า" readOnly />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={4} lg={4}>
+          {/* <Col xs={24} sm={24} md={4} lg={4}>
             <Form.Item label="Vat" name="vat">
               <Radio.Group>
                 <Radio value={"7"}>มี Vat</Radio>
                 <Radio value={"0"}>ไม่มี Vat</Radio>
               </Radio.Group>
             </Form.Item>
-          </Col>
+          </Col> */}
         </Row>
       </Space>
     </>
@@ -465,7 +459,7 @@ function ReceiptManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={5}
+                        colSpan={4}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -581,7 +575,7 @@ function ReceiptManage() {
                     <Table.Summary.Row>
                       <Table.Summary.Cell
                         index={0}
-                        colSpan={4}
+                        colSpan={5}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={4}
@@ -747,7 +741,7 @@ function ReceiptManage() {
                         <Typography.Title level={3} className="m-0">
                           วันที่ใบวางบิล :{" "}
                         </Typography.Title>
-                        <Form.Item name="redate" className="!m-0">
+                        <Form.Item name="ivdate" className="!m-0">
                           <DatePicker
                             disabled={formDetail.doc_status === "ยกเลิก"}
                             className="input-40"

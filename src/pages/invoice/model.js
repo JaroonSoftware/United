@@ -5,17 +5,11 @@ import { Typography, Flex } from "antd";
 import { Tooltip } from "antd";
 // import { EditOutlined, QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons"; 
 import { EditableRow, EditableCell } from "../../components/table/TableEditAble";
-import { TagReceiptStatus } from "../../components/badge-and-tag/";
+import { TagInvoiceStatus } from "../../components/badge-and-tag/";
 import dayjs from 'dayjs';
 import { EditOutlined, PrinterOutlined } from "@ant-design/icons";
 import { comma } from '../../utils/util';
 
-const calTotalDiscount = (rec) => {
-  const total = Number(rec?.qty || 0) * Number(rec?.price || 0);
-  const discount = 1 - (Number(rec?.discount || 0) / 100);
-
-  return total * discount;
-}
 /** export component for edit table */
 export const componentsEditable = {
   body: { row: EditableRow, cell: EditableCell },
@@ -62,7 +56,7 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView, handlePrint
     width: '13%',
     sorter: (a, b) => a.doc_status.localeCompare(b.doc_status),
     sortDirections: ["descend", "ascend"],
-    render: (data) => <TagReceiptStatus result={data} />,
+    render: (data) => <TagInvoiceStatus result={data} />,
   },
   {
     title: "จัดทำโดย",
@@ -134,8 +128,8 @@ export const productColumn = ({ handleRemove, handleSelectChange }) => [
   },
   {
     title: "เลขที่ใบกำกับ",
-    dataIndex: "ivcode",
-    key: "ivcode",
+    dataIndex: "recode",
+    key: "recode",
     width: 150,
     align: "center",
   },
@@ -143,6 +137,7 @@ export const productColumn = ({ handleRemove, handleSelectChange }) => [
     title: "ลงวันที่",
     key: "redate",
     dataIndex: "redate",
+    align: "center",
     width: 120,
     render: (v, rec) => !!rec.redate ? dayjs(v).format("DD/MM/YYYY") : '',
   },
@@ -150,17 +145,9 @@ export const productColumn = ({ handleRemove, handleSelectChange }) => [
     title: "วันที่ครบกำหนด",
     key: "duedate",
     dataIndex: "duedate",
+    align: "center",
     width: 120,
     render: (v, rec) => !!rec.duedate ? dayjs(v).format("DD/MM/YYYY") : '',
-  },
-  {
-    title: "จำนวนเงิน",
-    dataIndex: "grand_total_price",
-    key: "grand_total_price",
-    width: "10%",
-    align: "right",
-    className: "!pe-3",
-    render: (rec) => <>{comma(calTotalDiscount(rec), 2, 2)}</>,
   },
   {
     title: "หมายเหตุ",
@@ -169,10 +156,12 @@ export const productColumn = ({ handleRemove, handleSelectChange }) => [
     align: "center",
   },  
   {
-    title: "",
-    dataIndex: "txt",
-    width: '90px',
-    key: "txt",
+    title: "จำนวนเงิน",
+    dataIndex: "price",
+    key: "price",
+    width: "10%",
+    align: "right",
+    className: "!pe-3"
   },
   {
     title: "ตัวเลือก",
