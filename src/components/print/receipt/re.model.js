@@ -1,40 +1,46 @@
 import { Typography } from "antd";
 import { comma } from "../../../utils/util";
+const calTotalDiscount = (rec) => {
+  const total = Number(rec?.qty || 0) * Number(rec?.price || 0);
+  const discount = 1 - Number(rec?.discount || 0) / 100;
 
+  return total * discount;
+};
 export const column = [
   {
     title: (
       <>
-        ลำดับ
-        <br />No.
+        รหัสสินค้า
+        <br />
+        Product Code
       </>
     ),
     key: "index",
     align: "center",
-    width:  "5%",
+    width: "5%",
     render: (_, record, idx) => (
       <Typography.Text className="tx-info">{idx + 1}</Typography.Text>
     ),
   },
   {
     title: (
-      <div  style={{textAlign: "center"}}>
-       รหัสสินค้า
+      <div style={{ textAlign: "center" }}>
+        รหัสสินค้า
         <br />
-       Code
+        Code
       </div>
     ),
     align: "left",
-    width:  "15%",
+    width: "15%",
     key: "stcode",
     dataIndex: "stcode",
   },
   {
     title: (
-      <div style={{textAlign: "center"}}> 
-       รายละเอียด
+      <div style={{ textAlign: "center" }}>
+        รายละเอียด
         <br />
-       Description
+        Description
       </div>
     ),
     align: "left",
@@ -47,7 +53,7 @@ export const column = [
       <>
         จำนวน
         <br />
-        Qty.
+        Quantity
       </>
     ),
     align: "center",
@@ -60,18 +66,47 @@ export const column = [
   },
   {
     title: (
-      <div style={{textAlign: "center"}}>
-        หมายเหตุ
+      <>
+        หน่วยละ
         <br />
-        Remark
+        Unit
+      </>
+    ),
+    align: "center",
+    key: "price",
+    dataIndex: "price",
+    width: "10%",
+  },
+  {
+    title: (
+      <>
+        ส่วนลด
+        <br />
+        Discount
+      </>
+    ),
+    align: "center",
+    key: "discount",
+    dataIndex: "discount",
+    width: "10%",
+  },
+  {
+    title: (
+      <div style={{textAlign: "center"}}>
+        จำนวนเงิน
+        <br />
+        Total
       </div>
     ),
     align: "right",
-    width: "30%",
-    key: "remark",
-    dataIndex: "remark",
-    render: (v) => (
-      <Typography.Text className="tx-info">{comma(Number(v))}</Typography.Text>
-    ),
-  }
+    width:  "10%",
+    key: "amount",
+    dataIndex: "amount",
+    onCell: () => ({
+      style: {
+      //  borderRight: "1px solid "
+      },
+    }),
+    render: (_, rec) => <>{comma(calTotalDiscount(rec), 2, 2)}</>,
+  },
 ];

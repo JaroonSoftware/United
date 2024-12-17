@@ -137,12 +137,7 @@ let _nav = [
     title: "ผู้ใช้งาน",
     icon: <FaUserCircle className="nav-ico" />,
     to: "/users",
-  },
-
-  {
-    title: "กำลังปรับปรุง",
-    type: "group",
-  },
+  }
 ];
 
 export default _nav;

@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import "./dn.css";
 import logo from "../../../assets/images/QRCODEDN.jpg";
+import { Authenticate } from "../../../service/Authenticate.service";
 import { Button, Flex, Table, Typography, message } from "antd";
 import { column } from "./dn.model";
 
@@ -20,14 +21,14 @@ const dnservice = DNService();
 function DNPrintPreview() {
   const { code } = useParams();
   const componentRef = useRef(null);
-
+  const [userInfo, setUserInfo] = useState(null);
   const handlePrint = useReactToPrint({
     documentTitle: "Print This Document",
     onBeforePrint: () => handleBeforePrint(),
     onAfterPrint: () => handleAfterPrint(),
     removeAfterPrint: true,
   });
-
+const authService = Authenticate();
   const [hData, setHData] = useState({});
   const [details, setDetails] = useState([]);
 
@@ -60,9 +61,15 @@ function DNPrintPreview() {
  
      init();
      return () => {};
+     
    }, []);
  
+  useEffect(() => {
+    const users = authService.getUserInfo();
+    setUserInfo(users);
 
+    return () => {};
+  }, []);
   const ContentHead = ({ page }) => {
     return (
       <div className="content-head in-sample flex flex-col">
@@ -287,12 +294,20 @@ function DNPrintPreview() {
           >
             <Flex className="w-full" gap={8} justify={"center"}>
               <Flex vertical className="w-1/3" style={{ gap: 5 }}>
-                            <Flex gap={2} style={{ paddingTop: 80 }}>
-                              <Typography.Text style={{ fontSize: 10 }}>
-                                วันที่พิมพ์เอกสาร {dayjs().format("DD/MM/YYYY HH:mm:ss")}
-                              </Typography.Text>
-                            </Flex>
-                          </Flex>
+              <Flex vertical gap={2} style={{ paddingTop: 20 }}>
+                  <Typography.Text style={{ fontSize: 15 }}>
+                    พนักงานขาย
+                  </Typography.Text>
+                  <Typography.Text style={{ fontSize: 10 }}>
+                  {userInfo?.firstname} {userInfo?.lastname}
+                    <br></br>
+                    {dayjs().format("DD/MM/YYYY HH:mm:ss")}
+                  </Typography.Text>
+                  <Typography.Text style={{ fontSize: 10 }}>
+                    วันที่พิมพ์เอกสาร {dayjs().format("DD/MM/YYYY HH:mm:ss")}
+                  </Typography.Text>
+                </Flex>
+              </Flex>
               <Flex
                 vertical
                 className="w-1/3"
