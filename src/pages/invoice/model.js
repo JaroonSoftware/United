@@ -83,29 +83,13 @@ export const accessColumn = ({ handleEdit, handleDelete, handleView, handlePrint
           onClick={(e) => handleEdit(record)}
           size="small"
         />
-
-        {/* <Popconfirm 
-          placement="topRight"
-          title="Sure to delete?"  
-          description="Are you sure to delete this packaging?"
-          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-          onConfirm={() => handleDelete(record)}
-        >
-          <Button
-            icon={<DeleteOutlined />}
-            danger
-            style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
-            size="small"
-          />
-        </Popconfirm> */}
         <Button
           icon={<PrinterOutlined />}
           className='bn-warning-outline'
           style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           onClick={(e) => handlePrint(record)}
           size="small"
-        />
-        {/* <ButtonAttachFiles code={record.srcode} refs='Sample Request' showExpire={true} /> */}
+        /> 
       </Space>
     ),
   },
