@@ -99,7 +99,9 @@ function REPrintPreview() {
               >
                 <span
                   strong
-                  style={{ textDecoration: "underline", fontWeight: "bold" }}
+                  style={{ 
+                    // textDecoration: "underline",
+                     fontWeight: "bold" }}
                 >
                   สำนักงานใหญ่
                 </span>
@@ -138,8 +140,8 @@ function REPrintPreview() {
                   className="tx-info"
                   strong
                   style={{
-                    border: "1px solid",
-                    borderRadius: 11,
+                    // border: "1px solid",
+                    // borderRadius: 11,
                     width: 120,
                     textAlign: "center",
                     fontSize: 15,
@@ -169,7 +171,9 @@ function REPrintPreview() {
         <div className="print-title flex pb-2">
           <div
             className="flex ps-3 grow-0"
-            style={{ border: "1px solid", borderRadius: 10, width: "60%" }}
+            style={{ 
+              // border: "1px solid", borderRadius: 10, 
+              width: "60%" }}
           >
             <Flex vertical>
               <Typography.Text className="tx-info">
@@ -215,8 +219,8 @@ function REPrintPreview() {
           <div
             className="flex ps-3 grow-0"
             style={{
-              border: "1px solid",
-              borderRadius: 10,
+              // border: "1px solid",
+              // borderRadius: 10,
               width: "40%",
               marginLeft: 2,
             }}
@@ -379,11 +383,11 @@ function REPrintPreview() {
                 <Flex
                   justify="center"
                   style={{
-                    borderRight: "1px solid",
-                    borderLeft: "1px solid",
-                    borderTop: "1px solid",
-                    borderTopRightRadius: 8,
-                    borderTopLeftRadius: 8,
+                    // borderRight: "1px solid",
+                    // borderLeft: "1px solid",
+                    // borderTop: "1px solid",
+                    // borderTopRightRadius: 8,
+                    // borderTopLeftRadius: 8,
                     padding: 5,
                   }}
                 >
@@ -398,11 +402,11 @@ function REPrintPreview() {
                 <Flex
                   justify="center"
                   style={{
-                    borderRight: "1px solid",
-                    borderLeft: "1px solid",
-                    borderBottom: "1px solid",
-                    borderBottomRightRadius: 8,
-                    borderBottomLeftRadius: 8,
+                    // borderRight: "1px solid",
+                    // borderLeft: "1px solid",
+                    // borderBottom: "1px solid",
+                    // borderBottomRightRadius: 8,
+                    // borderBottomLeftRadius: 8,
                     paddingTop: 50,
                   }}
                 >
@@ -421,11 +425,11 @@ function REPrintPreview() {
                 <Flex
                   justify="center"
                   style={{
-                    borderRight: "1px solid",
-                    borderLeft: "1px solid",
-                    borderTop: "1px solid",
-                    borderTopRightRadius: 8,
-                    borderTopLeftRadius: 8,
+                    // borderRight: "1px solid",
+                    // borderLeft: "1px solid",
+                    // borderTop: "1px solid",
+                    // borderTopRightRadius: 8,
+                    // borderTopLeftRadius: 8,
                     padding: 5,
                   }}
                 >
@@ -437,11 +441,11 @@ function REPrintPreview() {
                 <Flex
                   justify="center"
                   style={{
-                    borderRight: "1px solid",
-                    borderLeft: "1px solid",
-                    borderBottom: "1px solid",
-                    borderBottomRightRadius: 8,
-                    borderBottomLeftRadius: 8,
+                    // borderRight: "1px solid",
+                    // borderLeft: "1px solid",
+                    // borderBottom: "1px solid",
+                    // borderBottomRightRadius: 8,
+                    // borderBottomLeftRadius: 8,
                     paddingTop: 67,
                   }}
                 >
@@ -460,11 +464,11 @@ function REPrintPreview() {
                 <Flex
                   justify="center"
                   style={{
-                    borderRight: "1px solid",
-                    borderLeft: "1px solid",
-                    borderTop: "1px solid",
-                    borderTopRightRadius: 8,
-                    borderTopLeftRadius: 8,
+                    // borderRight: "1px solid",
+                    // borderLeft: "1px solid",
+                    // borderTop: "1px solid",
+                    // borderTopRightRadius: 8,
+                    // borderTopLeftRadius: 8,
                     padding: 5,
                   }}
                 >
@@ -476,11 +480,11 @@ function REPrintPreview() {
                 <Flex
                   justify="center"
                   style={{
-                    borderRight: "1px solid",
-                    borderLeft: "1px solid",
-                    borderBottom: "1px solid",
-                    borderBottomRightRadius: 8,
-                    borderBottomLeftRadius: 8,
+                    // borderRight: "1px solid",
+                    // borderLeft: "1px solid",
+                    // borderBottom: "1px solid",
+                    // borderBottomRightRadius: 8,
+                    // borderBottomLeftRadius: 8,
                     paddingTop: 67,
                   }}
                 >
@@ -503,11 +507,11 @@ function REPrintPreview() {
                 <Flex
                   justify="center"
                   style={{
-                    borderRight: "1px solid",
-                    borderLeft: "1px solid",
-                    borderTop: "1px solid",
-                    borderTopRightRadius: 8,
-                    borderTopLeftRadius: 8,
+                    // borderRight: "1px solid",
+                    // borderLeft: "1px solid",
+                    // borderTop: "1px solid",
+                    // borderTopRightRadius: 8,
+                    // borderTopLeftRadius: 8,
                     padding: 5,
                   }}
                 >
@@ -523,11 +527,11 @@ function REPrintPreview() {
                 <Flex
                   justify="center"
                   style={{
-                    borderRight: "1px solid",
-                    borderLeft: "1px solid",
-                    borderBottom: "1px solid",
-                    borderBottomRightRadius: 8,
-                    borderBottomLeftRadius: 8,
+                    // borderRight: "1px solid",
+                    // borderLeft: "1px solid",
+                    // borderBottom: "1px solid",
+                    // borderBottomRightRadius: 8,
+                    // borderBottomLeftRadius: 8,
                     paddingTop: 43,
                   }}
                 >

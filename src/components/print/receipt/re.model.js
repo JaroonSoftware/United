@@ -104,7 +104,7 @@ export const column = [
     dataIndex: "amount",
     onCell: () => ({
       style: {
-       borderRight: "1px solid "
+      //  borderRight: "1px solid "
       },
     }),
     render: (_, rec) => <>{comma(calTotalDiscount(rec), 2, 2)}</>,
