@@ -41,6 +41,7 @@ import {
   SearchOutlined,
   CreditCardOutlined,
   QuestionCircleOutlined,
+  PrinterOutlined
 } from "@ant-design/icons";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuPrinter } from "react-icons/lu";
@@ -343,6 +344,7 @@ function ReceiptManage() {
   const handleRemovePayment = (record) => {
     const itemDetail = [...listPayment];
     return itemDetail.length >= 1 ? (
+      <Space >
       <Button
         className="bt-icon"
         size="small"
@@ -350,9 +352,26 @@ function ReceiptManage() {
         icon={
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
+        style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         onClick={() => handleDeletePayment(record)}
         disabled={formDetail.doc_status === "ยกเลิก"}
       />
+      {/* <Button
+          icon={<RiDeleteBin5Line />}
+          className='bn-warning-outline'
+          style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={(e) => handleDeletePayment(record)}
+          size="small"
+        />  */}
+       <Button
+          icon={<PrinterOutlined />}
+          className='bn-warning-outline'
+          style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={(e) => handlePrint(record)}
+          size="small"
+          disabled={formDetail.doc_status === "ยกเลิก"||config.action==="create"}
+        /> 
+      </Space>
     ) : null;
   };
 
