@@ -256,6 +256,7 @@ function ReceiptManage() {
   };
   const handleChoosedRE = (v) => {
     let value = { detail: v };
+    
     dnservice
       .getdetail(value)
       .then((res) => {
@@ -263,6 +264,7 @@ function ReceiptManage() {
         const { detail } = res.data;
 
         setListDetail(detail);
+        form.setFieldValue("remark", ((detail[0].cus_doc==='claim_no')?detail[0].claim_no:detail[0].require_no)+'/'+detail[0].car_no);
       })
       .catch((error) => message.error("get Invoice data fail."));
   };

@@ -40,9 +40,10 @@ const CustomerManage = () => {
       .catch(() => message.error("Initail failed"));
 
     const { data: cuscode } = cuscodeRes.data;
-    const initForm = { ...formDetail, cuscode };
+    const initForm = { ...formDetail, cuscode, cus_doc: "claim_no" };
     setFormDetail((state) => ({ ...state, ...initForm }));
     form.setFieldsValue(initForm);
+
   };
 
   useEffect(() => {
@@ -202,7 +203,11 @@ const CustomerManage = () => {
         </Form.Item>
       </Col>
       <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
-        <Form.Item label="ประเภทลูกค้า" name="cus_type" rules={[{ required: true, message: "กรุณากรอกข้อมูล!" }]}>
+        <Form.Item
+          label="ประเภทลูกค้า"
+          name="cus_type"
+          rules={[{ required: true, message: "กรุณากรอกข้อมูล!" }]}
+        >
           <Select
             size="large"
             placeholder="เลือกประเภทลูกค้า"
@@ -216,25 +221,49 @@ const CustomerManage = () => {
               {
                 value: "ลูกค้าอู่ซ่อมรถ",
                 label: "ลูกค้าอู่ซ่อมรถ",
-              },              
+              },
             ]}
           ></Select>
         </Form.Item>
       </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-          <Form.Item label="เขตขนส่ง" name="county_code">
-            <Select
-              size="large"
-              showSearch
-              filterOption={filterOption}
-              placeholder="เลือกเขตขนส่ง"
-              options={optioncounty.map((item) => ({
-                value: item.county_code,
-                label: item.county_name,
-              }))}
-            />
-          </Form.Item>
-        </Col>
+        <Form.Item label="เขตขนส่ง" name="county_code">
+          <Select
+            size="large"
+            showSearch
+            filterOption={filterOption}
+            placeholder="เลือกเขตขนส่ง"
+            options={optioncounty.map((item) => ({
+              value: item.county_code,
+              label: item.county_name,
+            }))}
+          />
+        </Form.Item>
+      </Col>
+      <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+        <Form.Item
+          label="รหัสเอกสารอ้างอิง"
+          name="cus_doc"
+          rules={[{ required: true, message: "กรุณากรอกข้อมูล!" }]}
+        >
+          <Select
+            size="large"
+            showSearch
+            filterOption={filterOption}
+            placeholder="เลือกรหัสเอกสารอ้างอิง"
+            options={[
+              {
+                value: "claim_no",
+                label: "เลขที่เคลม",
+              },
+              {
+                value: "require_no",
+                label: "เลขรับแจ้ง",
+              },
+            ]}
+          />
+        </Form.Item>
+      </Col>
       <Col
         xs={24}
         sm={24}
