@@ -264,6 +264,38 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
+      <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+        <Form.Item
+          label="สาขา"
+          name="branch"
+          rules={[{ required: true, message: "กรุณากรอกข้อมูล!" }]}
+        >
+          <Select
+            size="large"
+            showSearch
+            filterOption={filterOption}
+            placeholder="เลือกสาขา"
+            options={[
+              {
+                value: "สำนักงานใหญ่",
+                label: "สำนักงานใหญ่",
+              },
+              {
+                value: "สาขา",
+                label: "สาขา",
+              },
+            ]}
+          />
+        </Form.Item>
+      </Col>
+      <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={5}>
+        <Form.Item
+          label="รายละเอียดสาขา"
+          name="branch_details"
+        >
+          <Input placeholder="กรอกรายละเอียดสาขา" />
+        </Form.Item>
+      </Col>
       <Col
         xs={24}
         sm={24}

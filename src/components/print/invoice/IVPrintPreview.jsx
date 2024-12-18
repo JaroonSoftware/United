@@ -142,7 +142,7 @@ function IVPrintPreview() {
               </Typography.Text>
               <Typography.Text className="tx-info">
                 เลขประจำตัวผู้เสียภาษีอากร
-                <span style={{ paddingLeft: 16 }}>{hData?.taxnumber} </span><span style={{ paddingLeft: 10 }}>{hData?.branch}</span>
+                <span style={{ paddingLeft: 16 }}>{hData?.taxnumber} </span><span style={{ paddingLeft: 10 }}>{hData?.branch} {hData?.branch_details}</span>
               </Typography.Text>
             </Flex>
           </Flex>
@@ -283,7 +283,7 @@ function IVPrintPreview() {
                 className="tx-info"
                 style={{ fontSize: 11, paddingLeft: 5, lineHeight: "1em" }}
               >
-                ยอดเงินที่ชำระแล้ว<br></br>Pai
+                ยอดเงินที่ชำระแล้ว<br></br>Paid
               </Typography.Text>
             </Flex>
             <Flex

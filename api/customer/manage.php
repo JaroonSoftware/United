@@ -18,10 +18,10 @@ try {
 
         // var_dump($_POST);
         
-        $sql = "INSERT INTO customer (`cuscode`, `prename`, `cus_type` ,`cusname`, `taxnumber`, `idno`,`road`, `province`, cus_doc,
+        $sql = "INSERT INTO customer (`cuscode`, `prename`,`branch`,`branch_details`  , `cus_type` ,`cusname`, `taxnumber`, `idno`,`road`, `province`, cus_doc,
         `subdistrict`,`district`,`zipcode`, `delidno`,`delroad`, `delprovince`, 
         `delsubdistrict`,`deldistrict`,`delzipcode`, `tel`, `fax`,`contact`, `email`, `county_code` ,`remark`, `active_status`, created_by, created_date) 
-        values (:cuscode,:prename,:cus_type,:cusname,:taxnumber,:idno,:road,:province,:cus_doc,:subdistrict,:district,:zipcode,
+        values (:cuscode,:prename,:branch,:branch_details,:cus_type,:cusname,:taxnumber,:idno,:road,:province,:cus_doc,:subdistrict,:district,:zipcode,
         :delidno,:delroad,:delprovince,:delsubdistrict,:deldistrict,:delzipcode,
         :tel,:fax,:contact,:email,:county_code,:remark,'Y',:action_user,:action_date)";
         
@@ -30,6 +30,8 @@ try {
         
         $stmt->bindParam(":cuscode", $cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":prename", $prename, PDO::PARAM_STR);
+        $stmt->bindParam(":branch", $branch, PDO::PARAM_STR);
+        $stmt->bindParam(":branch_details", $branch_details, PDO::PARAM_STR);
         $stmt->bindParam(":cus_type", $cus_type, PDO::PARAM_STR);
         $stmt->bindParam(":cusname", $cusname, PDO::PARAM_STR);     
         $stmt->bindParam(":taxnumber", $taxnumber, PDO::PARAM_STR);
@@ -89,6 +91,8 @@ try {
         set
         cuscode = :cuscode,
         prename = :prename,
+        branch = :branch,
+        branch_details = :branch_details,
         cus_type = :cus_type,
         cusname = :cusname,
         taxnumber = :taxnumber,
@@ -122,6 +126,8 @@ try {
 
         $stmt->bindParam(":cuscode", $cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":prename", $prename, PDO::PARAM_STR);
+        $stmt->bindParam(":branch", $branch, PDO::PARAM_STR);
+        $stmt->bindParam(":branch_details", $branch_details, PDO::PARAM_STR);
         $stmt->bindParam(":cus_type", $cus_type, PDO::PARAM_STR);
         $stmt->bindParam(":cusname", $cusname, PDO::PARAM_STR);     
         $stmt->bindParam(":taxnumber", $taxnumber, PDO::PARAM_STR);
