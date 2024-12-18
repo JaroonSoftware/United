@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import { comma } from "../../../utils/util";
-
+import dayjs from 'dayjs';
 export const column = [
   {
     title: (
@@ -27,8 +27,8 @@ export const column = [
     ),
     align: "left",
     width: "15%",
-    key: "stcode",
-    dataIndex: "stcode",
+    key: "recode",
+    dataIndex: "recode",
   },
   {
     title: (
@@ -38,10 +38,11 @@ export const column = [
         Date
       </div>
     ),
-    align: "left",
-    key: "stname",
+    align: "center",
+    key: "redate",
     width: "10%",
-    dataIndex: "stname",
+    dataIndex: "redate",
+    render: (v) => dayjs(v).format("DD/MM/YYYY"),
   },
   {
     title: (
@@ -51,22 +52,23 @@ export const column = [
         Due Date
       </div>
     ),
-    align: "left",
-    key: "stname",
+    align: "center",
+    key: "duedate",
     width: "10%",
-    dataIndex: "stname",
+    dataIndex: "duedate",
+    render: (v) => dayjs(v).format("DD/MM/YYYY"),
   },
   {
     title: (
-      <>
+      <div style={{ textAlign: "center" }}>
         จำนวนเงิน
         <br />
         Amount
-      </>
+      </div>
     ),
-    align: "center",
-    key: "qty",
-    dataIndex: "qty",
+    align: "right",
+    key: "price",
+    dataIndex: "price",
     width: "10%",
     render: (v) => (
       <Typography.Text className="tx-info">{comma(Number(v))}</Typography.Text>
@@ -80,7 +82,7 @@ export const column = [
         Remark
       </div>
     ),
-    align: "right",
+    align: "left",
     width: "30%",
     key: "remark",
     dataIndex: "remark",
@@ -89,8 +91,5 @@ export const column = [
         borderRight: "1px solid ",
       },
     }),
-    render: (v) => (
-      <Typography.Text className="tx-info">{comma(Number(v))}</Typography.Text>
-    ),
   },
 ];
