@@ -307,9 +307,11 @@ function ReceiptManage() {
     // console.clear();
   };
 
-  const handlePrint = () => {
-    const newWindow = window.open("", "_blank");
-    newWindow.location.href = `/invoice/${formDetail.recode}`;
+  const handlePrint = (code) => {
+    console.log(code)
+    const url = `/payment-print/${code}`;
+    const newWindow = window.open('', url, url);
+    newWindow.location.href = url;
   };
 
   const handleDelete = (recode) => {
@@ -341,7 +343,7 @@ function ReceiptManage() {
     setListPayment([...newData]);
   };
 
-  const handleRemovePayment = (record) => {
+  const handleRemovePayment = (record,data) => {
     const itemDetail = [...listPayment];
     return itemDetail.length >= 1 ? (
       <Space >
@@ -363,14 +365,14 @@ function ReceiptManage() {
           onClick={(e) => handleDeletePayment(record)}
           size="small"
         />  */}
-       <Button
+       {config.action!=="create" && <Button
           icon={<PrinterOutlined />}
           className='bn-warning-outline'
           style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          onClick={(e) => handlePrint(record)}
+          onClick={(e) => handlePrint(data.code)}
           size="small"
-          disabled={formDetail.doc_status === "ยกเลิก"||config.action==="create"}
-        /> 
+          disabled={formDetail.doc_status === "ยกเลิก"}
+        /> }
       </Space>
     ) : null;
   };

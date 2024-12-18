@@ -160,6 +160,11 @@ export const productColumn = ({ handleRemove, handleSelectChange }) => [
 
 export const paymentColumn = ({ handleRemovePayment, handleSelectChange }) => [
   {
+    key: "code",
+    dataIndex: "code",
+    align: "left",
+  },
+  {
     title: "ลำดับ",
     dataIndex: "ind",
     key: "ind",
@@ -229,7 +234,7 @@ export const paymentColumn = ({ handleRemovePayment, handleSelectChange }) => [
     align: "center",
     key: "operation",
     dataIndex: "operation",
-    render: (_, record, idx) => handleRemovePayment(idx),
+    render: (_, record, idx) => handleRemovePayment(idx,record),
     width: '90px',
     fixed: 'right',
   },

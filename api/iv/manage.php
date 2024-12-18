@@ -434,7 +434,7 @@ try {
         }
         $detail = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT ivcode,paydate,price,payment_type,bank,bank_name_th,bank_name,bank_no,remark ";
+        $sql = "SELECT code,ivcode,paydate,price,payment_type,bank,bank_name_th,bank_name,bank_no,remark ";
         $sql .= " FROM `iv_payment`  ";
         $sql .= " where ivcode = :code";
 
