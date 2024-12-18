@@ -18,8 +18,8 @@ try {
 
         // var_dump($_POST);
 
-        $sql = "INSERT INTO items (stcode, stname,type_code,kind_code,car_model_code,unit,remark,price,buyprice,location_code,created_by,created_date) 
-        values (:stcode,:stname,:type_code,:kind_code,:car_model_code,:unit,:remark,:price,:buyprice,:location_code,:action_user,:action_date)";
+        $sql = "INSERT INTO items (stcode, stname,type_code,kind_code,car_model_code,unit,remark,price,buyprice,min,location_code,created_by,created_date) 
+        values (:stcode,:stname,:type_code,:kind_code,:car_model_code,:unit,:remark,:price,:buyprice,:min,:location_code,:action_user,:action_date)";
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
@@ -34,6 +34,7 @@ try {
         $stmt->bindParam(":remark", $remark, PDO::PARAM_STR);
         $stmt->bindParam(":price", $price, PDO::PARAM_STR);
         $stmt->bindParam(":buyprice", $buyprice, PDO::PARAM_STR);
+        $stmt->bindParam(":min", $min, PDO::PARAM_STR);
         $stmt->bindParam(":location_code", $location_code, PDO::PARAM_STR);
         $stmt->bindParam(":action_date", $action_date, PDO::PARAM_STR);
         $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
@@ -81,6 +82,7 @@ try {
         remark = :remark,
         price = :price,
         buyprice = :buyprice,
+        min = :min,
         location_code = :location_code,
         active_status = :active_status,
         updated_date = CURRENT_TIMESTAMP(),
@@ -98,6 +100,7 @@ try {
         $stmt->bindParam(":unit", $unit, PDO::PARAM_STR);
         $stmt->bindParam(":price", $price, PDO::PARAM_STR);
         $stmt->bindParam(":buyprice", $buyprice, PDO::PARAM_STR);
+        $stmt->bindParam(":min", $min, PDO::PARAM_STR);
         $stmt->bindParam(":location_code", $location_code, PDO::PARAM_STR);
         $stmt->bindParam(":remark", $remark, PDO::PARAM_STR);
         $stmt->bindParam(":active_status", $active_status, PDO::PARAM_STR);
