@@ -18,10 +18,10 @@ try {
 
         // var_dump($_POST);
         
-        $sql = "INSERT INTO customer (`cuscode`, `prename`, `cus_type` ,`cusname`, `taxnumber`, `idno`,`road`, `province`, 
+        $sql = "INSERT INTO customer (`cuscode`, `prename`, `cus_type` ,`cusname`, `taxnumber`, `idno`,`road`, `province`, cus_doc,
         `subdistrict`,`district`,`zipcode`, `delidno`,`delroad`, `delprovince`, 
         `delsubdistrict`,`deldistrict`,`delzipcode`, `tel`, `fax`,`contact`, `email`, `county_code` ,`remark`, `active_status`, created_by, created_date) 
-        values (:cuscode,:prename,:cus_type,:cusname,:taxnumber,:idno,:road,:province,:subdistrict,:district,:zipcode,
+        values (:cuscode,:prename,:cus_type,:cusname,:taxnumber,:idno,:road,:province,:cus_doc,:subdistrict,:district,:zipcode,
         :delidno,:delroad,:delprovince,:delsubdistrict,:deldistrict,:delzipcode,
         :tel,:fax,:contact,:email,:county_code,:remark,'Y',:action_user,:action_date)";
         
@@ -36,6 +36,7 @@ try {
         $stmt->bindParam(":idno", $idno, PDO::PARAM_STR); 
         $stmt->bindParam(":road", $road, PDO::PARAM_STR);         
         $stmt->bindParam(":province", $province, PDO::PARAM_STR);   
+        $stmt->bindParam(":cus_doc", $cus_doc, PDO::PARAM_STR);   
         $stmt->bindParam(":subdistrict", $subdistrict, PDO::PARAM_STR);   
         $stmt->bindParam(":district", $district, PDO::PARAM_STR);                
         $stmt->bindParam(":zipcode", $zipcode, PDO::PARAM_STR);
@@ -94,6 +95,7 @@ try {
         idno = :idno,
         road = :road,
         province = :province,
+        cus_doc = :cus_doc,
         subdistrict = :subdistrict,
         district = :district,
         zipcode = :zipcode,
@@ -126,6 +128,7 @@ try {
         $stmt->bindParam(":idno", $idno, PDO::PARAM_STR); 
         $stmt->bindParam(":road", $road, PDO::PARAM_STR);         
         $stmt->bindParam(":province", $province, PDO::PARAM_STR);   
+        $stmt->bindParam(":cus_doc", $cus_doc, PDO::PARAM_STR);   
         $stmt->bindParam(":subdistrict", $subdistrict, PDO::PARAM_STR);   
         $stmt->bindParam(":district", $district, PDO::PARAM_STR);                
         $stmt->bindParam(":zipcode", $zipcode, PDO::PARAM_STR);

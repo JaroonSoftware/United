@@ -32,11 +32,13 @@ try {
 
         $code = $_GET["code"];
 
-        $sql = "SELECT a.code,a.dncode,a.stcode,s.socode, a.price, a.unit, a.qty ,i.stname,a.discount,s.delamount, k.kind_name ";
+        $sql = "SELECT a.code,a.dncode,a.stcode,s.socode, a.price, a.unit, a.qty ,i.stname,a.discount,s.delamount, k.kind_name,sm.car_no,sm.claim_no,sm.require_no,c.cus_doc";
         $sql .= " FROM `dndetail` as a";
         $sql .= " inner join `items` as i on (a.stcode=i.stcode)  ";
         $sql .= " left outer join `sodetail` as s on a.stcode=s.stcode and a.socode=s.socode  ";
         $sql .= " left outer join kind k on (i.kind_code=k.kind_code)  ";
+        $sql .= " left outer join somaster sm on (a.socode=sm.socode)  ";
+        $sql .= " left outer join customer c on (sm.cuscode=c.cuscode)  ";
         $sql .= " where a.dncode IN (". implode(',',$tmp_array) . ")";
 
         $stmt = $conn->prepare($sql);
@@ -63,6 +65,10 @@ try {
             $nestedObject->delamount = $row['delamount']; 
             $nestedObject->kind_name = $row['kind_name']; 
             $nestedObject->cost = $row['cost']; 
+            $nestedObject->car_no = $row['car_no']; 
+            $nestedObject->claim_no = $row['claim_no']; 
+            $nestedObject->require_no = $row['require_no']; 
+            $nestedObject->cus_doc = $row['cus_doc']; 
                 
             //echo $row['prod_id'];
             $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
