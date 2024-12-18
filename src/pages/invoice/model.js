@@ -162,7 +162,8 @@ export const paymentColumn = ({ handleRemovePayment, handleSelectChange }) => [
   {
     key: "code",
     dataIndex: "code",
-    align: "left",
+    align: "left",    
+    hidden: true,
   },
   {
     title: "ลำดับ",
