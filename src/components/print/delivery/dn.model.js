@@ -70,10 +70,10 @@ export const column = [
     width: "30%",
     key: "remark",
     dataIndex: "remark",
-    onCell: () => ({
-      style: {
-       borderRight: "1px solid "
-      },
-    }),
+    // onCell: () => ({
+    //   style: {
+    //    borderRight: "1px solid "
+    //   },
+    // }),
   }
 ];

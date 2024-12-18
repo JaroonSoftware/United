@@ -96,7 +96,9 @@ const authService = Authenticate();
               </Typography.Text>
             </Flex>
           </div>
-          <div className="flex" style={{ border: "1px solid" ,height: "80%"}}>
+          <div className="flex" style={{ 
+            // border: "1px solid", 
+            height: "80%"}}>
             <Flex>
               <Typography.Text style={{width: 100}}>
                 <div >
@@ -172,7 +174,9 @@ const authService = Authenticate();
         <div className="print-title flex pb-2">
           <div
             className="flex ps-3 grow-0"
-            style={{ border: "1px solid", borderRadius: 10, width: "75%" }}
+            style={{ 
+              // border: "1px solid",
+               borderRadius: 10, width: "75%" }}
           >
             <Flex vertical>
               <Typography.Text className="tx-info" style={{ width: "100%" }}>
@@ -207,7 +211,7 @@ const authService = Authenticate();
           <div
             className="flex ps-3 grow-0"
             style={{
-              border: "1px solid",
+              // border: "1px solid",
               borderRadius: 10,
               width: "40%",
               marginLeft: 2,
@@ -248,7 +252,9 @@ const authService = Authenticate();
       <>
         <Table.Summary.Row>
           <Table.Summary.Cell colSpan={3} className="!align-top !ps-0 !pt-3  ">
-            <Flex vertical style={{ border: "1px solid", padding: 3 }}>
+            <Flex vertical style={{ 
+              // border: "1px solid",
+               padding: 3 }}>
               <Typography.Text
                 className="tx-info"
                 style={{ fontSize: 11, paddingLeft: 5 }}
@@ -269,7 +275,9 @@ const authService = Authenticate();
             colSpan={2}
             className="!align-top !ps-0 !pt-3  !pe-0"
           >
-            <Flex style={{ border: "1px solid", padding: 3 }}>
+            <Flex style={{ 
+              // border: "1px solid", 
+              padding: 3 }}>
               <Typography.Text
                 className="tx-info"
                 style={{ fontSize: 11, paddingLeft: 5 }}
@@ -280,9 +288,15 @@ const authService = Authenticate();
                 className="tx-info"
                 style={{ fontSize: 11, paddingLeft: 25 }}
               >
-                รถสาย______________________________________<br></br>
-                เลขที่_______________________________________<br></br>
-                วันที่________________________________________
+                รถสาย
+                {/* ______________________________________ */}
+                <br></br>
+                เลขที่
+                {/* _______________________________________ */}
+                <br></br>
+                วันที่
+                {/* ________________________________________ */}
+                
               </Typography.Text>
             </Flex>
           </Table.Summary.Cell>
@@ -310,17 +324,17 @@ const authService = Authenticate();
               </Flex>
               <Flex
                 vertical
-                className="w-1/3"
-                style={{
-                  borderRight: "1px solid",
-                  borderLeft: "1px solid",
-                  borderTop: "1px solid",
-                  borderBottom: "1px solid",
-                  borderTopRightRadius: 8,
-                  borderTopLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  borderBottomLeftRadius: 8,
-                }}
+                className="w-1/3 "
+                // style={{
+                //   borderRight: "1px solid",
+                //   borderLeft: "1px solid",
+                //   borderTop: "1px solid",
+                //   borderBottom: "1px solid",
+                //   borderTopRightRadius: 8,
+                //   borderTopLeftRadius: 8,
+                //   borderBottomRightRadius: 8,
+                //   borderBottomLeftRadius: 8,
+                // }}
               >
                 <Flex justify="center">
                   <Typography.Text className="tx-info text-center">
@@ -329,7 +343,9 @@ const authService = Authenticate();
                 </Flex>
                 <Flex
                   justify="center"
-                  style={{ borderTop: "1px solid", paddingTop: 50 }}
+                  style={{ 
+                    // borderTop: "1px solid", 
+                    paddingTop: 50 }}
                 >
                   <Typography.Text className="tx-info text-center">
                     วันที่.........../.........../...........
@@ -339,16 +355,16 @@ const authService = Authenticate();
               <Flex
                 vertical
                 className="w-1/3"
-                style={{
-                  borderRight: "1px solid",
-                  borderLeft: "1px solid",
-                  borderTop: "1px solid",
-                  borderBottom: "1px solid",
-                  borderTopRightRadius: 8,
-                  borderTopLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  borderBottomLeftRadius: 8,
-                }}
+                // style={{
+                //   borderRight: "1px solid",
+                //   borderLeft: "1px solid",
+                //   borderTop: "1px solid",
+                //   borderBottom: "1px solid",
+                //   borderTopRightRadius: 8,
+                //   borderTopLeftRadius: 8,
+                //   borderBottomRightRadius: 8,
+                //   borderBottomLeftRadius: 8,
+                // }}
               >
                 <Flex justify="center">
                   <Typography.Text className="tx-info text-center">
@@ -357,7 +373,9 @@ const authService = Authenticate();
                 </Flex>
                 <Flex
                   justify="center"
-                  style={{ borderTop: "1px solid", paddingTop: 50 }}
+                  style={{ 
+                    // borderTop: "1px solid", 
+                    paddingTop: 50 }}
                 >
                   <Typography.Text className="tx-info text-center">
                     วันที่.........../.........../...........
@@ -367,16 +385,16 @@ const authService = Authenticate();
               <Flex
                 vertical
                 className="w-1/3"
-                style={{
-                  borderRight: "1px solid",
-                  borderLeft: "1px solid",
-                  borderTop: "1px solid",
-                  borderBottom: "1px solid",
-                  borderTopRightRadius: 8,
-                  borderTopLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  borderBottomLeftRadius: 8,
-                }}
+                // style={{
+                //   borderRight: "1px solid",
+                //   borderLeft: "1px solid",
+                //   borderTop: "1px solid",
+                //   borderBottom: "1px solid",
+                //   borderTopRightRadius: 8,
+                //   borderTopLeftRadius: 8,
+                //   borderBottomRightRadius: 8,
+                //   borderBottomLeftRadius: 8,
+                // }}
               >
                 <Flex gap={2} justify="center" style={{}}>
                   <Typography.Text className="tx-info text-center">
@@ -385,7 +403,9 @@ const authService = Authenticate();
                 </Flex>
                 <Flex
                   justify="center"
-                  style={{ borderTop: "1px solid", paddingTop: 50 }}
+                  style={{
+                    //  borderTop: "1px solid", 
+                     paddingTop: 50 }}
                 >
                   <Typography.Text className="tx-info text-center">
                     วันที่.........../.........../...........
