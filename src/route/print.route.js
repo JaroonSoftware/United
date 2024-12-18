@@ -12,5 +12,5 @@ export const PrintRouter = (<>
   <Route path="/so-print/:code/:print?" element={<SOPrintPreview />} />
   <Route path="/dn-print/:code/:print?" element={<DNPrintPreview />} />
   <Route path="/re-print/:code/:print?" element={<REPrintPreview />} />
-  <Route path="/in-print/:code/:print?" element={<IVPrintPreview />} />
+  <Route path="/iv-print/:code/:print?" element={<IVPrintPreview />} />
 </>)

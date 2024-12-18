@@ -6,48 +6,62 @@ export const column = [
     title: (
       <>
         ลำดับ
-        <br />No.
+        <br />
+        No.
       </>
     ),
     key: "index",
     align: "center",
-    width:  "5%",
+    width: "5%",
     render: (_, record, idx) => (
       <Typography.Text className="tx-info">{idx + 1}</Typography.Text>
     ),
   },
   {
     title: (
-      <div  style={{textAlign: "center"}}>
-       รหัสสินค้า
+      <div style={{ textAlign: "center" }}>
+        เลขที่ใบกำกับ
         <br />
-       Code
+       Invoice No.
       </div>
     ),
     align: "left",
-    width:  "15%",
+    width: "15%",
     key: "stcode",
     dataIndex: "stcode",
   },
   {
     title: (
-      <div style={{textAlign: "center"}}> 
-       รายละเอียด
+      <div style={{ textAlign: "center" }}>
+        ลงวันที่
         <br />
-       Description
+        Date
       </div>
     ),
     align: "left",
     key: "stname",
-    width: "30%",
+    width: "10%",
+    dataIndex: "stname",
+  },
+  {
+    title: (
+      <div style={{ textAlign: "center" }}>
+        วันที่ครบกำหนด
+        <br />
+        Due Date
+      </div>
+    ),
+    align: "left",
+    key: "stname",
+    width: "10%",
     dataIndex: "stname",
   },
   {
     title: (
       <>
-        จำนวน
+        จำนวนเงิน
         <br />
-        Qty.
+        Amount
       </>
     ),
     align: "center",
@@ -60,7 +74,7 @@ export const column = [
   },
   {
     title: (
-      <div style={{textAlign: "center"}}>
+      <div style={{ textAlign: "center" }}>
         หมายเหตุ
         <br />
         Remark
@@ -70,8 +84,13 @@ export const column = [
     width: "30%",
     key: "remark",
     dataIndex: "remark",
+    onCell: () => ({
+      style: {
+        borderRight: "1px solid ",
+      },
+    }),
     render: (v) => (
       <Typography.Text className="tx-info">{comma(Number(v))}</Typography.Text>
     ),
-  }
+  },
 ];
