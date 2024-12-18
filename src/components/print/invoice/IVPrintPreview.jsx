@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 // import ReactDOMServer from "react-dom/server";
 import { useReactToPrint } from "react-to-print";
 import "./iv.css";
-import logo from "../../../assets/images/QRCODEDN.jpg";
+// import logo from "../../../assets/images/QRCODEDN.jpg";
 import { Button, Flex, Table, Typography, message } from "antd";
 import { column } from "./iv.model";
 
@@ -68,91 +68,40 @@ function IVPrintPreview() {
     return (
       <div className="content-head in-sample flex flex-col">
         <div className="print-title flex pb-2">
-          <div className="flex ps-3 grow-0">
+          <div className="flex ps-3 grow-0" style={{ width: "80%" }}>
             <Flex className="mb-1.5" vertical>
-              <Typography.Text className="tx-title min-w-80 weight600" strong>
+              <Typography.Text
+                className="tx-title min-w-80 weight600"
+                strong
+                style={{ fontSize: 17 }}
+              >
                 บริษัท ยูไนเต็ด ออโตสแปร์พาร์ท จำกัด
               </Typography.Text>
-              <Typography.Text style={{ paddingTop: 8 }} className="tx-info">
-                29/14-15 ถ.บรมราชชนนี แขวงศาลาธรรมสพน์ เขตทวีวัฒนา
+              <Typography.Text className="tx-info" style={{ fontSize: 12 }}>
+                29/14-15 ถ.บรมราชชนนี แขวงศาลาธรรมสพน์ <br></br>เขตทวีวัฒนา
+                กรุงเทพฯ
               </Typography.Text>
-              <Typography.Text className="tx-info">
-                กรุงเทพมหานคร 10170
+              <Typography.Text className="tx-info" style={{ fontSize: 12 }}>
+                โทร.02-408-1708,02-441-3488
               </Typography.Text>
-              <Typography.Text
-                className="tx-info"
-                style={{ paddingTop: 4, fontSize: 13 }}
-              >
-                โทรศัพท์ 094-923-7111 แฟกซ์
-              </Typography.Text>
-              <Typography.Text className="tx-info" style={{ fontSize: 13 }}>
-                เลขประจำตัวผู้เสียภาษี 0105562202122
+              <Typography.Text className="tx-info" style={{ fontSize: 12 }}>
+                เลขประจำตัวผู้เสียภาษี&nbsp;&nbsp;&nbsp;0105562202122&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;สำนักงานใหญ่
               </Typography.Text>
             </Flex>
           </div>
-          <div className="flex" style={{ border: "1px solid" }}>
-            <Flex>
-              <Typography.Text style={{width: 100}}>
-                <div >
-                  <img
-                    src={logo}
-                    alt=""
-                    style={{
-                      width: "100%",
-                      padding: 8,
-                      paddingTop: 20
-                    }}
-                  />
-                 
-                </div>
-              </Typography.Text>
-              <Typography.Text  style={{width: "80" ,paddingTop: 20,paddingRight: 5}}>
-              <span style={{ fontSize: 6}}>UNITED AUTOSPAREPART</span> <br></br>
-               <span style={{ fontSize: 12 }}>LINE OFFICIAL</span> <br></br>
-               <span style={{ fontSize: 9 }}>สอบถามข้อมูล/ส่งบิล</span> 
-              </Typography.Text>
-              
-            </Flex>
-          </div>
-          <div className="flex ps-3 grow">
+
+          <div className="flex ps-3 grow" style={{ float: "right" }}>
             <Flex className="mb-1.5" vertical style={{ paddingLeft: 0 }}>
-              <Typography.Text style={{ textAlign: "right" }}>
-                หน้า {page}
-              </Typography.Text>
               <Typography.Text
                 className="tx-title min-w-48"
-                strong
-                style={{ textAlign: "center", fontSize: 18 }}
-              >
-                ใบส่งสินค้า
-              </Typography.Text>
-              <Typography.Text
-                className="tx-title min-w-48"
-                style={{ textAlign: "center", fontSize: 18 }}
+                style={{ textAlign: "right", fontSize: 17 }}
                 strong
               >
-                Delivery Note
+                ใบวางบิล / ใบแจ้งหนี้
               </Typography.Text>
-              <Flex justify="space-between min-w-70">
-                <Typography.Text className="tx-info" strong>
-                  เลขที่ใบส่งสินค้า
-                </Typography.Text>
-                <Typography.Text className="tx-info">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{hData?.dncode}
-                </Typography.Text>
-              </Flex>
-              {/* <Flex justify="space-between">
-                <Typography.Text
-                  className="tx-info"
-                  style={{ paddingLeft: 90 }}
-                  strong
-                >
-                  วันที่
-                </Typography.Text>
-                <Typography.Text className="tx-info">
-                  {dayjs(hData?.sodate).format("DD/MM/YYYY")}
-                </Typography.Text>
-              </Flex> */}
+              <Typography.Text style={{ textAlign: "right", paddingTop: 10 }}>
+                Page {page}
+              </Typography.Text>
             </Flex>
           </div>
         </div>
@@ -164,63 +113,80 @@ function IVPrintPreview() {
     return (
       <div className="content-head in-sample flex flex-col">
         <div className="print-title flex pb-2">
-          <div
+          <Flex
             className="flex ps-3 grow-0"
-            style={{ border: "1px solid", borderRadius: 10, width: "60%" }}
+            style={{ border: "1px solid", width: "80%" }}
           >
             <Flex vertical>
               <Typography.Text className="tx-info">
-                นามลูกค้า :
-                <span style={{ paddingLeft: 18 }}>
+                รหัสร้านค้า
+                <span style={{ paddingLeft: 22 }}>
+                {hData?.cuscode}
+                </span>
+              </Typography.Text>
+              <Typography.Text className="tx-info">
+                นามลูกค้า
+                <span style={{ paddingLeft: 26 }}>
                   {hData?.prename} {hData?.cusname}
                 </span>
               </Typography.Text>
-              <Typography.Text className="tx-info">
-                ที่อยู่ลูกค้า :{" "}
-                <span style={{ paddingLeft: 42 }}>
-                  {hData?.address} {hData?.zipcode}
+              <Typography.Text className="tx-info" style={{ height: 21 }}>
+                ที่อยู่
+                <span style={{ paddingLeft: 51 }}>
+                  {hData?.idno} {hData?.road} {hData?.subdistrict} {hData?.district} {hData?.provin} {hData?.zipcode}
                 </span>
               </Typography.Text>
               <Typography.Text className="tx-info">
-                สถานที่จัดส่ง :{" "}
-                <span style={{ paddingLeft: 42 }}>
-                  {hData?.address} {hData?.zipcode}
-                </span>
+                โทรศัพท์
+                <span style={{ paddingLeft: 30 }}>{hData?.tel}</span>
               </Typography.Text>
               <Typography.Text className="tx-info">
-                ที่อยู่จัดส่ง:{" "}
-                <span style={{ paddingLeft: 16 }}>{hData?.remark}</span>
+                เลขประจำตัวผู้เสียภาษีอากร
+                <span style={{ paddingLeft: 16 }}>{hData?.taxnumber} </span><span style={{ paddingLeft: 10 }}>{hData?.branch}</span>
               </Typography.Text>
             </Flex>
-          </div>
-          <div
-            className="flex ps-3 grow-0"
+          </Flex>
+          <Flex
+            vertical
+            gap={3}
             style={{
-              border: "1px solid",
-              borderRadius: 10,
-              width: "40%",
+              width: "20%",
               marginLeft: 2,
             }}
           >
-            <Flex vertical>
-              <Typography.Text className="tx-info">
-                เลขเคลม :{" "}
-                <span style={{ paddingLeft: 21 }}>{hData?.claim_no}</span>
+            <Flex vertical style={{ border: "1px solid" }}>
+              <Typography.Text
+                className="tx-info text-center"
+                style={{
+                  lineHeight: "1em",
+                  fontSize: 11,
+                  borderBottom: "1px solid",
+                  padding: 2,
+                }}
+              >
+                วันที่<br></br>Date
               </Typography.Text>
-              <Typography.Text className="tx-info">
-                เลขที่รับแจ้ง :{" "}
-                <span style={{ paddingLeft: 6 }}>{hData?.require_no}</span>
-              </Typography.Text>
-              <Typography.Text className="tx-info">
-                ทะเบียน :{" "}
-                <span style={{ paddingLeft: 26 }}>{hData?.car_no}</span>
-              </Typography.Text>
-              <Typography.Text className="tx-info">
-                เลขตัวถัง :{" "}
-                <span style={{ paddingLeft: 20 }}>{hData?.car_engineno}</span>
+              <Typography.Text className="tx-info text-center">
+                {dayjs(hData?.ivdate).format("DD/MM/YYYY")}
               </Typography.Text>
             </Flex>
-          </div>
+            <Flex vertical style={{ border: "1px solid" }}>
+              <Typography.Text
+                className="tx-info text-center"
+                style={{
+                  lineHeight: "1em",
+                  fontSize: 11,
+                  borderBottom: "1px solid",
+                  padding: 2,
+                }}
+              >
+                เลขที่ใบวางบิล<br></br>Voucher No.
+              </Typography.Text>
+              <Typography.Text className="tx-info text-center">
+                {hData?.ivcode}
+              </Typography.Text>
+            </Flex>
+          </Flex>
         </div>
       </div>
     );
@@ -230,69 +196,174 @@ function IVPrintPreview() {
     return (
       <>
         <Table.Summary.Row>
-          <Table.Summary.Cell colSpan={3} className="!align-top !ps-0 !pt-3  ">
-            <Flex vertical style={{ border: "1px solid", padding: 3 }}>
+          <Table.Summary.Cell
+            colSpan={5}
+            className="!align-top !ps-0 !pt-3  !pe-0"
+          >
+            <Flex
+              style={{
+                borderTop: "1px solid",
+                borderLeft: "1px solid",
+                borderRight: "1px solid",
+              }}
+            >
               <Typography.Text
-                className="tx-info"
-                style={{ fontSize: 11, paddingLeft: 5 }}
+                className="tx-info "
+                style={{ fontSize: 13, marginLeft: 10 }}
+                strong
               >
-                หมายเหตุการรับสินค้า
+                จำนวนบิล
               </Typography.Text>
               <Typography.Text
                 className="tx-info "
-                style={{ fontSize: 8, paddingLeft: 5, paddingTop: 6 }}
+                style={{ fontSize: 13, marginLeft: 100 }}
+                strong
               >
-                * กรุณาตรวจเช็คสินค้าว่าไม่พบ ชำรุด แตก หัก เสียหาย
-                ก่อนเซ็นรับสินค้าจากพนักงานขนส่งทุกครั้งหากพบ<br></br>
-                &nbsp;
-                &nbsp;สินค้าชำรุดเสียหายให้รีบแจ้งพนักงานขนส่งทันทีหรือแจ้งกลับทางบริษัท
-                ภายใน 3 วัน หลังจากได้รับสินค้า
+                ฉบับ
+              </Typography.Text>
+              <Typography.Text
+                className="tx-info "
+                style={{ fontSize: 13, marginLeft: 100 }}
+                strong
+              >
+                รวมเป็นเงิน
+              </Typography.Text>
+            </Flex>
+            <Flex style={{ border: "1px solid", padding: 3 }}>
+              <Typography.Text
+                className="tx-info"
+                style={{ fontSize: 11, paddingLeft: 5, lineHeight: "1em" }}
+              >
+                จำนวนเงิน<br></br>Amount In Word
+              </Typography.Text>
+            </Flex>
+            <Flex
+              style={{
+                borderBottom: "1px solid",
+                borderLeft: "1px solid",
+                borderRight: "1px solid",
+                padding: 3,
+              }}
+            >
+              <Typography.Text
+                className="tx-info"
+                style={{ fontSize: 11, paddingLeft: 5, lineHeight: "1em" }}
+              >
+                วันที่นัดชำระเงิน<br></br>Payment Date
               </Typography.Text>
             </Flex>
           </Table.Summary.Cell>
           <Table.Summary.Cell
-            colSpan={2}
+            colSpan={1}
             className="!align-top !ps-0 !pt-3  !pe-0"
           >
-            <Flex style={{ border: "1px solid", padding: 3 }}>
+            <Flex
+              style={{
+                borderTop: "1px solid",
+                borderRight: "1px solid",
+              }}
+            >
               <Typography.Text
-                className="tx-info"
-                style={{ fontSize: 11, paddingLeft: 5 }}
+                className="tx-info "
+                style={{ fontSize: 13, marginLeft: 90 }}
+                strong
               >
-                ขนส่งโดย
+                รายการชำระเงิน
               </Typography.Text>
+            </Flex>
+            <Flex
+              style={{
+                borderBottom: "1px solid",
+                borderTop: "1px solid",
+                borderRight: "1px solid",
+                padding: 3,
+              }}
+            >
               <Typography.Text
                 className="tx-info"
-                style={{ fontSize: 11, paddingLeft: 25 }}
+                style={{ fontSize: 11, paddingLeft: 5, lineHeight: "1em" }}
               >
-                รถสาย______________________________________<br></br>
-                เลขที่_______________________________________<br></br>
-                วันที่________________________________________
+                ยอดเงินที่ชำระแล้ว<br></br>Pai
+              </Typography.Text>
+            </Flex>
+            <Flex
+              style={{
+                borderBottom: "1px solid",
+                borderRight: "1px solid",
+                padding: 3,
+              }}
+            >
+              <Typography.Text
+                className="tx-info"
+                style={{ fontSize: 11, paddingLeft: 5, lineHeight: "1em" }}
+              >
+                ยอดเงินที่ค้างชำระ<br></br>Balance
               </Typography.Text>
             </Flex>
           </Table.Summary.Cell>
         </Table.Summary.Row>
         <Table.Summary.Row>
           <Table.Summary.Cell
+            colSpan={6}
+            className="!align-top !ps-0   !pe-0"
+          >
+            <Typography.Text
+              className="tx-info "
+              style={{ fontSize: 11, marginLeft: 240 }}
+            >
+              กรณีชำระเงินด้วยเช็ค โปรดขีดคร่อมสั่งจ่ายในนามบริษัทฯ เท่านั้น
+            </Typography.Text>
+            <Flex
+              style={{
+                borderTop: "1px solid",
+                borderLeft: "1px solid",
+                borderRight: "1px solid",
+              }}
+            >
+              <Typography.Text
+                className="tx-info "
+                style={{ fontSize: 13, marginLeft: 335 }}
+                strong
+              >
+                รายการชำระเงิน
+              </Typography.Text>
+            </Flex>
+            <Flex style={{ border: "1px solid", padding: 3 }}>
+              <Typography.Text
+                className="tx-info"
+                style={{ fontSize: 11, paddingLeft: 5 }}
+              >
+                ธนาคาร/สาขา........................................เลขที่.............................ลงวันที่........./........./.........
+                <br></br>
+                ธนาคาร/สาขา........................................เลขที่.............................ลงวันที่........./........./.........
+                <br></br>
+                เงินสด......................................อื่นๆ(ระบุ)............................................................................
+                <br></br>
+                หัก ส่วนลด......................ภาษีหัก ณ
+                ที่จ่าย...........................................................................
+              </Typography.Text>
+              <Typography.Text
+                className="tx-info"
+                style={{ fontSize: 11, paddingLeft: 25 }}
+              >
+                จำนวนเงิน.................................................
+                <br></br>
+                จำนวนเงิน.................................................
+                <br></br>
+                จำนวนเงิน.................................................
+                <br></br>
+                <b>รวมเป็นเงินสุทธิ</b>........................................
+              </Typography.Text>
+            </Flex>
+          </Table.Summary.Cell>
+        </Table.Summary.Row>
+        {/* ส่วนล่างสุด */}
+        <Table.Summary.Row>
+          <Table.Summary.Cell
             colSpan={8}
             className="!align-top !ps-0 !pt-2 !pe-0 "
           >
             <Flex className="w-full" gap={8} justify={"center"}>
-              <Flex vertical className="w-1/3" style={{ gap: 5 }}>
-                <Flex vertical gap={2} style={{ paddingTop: 20 }}>
-                  <Typography.Text style={{ fontSize: 15 }}>
-                    พนักงานขาย
-                  </Typography.Text>
-                  <Typography.Text style={{ fontSize: 10 }}>
-                    ชื่อพนักงานขาย
-                    <br></br>
-                    {dayjs().format("DD/MM/YYYY HH:mm:ss")}
-                  </Typography.Text>
-                  <Typography.Text style={{ fontSize: 10 }}>
-                    วันที่พิมพ์เอกสาร {dayjs().format("DD/MM/YYYY HH:mm:ss")}
-                  </Typography.Text>
-                </Flex>
-              </Flex>
               <Flex
                 vertical
                 className="w-1/3"
@@ -301,15 +372,11 @@ function IVPrintPreview() {
                   borderLeft: "1px solid",
                   borderTop: "1px solid",
                   borderBottom: "1px solid",
-                  borderTopRightRadius: 8,
-                  borderTopLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  borderBottomLeftRadius: 8,
                 }}
               >
                 <Flex justify="center">
-                  <Typography.Text className="tx-info text-center">
-                    ผู้รับสินค้า
+                  <Typography.Text className="tx-info text-center" strong>
+                    ผู้วางบิล<br></br>Received By
                   </Typography.Text>
                 </Flex>
                 <Flex
@@ -329,15 +396,11 @@ function IVPrintPreview() {
                   borderLeft: "1px solid",
                   borderTop: "1px solid",
                   borderBottom: "1px solid",
-                  borderTopRightRadius: 8,
-                  borderTopLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  borderBottomLeftRadius: 8,
                 }}
               >
                 <Flex justify="center">
-                  <Typography.Text className="tx-info text-center">
-                    ผู้ส่งสินค้า
+                  <Typography.Text className="tx-info text-center" strong>
+                    ผู้รับเงิน<br></br>Payee
                   </Typography.Text>
                 </Flex>
                 <Flex
@@ -357,15 +420,35 @@ function IVPrintPreview() {
                   borderLeft: "1px solid",
                   borderTop: "1px solid",
                   borderBottom: "1px solid",
-                  borderTopRightRadius: 8,
-                  borderTopLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  borderBottomLeftRadius: 8,
                 }}
               >
-                <Flex gap={2} justify="center" style={{}}>
+                <Flex justify="center">
+                  <Typography.Text className="tx-info text-center" strong>
+                    ผู้ตรวจสอบ<br></br>Checked By
+                  </Typography.Text>
+                </Flex>
+                <Flex
+                  justify="center"
+                  style={{ borderTop: "1px solid", paddingTop: 50 }}
+                >
                   <Typography.Text className="tx-info text-center">
-                    ผู้ตรวจสอบ
+                    วันที่.........../.........../...........
+                  </Typography.Text>
+                </Flex>
+              </Flex>{" "}
+              <Flex
+                vertical
+                className="w-1/3"
+                style={{
+                  borderRight: "1px solid",
+                  borderLeft: "1px solid",
+                  borderTop: "1px solid",
+                  borderBottom: "1px solid",
+                }}
+              >
+                <Flex justify="center">
+                  <Typography.Text className="tx-info text-center" strong>
+                    ผู้อนุมัติ<br></br>Approved By
                   </Typography.Text>
                 </Flex>
                 <Flex
@@ -418,7 +501,7 @@ function IVPrintPreview() {
 
   const ContentData = ({ children, pageNum = 1, total = 1 }) => {
     return (
-      <div className="dn-pages flex flex-col">
+      <div className="iv-pages flex flex-col">
         <div className="print-content">{children}</div>
       </div>
     );
