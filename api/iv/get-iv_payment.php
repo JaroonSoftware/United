@@ -8,8 +8,10 @@ $conn = $db->connect();
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     extract($_GET, EXTR_OVERWRITE, "_");
 
-    $sql = "SELECT p.* ";
+    $sql = "SELECT p.*,m.*,c.*  ";
     $sql .= " FROM `iv_payment` as p  ";
+    $sql .= " inner join iv_master as m on p.ivcode=m.ivcode  ";
+    $sql .= " left outer join customer as c on c.cuscode=m.cuscode  ";
     $sql .= " where p.ivcode = :code";
 
     $stmt = $conn->prepare($sql);
