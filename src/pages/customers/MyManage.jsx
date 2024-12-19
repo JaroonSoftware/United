@@ -44,26 +44,7 @@ const CustomerManage = () => {
     setFormDetail((state) => ({ ...state, ...initForm }));
     form.setFieldsValue(initForm);
   };
-  const onGenderChange = (value) => {
-    switch (value) {
-      case "male":
-        form.setFieldsValue({
-          note: "Hi, man!",
-        });
-        break;
-      case "female":
-        form.setFieldsValue({
-          note: "Hi, lady!",
-        });
-        break;
-      case "other":
-        form.setFieldsValue({
-          note: "Hi there!",
-        });
-        break;
-      default:
-    }
-  };
+  
   useEffect(() => {
     // setLoading(true);
     GetCounty();
