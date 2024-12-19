@@ -33,7 +33,7 @@ const CustomerManage = () => {
   const [form] = Form.useForm();
   const [optioncounty, setOptionsCounty] = useState([]);
   const [formDetail, setFormDetail] = useState({});
-
+  const { Option } = Select;
   const init = async () => {
     const cuscodeRes = await customerservice
       .getcode()
@@ -43,9 +43,27 @@ const CustomerManage = () => {
     const initForm = { ...formDetail, cuscode, cus_doc: "claim_no" };
     setFormDetail((state) => ({ ...state, ...initForm }));
     form.setFieldsValue(initForm);
-
   };
-
+  const onGenderChange = (value) => {
+    switch (value) {
+      case "male":
+        form.setFieldsValue({
+          note: "Hi, man!",
+        });
+        break;
+      case "female":
+        form.setFieldsValue({
+          note: "Hi, lady!",
+        });
+        break;
+      case "other":
+        form.setFieldsValue({
+          note: "Hi there!",
+        });
+        break;
+      default:
+    }
+  };
   useEffect(() => {
     // setLoading(true);
     GetCounty();
@@ -264,7 +282,7 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={3}>
         <Form.Item
           label="สาขา"
           name="branch"
@@ -275,25 +293,26 @@ const CustomerManage = () => {
             showSearch
             filterOption={filterOption}
             placeholder="เลือกสาขา"
-            options={[
-              {
-                value: "สำนักงานใหญ่",
-                label: "สำนักงานใหญ่",
-              },
-              {
-                value: "สาขา",
-                label: "สาขา",
-              },
-            ]}
-          />
+          >
+            <Option value="สำนักงานใหญ่">สำนักงานใหญ่</Option>
+            <Option value="สาขา">สาขา</Option>
+          </Select>
         </Form.Item>
       </Col>
       <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={5}>
         <Form.Item
-          label="รายละเอียดสาขา"
-          name="branch_details"
+          noStyle
+          shouldUpdate={(prevValues, currentValues) =>
+            prevValues.branch !== currentValues.branch
+          }
         >
-          <Input placeholder="กรอกรายละเอียดสาขา" />
+          {({ getFieldValue }) =>
+            getFieldValue("branch") === "สาขา" ? (
+              <Form.Item label="รายละเอียดสาขา" name="branch_details">
+                <Input placeholder="กรอกรายละเอียดสาขา" />
+              </Form.Item>
+            ) : null
+          }
         </Form.Item>
       </Col>
       <Col
