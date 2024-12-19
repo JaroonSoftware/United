@@ -12,6 +12,11 @@ export const column = [
     key: "index",
     align: "center",
     width:  "5%",
+    onCell: () => ({
+      style: {
+       borderLeft: "0px solid "
+      },
+    }),
     render: (_, record, idx) => (
       <Typography.Text className="tx-info">{idx + 1}</Typography.Text>
     ),
@@ -99,11 +104,11 @@ export const column = [
     width:  "10%",
     key: "amount",
     dataIndex: "amount",
-    onCell: () => ({
-      style: {
-       borderRight: "1px solid "
-      },
-    }),
+    // onCell: () => ({
+    //   style: {
+    //    borderRight: "1px solid "
+    //   },
+    // }),
     render: (_, record) => (
       <Typography.Text className="tx-info">
         {comma(Number(record.price * record.qty), 2, 2)}

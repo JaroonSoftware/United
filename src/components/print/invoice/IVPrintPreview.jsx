@@ -490,7 +490,7 @@ function IVPrintPreview() {
   };
 
   const Pages = ({ pageNum = 1, total = 1 }) => (
-    <div ref={componentRef}>
+    <div ref={componentRef} >
       <ContentData>
         <ContentHead page={`${pageNum} of ${total}`} />
         <ContentHead2 />

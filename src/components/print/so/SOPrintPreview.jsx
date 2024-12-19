@@ -6,7 +6,7 @@ import { useReactToPrint } from "react-to-print";
 import "./so.css";
 // import logo from "../../../assets/images/logo_nsf.png";
 import thaiBahtText from "thai-baht-text";
-import { Button, Flex, Table, Typography, message } from "antd";
+import { Button, Flex, Table, Typography, message, Row, Col } from "antd";
 import { column } from "./so.model";
 
 import dayjs from "dayjs";
@@ -212,8 +212,34 @@ function SOPrintPreview() {
   const ReceiptSummary = (rec) => {
     return (
       <>
-        <Table.Summary.Row>
-          <Table.Summary.Cell colSpan={4} className="!align-top !ps-0 !pt-3  ">
+       
+      </>
+    );
+  };
+
+  const ContentBody = () => {
+    return (
+      <div>
+        <Col style={{ border: "1px solid", height: "630px"}}>
+          <Table
+            size="small"
+            style={{height: "630px"}}
+            dataSource={details}
+            columns={columnDesc}
+            pagination={false}
+            rowKey="stcode"
+            bordered={false}
+            locale={{
+              emptyText: <span>No data available, please add some data.</span>,
+            }}
+            onRow={(record, index) => {
+              return { className: "r-sub" };
+            }}
+            summary={ReceiptSummary}
+          />
+        </Col>
+        <Row >
+          <Col  className="!align-top !ps-0 !pt-3  " style={{width: "50%"}}>
             <Flex style={{ border: "1px solid", padding: 3 }}>
               <Typography.Text
                 className="tx-info text-center"
@@ -239,10 +265,9 @@ function SOPrintPreview() {
                 หมายเหตุ : {hData?.remark}
               </Typography.Text>
             </Flex>
-          </Table.Summary.Cell>
-          <Table.Summary.Cell
-            colSpan={1}
-            className="!align-top !ps-0 !pt-3 !pe-0 "
+          </Col>
+          <Col
+            style={{ width: "40%", paddingTop: 12, paddingLeft: 5}}
           >
             <Flex
               style={{
@@ -273,10 +298,10 @@ function SOPrintPreview() {
                 ยอดเงินสุทธิ
               </Typography.Text>
             </Flex>
-          </Table.Summary.Cell>
-          <Table.Summary.Cell
-            colSpan={2}
-            className="!align-top !ps-0 !pt-3 !pe-0 "
+          </Col>
+          <Col
+           style={{ width: "10%"}}
+           className="!align-top !ps-0 !pt-3  "
           >
             <Flex
               style={{
@@ -300,137 +325,114 @@ function SOPrintPreview() {
                 borderBottom: "1px solid",
                 padding: 3,
                 marginTop: 8,
-                textAlign: "right"
+                textAlign: "right",
               }}
             >
-              <Typography.Text className="tx-info" strong style={{  width: "100%"}}>
+              <Typography.Text
+                className="tx-info"
+                strong
+                style={{ width: "100%" }}
+              >
                 {comma(Number(hData?.grand_total_price || 0), 2, 2)}
               </Typography.Text>
             </Flex>
-          </Table.Summary.Cell>
-        </Table.Summary.Row>
-        <Table.Summary.Row>
-          <Table.Summary.Cell
-            colSpan={8}
-            className="!align-top !ps-0 !pt-2 !pe-0 "
-          >
-            <Flex className="w-full" gap={8} justify={"center"}>
-              <Flex vertical className="w-1/3" style={{ gap: 5 }}>
-                <Flex gap={2} style={{ paddingTop: 80 }}>
-                  <Typography.Text style={{ fontSize: 10 }}>
-                    วันที่พิมพ์เอกสาร {dayjs().format("DD/MM/YYYY HH:mm:ss")}
-                  </Typography.Text>
-                </Flex>
-              </Flex>
-              <Flex
-                vertical
-                className="w-1/3"
-                style={{
-                  borderRight: "1px solid",
-                  borderLeft: "1px solid",
-                  borderTop: "1px solid",
-                  borderBottom: "1px solid",
-                  borderTopRightRadius: 8,
-                  borderTopLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  borderBottomLeftRadius: 8,
-                }}
-              >
-                <Flex justify="center">
-                  <Typography.Text className="tx-info text-center">
-                    ผู้ขายสินค้า
-                  </Typography.Text>
-                </Flex>
-                <Flex
-                  justify="center"
-                  style={{ borderTop: "1px solid", paddingTop: 50 }}
-                >
-                  <Typography.Text className="tx-info text-center">
-                    วันที่.........../.........../...........
-                  </Typography.Text>
-                </Flex>
-              </Flex>
-              <Flex
-                vertical
-                className="w-1/3"
-                style={{
-                  borderRight: "1px solid",
-                  borderLeft: "1px solid",
-                  borderTop: "1px solid",
-                  borderBottom: "1px solid",
-                  borderTopRightRadius: 8,
-                  borderTopLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  borderBottomLeftRadius: 8,
-                }}
-              >
-                <Flex justify="center">
-                  <Typography.Text className="tx-info text-center">
-                    ผู้อนุมัติขายสินค้า
-                  </Typography.Text>
-                </Flex>
-                <Flex
-                  justify="center"
-                  style={{ borderTop: "1px solid", paddingTop: 50 }}
-                >
-                  <Typography.Text className="tx-info text-center">
-                    วันที่.........../.........../...........
-                  </Typography.Text>
-                </Flex>
-              </Flex>
-              <Flex
-                vertical
-                className="w-1/3"
-                style={{
-                  borderRight: "1px solid",
-                  borderLeft: "1px solid",
-                  borderTop: "1px solid",
-                  borderBottom: "1px solid",
-                  borderTopRightRadius: 8,
-                  borderTopLeftRadius: 8,
-                  borderBottomRightRadius: 8,
-                  borderBottomLeftRadius: 8,
-                }}
-              >
-                <Flex gap={2} justify="center" style={{}}>
-                  <Typography.Text className="tx-info text-center">
-                    เจ้าหน้าที่บัญชี
-                  </Typography.Text>
-                </Flex>
-                <Flex
-                  justify="center"
-                  style={{ borderTop: "1px solid", paddingTop: 50 }}
-                >
-                  <Typography.Text className="tx-info text-center">
-                    วันที่.........../.........../...........
-                  </Typography.Text>
-                </Flex>
+          </Col>
+        </Row>
+        <Col style={{paddingTop: 5}}>
+          <Flex className="w-full" gap={8} justify={"center"}>
+            <Flex vertical className="w-1/3" style={{ gap: 5 }}>
+              <Flex gap={2} style={{ paddingTop: 80 }}>
+                <Typography.Text style={{ fontSize: 10 }}>
+                  วันที่พิมพ์เอกสาร {dayjs().format("DD/MM/YYYY HH:mm:ss")}
+                </Typography.Text>
               </Flex>
             </Flex>
-          </Table.Summary.Cell>
-        </Table.Summary.Row>
-      </>
-    );
-  };
-
-  const ContentBody = () => {
-    return (
-      <div>
-        <Table
-          size="small"
-          dataSource={details}
-          columns={columnDesc}
-          pagination={false}
-          rowKey="stcode"
-          bordered={false}
-          locale={{
-            emptyText: <span>No data available, please add some data.</span>,
-          }}
-          onRow={(record, index) => {
-            return { className: "r-sub" };
-          }}
-          summary={ReceiptSummary}
-        />
+            <Flex
+              vertical
+              className="w-1/3"
+              style={{
+                borderRight: "1px solid",
+                borderLeft: "1px solid",
+                borderTop: "1px solid",
+                borderBottom: "1px solid",
+                borderTopRightRadius: 8,
+                borderTopLeftRadius: 8,
+                borderBottomRightRadius: 8,
+                borderBottomLeftRadius: 8,
+              }}
+            >
+              <Flex justify="center">
+                <Typography.Text className="tx-info text-center">
+                  ผู้ขายสินค้า
+                </Typography.Text>
+              </Flex>
+              <Flex
+                justify="center"
+                style={{ borderTop: "1px solid", paddingTop: 50 }}
+              >
+                <Typography.Text className="tx-info text-center">
+                  วันที่.........../.........../...........
+                </Typography.Text>
+              </Flex>
+            </Flex>
+            <Flex
+              vertical
+              className="w-1/3"
+              style={{
+                borderRight: "1px solid",
+                borderLeft: "1px solid",
+                borderTop: "1px solid",
+                borderBottom: "1px solid",
+                borderTopRightRadius: 8,
+                borderTopLeftRadius: 8,
+                borderBottomRightRadius: 8,
+                borderBottomLeftRadius: 8,
+              }}
+            >
+              <Flex justify="center">
+                <Typography.Text className="tx-info text-center">
+                  ผู้อนุมัติขายสินค้า
+                </Typography.Text>
+              </Flex>
+              <Flex
+                justify="center"
+                style={{ borderTop: "1px solid", paddingTop: 50 }}
+              >
+                <Typography.Text className="tx-info text-center">
+                  วันที่.........../.........../...........
+                </Typography.Text>
+              </Flex>
+            </Flex>
+            <Flex
+              vertical
+              className="w-1/3"
+              style={{
+                borderRight: "1px solid",
+                borderLeft: "1px solid",
+                borderTop: "1px solid",
+                borderBottom: "1px solid",
+                borderTopRightRadius: 8,
+                borderTopLeftRadius: 8,
+                borderBottomRightRadius: 8,
+                borderBottomLeftRadius: 8,
+              }}
+            >
+              <Flex gap={2} justify="center" style={{}}>
+                <Typography.Text className="tx-info text-center">
+                  เจ้าหน้าที่บัญชี
+                </Typography.Text>
+              </Flex>
+              <Flex
+                justify="center"
+                style={{ borderTop: "1px solid", paddingTop: 50 }}
+              >
+                <Typography.Text className="tx-info text-center">
+                  วันที่.........../.........../...........
+                </Typography.Text>
+              </Flex>
+            </Flex>
+          </Flex>
+        </Col>
       </div>
     );
   };

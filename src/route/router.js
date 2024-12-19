@@ -28,6 +28,12 @@ const Router = () => {
         <Route element={<PrivateRoute allowdRole={[ROLES.ADMIN]} />}>
           {DataRouter}
           {WarehouseRouter}
+        </Route>
+        <Route
+          element={
+            <PrivateRoute allowdRole={[ROLES.ADMIN, ROLES.USER]} mode="print" />
+          }
+        >
           {PrintRouter}
         </Route>
 

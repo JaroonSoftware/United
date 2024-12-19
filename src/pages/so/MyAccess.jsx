@@ -188,7 +188,7 @@ const MyAccess = () => {
                 <Row gutter={[8,8]} className='m-0'>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                         <Table 
-                        title={()=>TitleTable} 
+                        title={()=>TitleTable}
                         size='small' 
                         rowKey="qtcode" 
                         columns={column} 

@@ -8,11 +8,11 @@ import { store } from "../../store/store";
 import { Provider } from "react-redux";
 import { LoadingProvider } from "../../store/context/loading-context"
 import { AxiosInterceptor } from "../layout/AxiosInterceptor";
-import { LAYOUT } from "../../constant/constant";
+// import { LAYOUT } from "../../constant/constant";
 // import { LoadingProvider } from "../../store/context/loading-context"
 
 const authService = Authenticate();
-const PrivateRoute = ({ allowdRole, layout = 'child' }) => {
+const PrivateRoute = ({ allowdRole, mode = 'manage' }) => {
   const location = useLocation();
   const navigate = useNavigate();
    
@@ -57,7 +57,7 @@ const PrivateRoute = ({ allowdRole, layout = 'child' }) => {
   };
 
   const Contents = () => {
-    if( isAuth && LAYOUT.CHILD === layout ) {
+    if( isAuth && mode === "manage" ) {
       return (
         <Provider store={store}>
           {/* <LoadingProvider> */}
@@ -67,7 +67,7 @@ const PrivateRoute = ({ allowdRole, layout = 'child' }) => {
           {/* </LoadingProvider> */}
         </Provider>        
       )
-    } else if (isAuth && LAYOUT.ALOND === layout) {
+    } else if (isAuth && mode === "print")  {
       return ( 
         <LoadingProvider>
           <AxiosInterceptor>
