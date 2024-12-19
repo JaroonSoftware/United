@@ -3,6 +3,7 @@ const API_URL = {
   API_MANAGE: `/iv/manage.php`, 
   API_SEARCH: `/iv/search.php`, 
 
+  API_GETPAYMENT: `/iv/get-iv_payment.php`, 
   API_GETCODE: `/iv/get-ivcode.php`, 
 };
   
@@ -12,6 +13,7 @@ const InvoiceService = () => {
   const update = (parm = {}) => api.put(`${API_URL.API_MANAGE}`, parm);
   const deleted = (code) => api.delete(`${API_URL.API_MANAGE}?code=${code}`);
   const get = (code) => api.get(`${API_URL.API_MANAGE}?code=${code}`);
+  const get_payment = (code) => api.get(`${API_URL.API_GETPAYMENT}?code=${code}`);
 
   const code = () => api.get(`${API_URL.API_GETCODE}`);
 
@@ -23,7 +25,7 @@ const InvoiceService = () => {
     update,
     deleted,
     get, 
-
+    get_payment,
     code,
 
     search,
