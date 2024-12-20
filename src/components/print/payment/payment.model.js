@@ -20,76 +20,88 @@ export const column = [
   {
     title: (
       <div style={{ textAlign: "center" }}>
-        เลขที่ใบกำกับ
+        รายการ
         <br />
-       Invoice No.
+       Description
       </div>
     ),
     align: "left",
-    width: "15%",
-    key: "recode",
-    dataIndex: "recode",
+    width: "20%",
+    key: "ivcode",
+    dataIndex: "ivcode",
+  },
+  {
+    title: (
+      <div style={{ textAlign: "center" }}>
+        เช็คเลขที่
+        <br />
+    Cheque No.
+      </div>
+    ),
+    align: "center",
+    key: "",
+    width: "10%",
+    dataIndex: "",
+    render: (v) => dayjs(v).format("DD/MM/YYYY"),
   },
   {
     title: (
       <div style={{ textAlign: "center" }}>
         ลงวันที่
         <br />
-        Date
+        Post Date
       </div>
     ),
     align: "center",
-    key: "redate",
-    width: "10%",
-    dataIndex: "redate",
+    key: "ivdate",
+    width: "15%",
+    dataIndex: "ivdate",
     render: (v) => dayjs(v).format("DD/MM/YYYY"),
   },
   {
     title: (
       <div style={{ textAlign: "center" }}>
-        วันที่ครบกำหนด
+      CD
+      </div>
+    ),
+    align: "right",
+    key: "",
+    dataIndex: "",
+    width: "5%",
+  },
+  {
+    title: (
+      <div style={{ textAlign: "center" }}>
+        ตามบิลเลขที่
         <br />
-        Due Date
+     Invoice No.
       </div>
     ),
     align: "center",
-    key: "duedate",
-    width: "10%",
-    dataIndex: "duedate",
-    render: (v) => dayjs(v).format("DD/MM/YYYY"),
+    key: "ivcode",
+    width: "15%",
+    dataIndex: "ivcode",
   },
   {
     title: (
       <div style={{ textAlign: "center" }}>
         จำนวนเงิน
         <br />
-        Amount
+      Amount
       </div>
     ),
     align: "right",
-    key: "price",
-    dataIndex: "price",
-    width: "10%",
-    render: (v) => (
-      <Typography.Text className="tx-info">{comma(Number(v))}</Typography.Text>
-    ),
-  },
-  {
-    title: (
-      <div style={{ textAlign: "center" }}>
-        หมายเหตุ
-        <br />
-        Remark
-      </div>
-    ),
-    align: "left",
-    width: "30%",
-    key: "remark",
-    dataIndex: "remark",
+    width: "20%",
+    key: "total_price",
+    dataIndex: "total_price",
     onCell: () => ({
       style: {
         borderRight: "1px solid ",
       },
     }),
+    render: (v) => (
+      <Typography.Text className="tx-info">{comma(Number(v))}</Typography.Text>
+    ),
   },
+  
 ];

@@ -235,7 +235,7 @@
     font-size: 11px;
   }
 
-  .payment-pages .ant-table-wrapper .ant-table-thead>tr>th:nth-child(6){
+  .payment-pages .ant-table-wrapper .ant-table-thead>tr>th:nth-child(7){
     border-right: 1px solid;
   }
 
@@ -315,7 +315,7 @@
   left: 0;
 } */
 .payment-pages tr.r-sum td.ant-table-cell.text-summary{
-  border-top: 1px solid ;
+  /* border-top: 1px solid ; */
   border-left: 1px solid;
   height: 27px;
 }
@@ -363,6 +363,19 @@
   font-family: inherit;
 }
 
-.bdtop {
-  border-left: "1px";
+.payment-pages .ant-table-wrapper .ant-table-container table>tbody>tr:not(:last-child) >td {
+  height: 5px;
+}
+
+.payment-pages .ant-table-wrapper .ant-table-container table>tbody{
+  height: 600px;
+}
+
+.payment-pages .ant-table-wrapper .ant-table-tbody >tr >td {
+  transition: none;
+  border-bottom: 0px solid #f0f0f0;
+  white-space: break-spaces;
+  font-size: 11px;
+  vertical-align: top;
+  max-height: 10px;
 }

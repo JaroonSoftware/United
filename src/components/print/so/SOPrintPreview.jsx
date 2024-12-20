@@ -210,20 +210,18 @@ function SOPrintPreview() {
   };
 
   const ReceiptSummary = (rec) => {
-    return (
-      <>
-       
-      </>
-    );
+    return <></>;
   };
 
   const ContentBody = () => {
     return (
       <div>
-        <Col style={{ border: "1px solid", height: "630px"}}>
+        <Col 
+        style={{ border: "1.5px solid", 
+          // height: "630px" 
+          }}>
           <Table
             size="small"
-            style={{height: "630px"}}
             dataSource={details}
             columns={columnDesc}
             pagination={false}
@@ -238,8 +236,8 @@ function SOPrintPreview() {
             summary={ReceiptSummary}
           />
         </Col>
-        <Row >
-          <Col  className="!align-top !ps-0 !pt-3  " style={{width: "50%"}}>
+        <Row>
+          <Col className="!align-top !ps-0 !pt-3  " style={{ width: "50%" }}>
             <Flex style={{ border: "1px solid", padding: 3 }}>
               <Typography.Text
                 className="tx-info text-center"
@@ -266,9 +264,7 @@ function SOPrintPreview() {
               </Typography.Text>
             </Flex>
           </Col>
-          <Col
-            style={{ width: "40%", paddingTop: 12, paddingLeft: 5}}
-          >
+          <Col style={{ width: "40%", paddingTop: 12, paddingLeft: 5 }}>
             <Flex
               style={{
                 borderTop: "1px solid",
@@ -299,10 +295,7 @@ function SOPrintPreview() {
               </Typography.Text>
             </Flex>
           </Col>
-          <Col
-           style={{ width: "10%"}}
-           className="!align-top !ps-0 !pt-3  "
-          >
+          <Col style={{ width: "10%" }} className="!align-top !ps-0 !pt-3  ">
             <Flex
               style={{
                 borderTop: "1px solid",
@@ -338,7 +331,7 @@ function SOPrintPreview() {
             </Flex>
           </Col>
         </Row>
-        <Col style={{paddingTop: 5}}>
+        <Col style={{ paddingTop: 5 }}>
           <Flex className="w-full" gap={8} justify={"center"}>
             <Flex vertical className="w-1/3" style={{ gap: 5 }}>
               <Flex gap={2} style={{ paddingTop: 80 }}>

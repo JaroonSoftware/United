@@ -363,6 +363,20 @@
   font-family: inherit;
 }
 
-.bdtop {
-  border-left: "1px";
+
+.iv-pages .ant-table-wrapper .ant-table-container table>tbody>tr:not(:last-child) >td {
+  height: 5px;
+}
+
+.iv-pages .ant-table-wrapper .ant-table-container table>tbody{
+  height: 450px;
+}
+
+.iv-pages .ant-table-wrapper .ant-table-tbody >tr >td {
+  transition: none;
+  border-bottom: 0px solid #f0f0f0;
+  white-space: break-spaces;
+  font-size: 11px;
+  vertical-align: top;
+  max-height: 10px;
 }

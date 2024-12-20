@@ -7,9 +7,9 @@ import "./payment.css";
 // import logo from "../../../assets/images/QRCODEDN.jpg";
 import { Button, Flex, Table, Typography, message } from "antd";
 import { column } from "./payment.model";
-
+import thaiBahtText from "thai-baht-text";
 import dayjs from "dayjs";
-// import { comma } from "../../../utils/util";
+import { comma } from "../../../utils/util";
 import { PiPrinterFill } from "react-icons/pi";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
@@ -28,7 +28,7 @@ function IVPrintPreview() {
     removeAfterPrint: true,
   });
 
-  const [data, setData] = useState({});
+  const [paymentdata, setPaymentData] = useState({});
   const [details, setDetails] = useState([]);
 
   const columnDesc = column;
@@ -47,13 +47,13 @@ function IVPrintPreview() {
       ivserviece
         .get_payment(code)
         .then(async (res) => {
-          console.log(res)
+          console.log(res);
           const {
             data: { payment },
           } = res.data;
-
-          setData(payment);
-       
+          setDetails(payment);
+          setPaymentData(payment[0]);
+          console.log(payment);
         })
         .catch((err) => {
           console.log(err);
@@ -117,15 +117,28 @@ function IVPrintPreview() {
           >
             <Flex vertical>
               <Typography.Text className="tx-info">
-               รับเงินจาก
-                <span style={{ paddingLeft: 22 }}>
-                {data?.cuscode}
-                </span>
+                รับเงินจาก
+                <span style={{ paddingLeft: 60 }}>{paymentdata?.cuscode}</span>
               </Typography.Text>
               <Typography.Text className="tx-info">
-               Received Form
+                Received Form
                 <span style={{ paddingLeft: 26 }}>
-                  {data?.prename} {data?.cusname}
+                  {paymentdata?.prename} {paymentdata?.cusname}
+                  <br></br>
+                </span>
+                <span style={{ paddingLeft: 109 }}>
+                  {paymentdata?.idno} {paymentdata?.road}{" "}
+                  {paymentdata?.subdistrict} {paymentdata?.district}{" "}
+                  {paymentdata?.provin} {paymentdata?.zipcode}
+                </span>
+                <br></br>
+                <span style={{ paddingLeft: 109 }}>
+                  โทรศัพท์ {paymentdata?.tel}
+                </span>
+                <br></br>
+                <span style={{ paddingLeft: 109 }}>
+                  เลขประจำตัวผู้เสียภาษี {paymentdata?.taxnumber}{" "}
+                  {paymentdata?.branch} {paymentdata?.branch_details}
                 </span>
               </Typography.Text>
             </Flex>
@@ -151,7 +164,7 @@ function IVPrintPreview() {
                 วันที่<br></br>Date
               </Typography.Text>
               <Typography.Text className="tx-info text-center">
-                {dayjs(data?.ivdate).format("DD/MM/YYYY")}
+                {dayjs(paymentdata?.ivdate).format("DD/MM/YYYY")}
               </Typography.Text>
             </Flex>
             <Flex vertical style={{ border: "1px solid" }}>
@@ -167,7 +180,7 @@ function IVPrintPreview() {
                 ใบสำคัญรับเลขที่<br></br>Voucher No.
               </Typography.Text>
               <Typography.Text className="tx-info text-center">
-                {data?.ivcode}
+                {paymentdata?.ivcode}
               </Typography.Text>
             </Flex>
           </Flex>
@@ -179,169 +192,34 @@ function IVPrintPreview() {
   const ReceiptSummary = (rec) => {
     return (
       <>
-        <Table.Summary.Row>
-          <Table.Summary.Cell
-            colSpan={5}
-            className="!align-top !ps-0 !pt-3  !pe-0"
-          >
-            <Flex
-              style={{
-                borderTop: "1px solid",
-                borderLeft: "1px solid",
-                borderRight: "1px solid",
-              }}
-            >
-              <Typography.Text
-                className="tx-info "
-                style={{ fontSize: 13, marginLeft: 10 }}
-                strong
-              >
-                จำนวนบิล
-              </Typography.Text>
-              <Typography.Text
-                className="tx-info "
-                style={{ fontSize: 13, marginLeft: 100 }}
-                strong
-              >
-                ฉบับ
-              </Typography.Text>
-              <Typography.Text
-                className="tx-info "
-                style={{ fontSize: 13, marginLeft: 100 }}
-                strong
-              >
-                รวมเป็นเงิน
-              </Typography.Text>
-            </Flex>
-            <Flex style={{ border: "1px solid", padding: 3 }}>
-              <Typography.Text
-                className="tx-info"
-                style={{ fontSize: 11, paddingLeft: 5, lineHeight: "1em" }}
-              >
-                จำนวนเงิน<br></br>Amount In Word
-              </Typography.Text>
-            </Flex>
-            <Flex
-              style={{
-                borderBottom: "1px solid",
-                borderLeft: "1px solid",
-                borderRight: "1px solid",
-                padding: 3,
-              }}
-            >
-              <Typography.Text
-                className="tx-info"
-                style={{ fontSize: 11, paddingLeft: 5, lineHeight: "1em" }}
-              >
-                วันที่นัดชำระเงิน<br></br>Payment Date
-              </Typography.Text>
-            </Flex>
-          </Table.Summary.Cell>
-          <Table.Summary.Cell
-            colSpan={1}
-            className="!align-top !ps-0 !pt-3  !pe-0"
-          >
-            <Flex
-              style={{
-                borderTop: "1px solid",
-                borderRight: "1px solid",
-              }}
-            >
-              <Typography.Text
-                className="tx-info "
-                style={{ fontSize: 13, marginLeft: 90 }}
-                strong
-              >
-                รายการชำระเงิน
-              </Typography.Text>
-            </Flex>
-            <Flex
-              style={{
-                borderBottom: "1px solid",
-                borderTop: "1px solid",
-                borderRight: "1px solid",
-                padding: 3,
-              }}
-            >
-              <Typography.Text
-                className="tx-info"
-                style={{ fontSize: 11, paddingLeft: 5, lineHeight: "1em" }}
-              >
-                ยอดเงินที่ชำระแล้ว<br></br>Paid
-              </Typography.Text>
-            </Flex>
-            <Flex
-              style={{
-                borderBottom: "1px solid",
-                borderRight: "1px solid",
-                padding: 3,
-              }}
-            >
-              <Typography.Text
-                className="tx-info"
-                style={{ fontSize: 11, paddingLeft: 5, lineHeight: "1em" }}
-              >
-                ยอดเงินที่ค้างชำระ<br></br>Balance
-              </Typography.Text>
-            </Flex>
-          </Table.Summary.Cell>
-        </Table.Summary.Row>
-        <Table.Summary.Row>
-          <Table.Summary.Cell
-            colSpan={6}
-            className="!align-top !ps-0   !pe-0"
-          >
-            <Typography.Text
-              className="tx-info "
-              style={{ fontSize: 11, marginLeft: 240 }}
-            >
-              กรณีชำระเงินด้วยเช็ค โปรดขีดคร่อมสั่งจ่ายในนามบริษัทฯ เท่านั้น
+        <Table.Summary.Row className="r-sum rl">
+          <Table.Summary.Cell colSpan={3} className="text-summary">
+            <Typography.Text style={{ fontSize: 13 }}>
+              จำนวนเงิน(บาท)
+              <br></br>
+              {thaiBahtText(paymentdata?.total_price || 0, 2, 2)}
             </Typography.Text>
-            <Flex
-              style={{
-                borderTop: "1px solid",
-                borderLeft: "1px solid",
-                borderRight: "1px solid",
-              }}
+          </Table.Summary.Cell>
+          <Table.Summary.Cell
+            colSpan={3}
+            className="text-summary text-start !align-top"
+          >
+            <Typography.Text className="text-sm ">
+              จำนวนการรับชำระ<br></br>
+              เอกสารประกอบใบสำคัญจำนวน
+            </Typography.Text>
+          </Table.Summary.Cell>
+          <Table.Summary.Cell className="text-summary text-end ">
+            <Typography.Text
+              className="text-sm "
+              strong
+              style={{ paddingTop: 20 }}
             >
-              <Typography.Text
-                className="tx-info "
-                style={{ fontSize: 13, marginLeft: 335 }}
-                strong
-              >
-                รายการชำระเงิน
-              </Typography.Text>
-            </Flex>
-            <Flex style={{ border: "1px solid", padding: 3 }}>
-              <Typography.Text
-                className="tx-info"
-                style={{ fontSize: 11, paddingLeft: 5 }}
-              >
-                ธนาคาร/สาขา........................................เลขที่.............................ลงวันที่........./........./.........
-                <br></br>
-                ธนาคาร/สาขา........................................เลขที่.............................ลงวันที่........./........./.........
-                <br></br>
-                เงินสด......................................อื่นๆ(ระบุ)............................................................................
-                <br></br>
-                หัก ส่วนลด......................ภาษีหัก ณ
-                ที่จ่าย...........................................................................
-              </Typography.Text>
-              <Typography.Text
-                className="tx-info"
-                style={{ fontSize: 11, paddingLeft: 25 }}
-              >
-                จำนวนเงิน.................................................
-                <br></br>
-                จำนวนเงิน.................................................
-                <br></br>
-                จำนวนเงิน.................................................
-                <br></br>
-                <b>รวมเป็นเงินสุทธิ</b>........................................
-              </Typography.Text>
-            </Flex>
+              {comma(Number(paymentdata?.total_price))}
+            </Typography.Text>
           </Table.Summary.Cell>
         </Table.Summary.Row>
-        {/* ส่วนล่างสุด */}
+
         <Table.Summary.Row>
           <Table.Summary.Cell
             colSpan={8}
@@ -358,17 +236,57 @@ function IVPrintPreview() {
                   borderBottom: "1px solid",
                 }}
               >
-                <Flex justify="center">
+                <Flex justify="center" style={{ borderBottom: "1px solid" }}>
                   <Typography.Text className="tx-info text-center" strong>
-                    ผู้วางบิล<br></br>Received By
+                    ผู้จัดทำ<br></br>Prepared By
                   </Typography.Text>
                 </Flex>
-                <Flex
-                  justify="center"
-                  style={{ borderTop: "1px solid", paddingTop: 50 }}
-                >
-                  <Typography.Text className="tx-info text-center">
-                    วันที่.........../.........../...........
+              </Flex>
+              <Flex
+                vertical
+                className="w-1/3"
+                style={{
+                  borderRight: "1px solid",
+                  borderLeft: "1px solid",
+                  borderTop: "1px solid",
+                  borderBottom: "1px solid",
+                }}
+              >
+                <Flex justify="center" style={{ borderBottom: "1px solid" }}>
+                  <Typography.Text className="tx-info text-center" strong>
+                    ผู้ตรวจสอบ<br></br>Checked By
+                  </Typography.Text>
+                </Flex>
+              </Flex>
+              <Flex
+                vertical
+                className="w-1/3"
+                style={{
+                  borderRight: "1px solid",
+                  borderLeft: "1px solid",
+                  borderTop: "1px solid",
+                  borderBottom: "1px solid",
+                }}
+              >
+                <Flex justify="center" style={{ borderBottom: "1px solid" }}>
+                  <Typography.Text className="tx-info text-center" strong>
+                    ผู้อนุมัติ<br></br>Authorized By
+                  </Typography.Text>
+                </Flex>
+              </Flex>
+              <Flex
+                vertical
+                className="w-1/3"
+                style={{
+                  borderRight: "1px solid",
+                  borderLeft: "1px solid",
+                  borderTop: "1px solid",
+                  borderBottom: "1px solid",
+                }}
+              >
+                <Flex justify="center" style={{ borderBottom: "1px solid" }}>
+                  <Typography.Text className="tx-info text-center" strong>
+                    ผู้จ่ายเงิน<br></br>Paid By
                   </Typography.Text>
                 </Flex>
               </Flex>
@@ -389,61 +307,16 @@ function IVPrintPreview() {
                 </Flex>
                 <Flex
                   justify="center"
-                  style={{ borderTop: "1px solid", paddingTop: 50 }}
+                  style={{ borderTop: "1px solid", paddingTop: 80 }}
                 >
-                  <Typography.Text className="tx-info text-center">
-                    วันที่.........../.........../...........
-                  </Typography.Text>
+                  <Typography.Text className="tx-info text-center"></Typography.Text>
                 </Flex>
               </Flex>
-              <Flex
-                vertical
-                className="w-1/3"
-                style={{
-                  borderRight: "1px solid",
-                  borderLeft: "1px solid",
-                  borderTop: "1px solid",
-                  borderBottom: "1px solid",
-                }}
-              >
-                <Flex justify="center">
-                  <Typography.Text className="tx-info text-center" strong>
-                    ผู้ตรวจสอบ<br></br>Checked By
-                  </Typography.Text>
-                </Flex>
-                <Flex
-                  justify="center"
-                  style={{ borderTop: "1px solid", paddingTop: 50 }}
-                >
-                  <Typography.Text className="tx-info text-center">
-                    วันที่.........../.........../...........
-                  </Typography.Text>
-                </Flex>
-              </Flex>{" "}
-              <Flex
-                vertical
-                className="w-1/3"
-                style={{
-                  borderRight: "1px solid",
-                  borderLeft: "1px solid",
-                  borderTop: "1px solid",
-                  borderBottom: "1px solid",
-                }}
-              >
-                <Flex justify="center">
-                  <Typography.Text className="tx-info text-center" strong>
-                    ผู้อนุมัติ<br></br>Approved By
-                  </Typography.Text>
-                </Flex>
-                <Flex
-                  justify="center"
-                  style={{ borderTop: "1px solid", paddingTop: 50 }}
-                >
-                  <Typography.Text className="tx-info text-center">
-                    วันที่.........../.........../...........
-                  </Typography.Text>
-                </Flex>
-              </Flex>
+            </Flex>
+            <Flex>
+              <Typography.Text className="tx-info text-center">
+                หมายเหตุ I = รับชำระเงินจากใบกำกับ B = รับชำระเงินจากใบวางบิล
+              </Typography.Text>
             </Flex>
           </Table.Summary.Cell>
         </Table.Summary.Row>
