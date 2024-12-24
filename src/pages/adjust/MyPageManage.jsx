@@ -9,12 +9,11 @@ import {
   Table,
   Typography,
   message,
-  Popconfirm,
 } from "antd";
 import { Card, Col, Divider, Flex, Row, Space } from "antd";
 import OptionService from "../../service/Options.service";
 import AdjustService from '../../service/Adjust.service';
-import { SaveFilled, QuestionCircleOutlined } from "@ant-design/icons";
+import { SaveFilled } from "@ant-design/icons";
 import {
   adjustForm,
   columnsParametersEditable,
@@ -27,7 +26,6 @@ import { ButtonBack } from "../../components/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { LuPackageSearch } from "react-icons/lu";
-import { CloseCircleFilledIcon } from '../../components/icon';
 
 const opservice = OptionService();
 const adservice = AdjustService();
@@ -82,7 +80,7 @@ function AdjustManage() {
         const ininteial_value = {
           ...formDetail,
           adcode: code,
-          addate: dayjs(new Date()),
+          addate: dayjs(new Date()),          
         };
 
         setFormDetail(ininteial_value);
@@ -186,19 +184,6 @@ function AdjustManage() {
       });
   };
 
-  const handleCancel = () => {
-    adservice.deleted(config?.code).then( _ => {
-      handleClose().then((r) => {
-        message.success( "ยกเลิกใบปรับสต๊อกเรียบร้อย." ); 
-      });
-    })
-    .catch( err => {
-        console.warn(err);
-        const { data:{ message:mes } } = err.response;
-        message.error( mes || "error request"); 
-    });
-}
-
   const handleClose = async () => {
     navigate(gotoFrom, { replace: true });
     await delay(300);
@@ -207,7 +192,7 @@ function AdjustManage() {
 
   const handleDelete = (code) => {
     const itemDetail = [...listDetail];
-    const newData = itemDetail.filter((item) => item?.code !== code);
+    const newData = itemDetail.filter((item) => item?.stcode !== code);
     setListDetail([...newData]);
   };
 
@@ -221,9 +206,9 @@ function AdjustManage() {
         icon={
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
-        onClick={() => handleDelete(record?.code)}
+        onClick={() => handleDelete(record?.stcode)}
         disabled={
-          !record?.code || formDetail.doc_status !== "ยังไม่ได้รับของ"
+          !record?.stcode || config?.action !== "create"
         }
       />
     ) : null;
@@ -270,7 +255,7 @@ function AdjustManage() {
             onClick={() => {
               setOpenProduct(true);
             }}
-            disabled={formDetail.doc_status !== "ยังไม่ได้รับของ"}
+            disabled={config?.action !== "create"}
           >
             Choose Product
           </Button>
@@ -360,25 +345,6 @@ function AdjustManage() {
       </Col>
       <Col span={12} style={{ paddingInline: 0 }}>
         <Flex gap={4} justify="end">
-          {(formDetail.doc_status === "ยังไม่ได้รับของ"&&config?.action !== "create")&&
-          <Popconfirm 
-          placement="topRight"
-          title="ยืนยันการยกเลิก"  
-          description="คุณแน่ใจที่จะยกเลิกใบปรับสต๊อก?"
-          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-          onConfirm={() => handleCancel()}
-        >
-          <Button
-            className="bn-center justify-center"
-            icon={<CloseCircleFilledIcon style={{ fontSize: "1rem" }} />}
-            type="primary"
-            style={{ width: "9.5rem" }}
-            danger
-          >
-            ยกเลิกใบปรับสต๊อก
-          </Button>
-        </Popconfirm>
-          }
           <Button
             className="bn-center justify-center"
             icon={<SaveFilled style={{ fontSize: "1rem" }} />}
@@ -387,7 +353,7 @@ function AdjustManage() {
             onClick={() => {
               handleConfirm();
             }}
-            disabled={formDetail.doc_status !== "ยังไม่ได้รับของ"}
+            disabled={config?.action !== "create"}
           >
             Save
           </Button>
@@ -416,7 +382,7 @@ function AdjustManage() {
             onClick={() => {
               handleConfirm();
             }}
-            disabled={formDetail.doc_status !== "ยังไม่ได้รับของ"}
+            disabled={config?.action !== "create"}
           >
             Save
           </Button>
