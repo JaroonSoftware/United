@@ -15,12 +15,19 @@ import { PurchaseOrder, PurchaseOrderAccess, PurchaseOrderManage } from "../page
 
 import { GoodsReceipt, GoodsReceiptAccess, GoodsReceiptManage } from "../pages/goods-receipt";
 
-import { DN, DNAccess, DNManage} from "../pages/delivery-note"
+import { DN, DNAccess, DNManage } from "../pages/delivery-note"
 
-import { Invoice, InvoiceAccess, InvoiceManage} from "../pages/invoice"
+import { Invoice, InvoiceAccess, InvoiceManage } from "../pages/invoice"
+
+import { Adjust, AdjustAccess, AdjustManage } from "../pages/adjust";
 
 export const WarehouseRouter = (
   <>
+    <Route path="/adjust/" exact element={<Adjust />}>
+      <Route index element={<AdjustAccess />} />
+      <Route path="manage/:action" element={<AdjustManage />} />
+    </Route>
+
     <Route path="/quotation/" exact element={<Quotation />}>
       <Route index element={<QuotationAccess />} />
       <Route path="manage/:action" element={<QuotationManage />} />

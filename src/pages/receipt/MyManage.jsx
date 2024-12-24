@@ -29,7 +29,7 @@ import {
   SaveFilled,
   QuestionCircleOutlined,
 } from "@ant-design/icons";
-import ModalCustomers from "../../components/modal/customers/ModalCustomers";
+import ModalCustomersInsurance from "../../components/modal/customersInsurance/ModalCustomersInsurance";
 // import ModalQuotation from "../../components/modal/quotation/MyModal";
 import { ModalDN } from "../../components/modal/delivery/index";
 
@@ -709,13 +709,13 @@ function ReceiptManage() {
       </div>
 
       {openCustomers && (
-        <ModalCustomers
+        <ModalCustomersInsurance
           show={openCustomers}
           close={() => setOpenCustomers(false)}
           values={(v) => {
             handleChoosedCustomers(v);
           }}
-        ></ModalCustomers>
+        ></ModalCustomersInsurance>
       )}
 
       {openProduct && (

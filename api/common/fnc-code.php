@@ -91,6 +91,20 @@ function update_dncode($pdo){
         throw new PDOException("Update code error => $error");
     }
 } 
+
+function update_adcode($pdo){
+    $year = date("Y");
+    $month = date("m");
+    $sql = "update options set adcode = adcode + 1 where year = :y and month = :m";
+    $stmt = $pdo->prepare($sql);
+
+    if (!$stmt->execute([ 'y' => $year, 'm' => $month ])){
+        $error = $pdo->errorInfo(); 
+        http_response_code(401);
+        throw new PDOException("Update code error => $error");
+    }
+} 
+
 #endregion
  
 #region Request Code
@@ -366,6 +380,46 @@ function request_dncode($pdo){
     } 
     return $prefix.sprintf("%04s", ( $number) );   
 }
+
+function request_adcode($pdo){
+    $year = date("Y");
+    $month = date("m");
+
+    $sql = "select adcode code from options where year = :y and month = :m";
+    $stmt = $pdo->prepare($sql); 
+    if (!$stmt->execute([ 'y' => $year, 'm' => $month ])){
+        $error = $pdo->errorInfo();
+        http_response_code(401);
+        throw new PDOException("Geting code error => $error");
+    }
+
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (empty($result)) {
+        create_options($pdo, $year, $month);
+        return 0;
+    } 
+    //QU240100001
+    $res = $result["code"];
+    $y = substr( date("Y")+543, -2);
+    $m = date("m");
+    $number = intval($res);
+    $prefix = "AD$y$m";
+    while(true){
+        $code = sprintf("%04s", ( $number) );
+        $format = $prefix.$code;
+        $sql = "SELECT 1 r FROM adjust where adcode = '$format'"; 
+        $stmt = $pdo->prepare($sql); 
+        $stmt->execute(); 
+        if ($stmt->rowCount() > 0){
+            $number += 1;
+            update_adcode($pdo);
+            continue;
+        } else break;
+    } 
+    return $prefix.sprintf("%04s", ( $number) );   
+}
+
 #endregion
 
 function create_options($pdo, $year, $month){

@@ -181,8 +181,8 @@ export default function ModalItems({show, close, values, selected}) {
                             pagination={{ 
                                 total:itemsDataWrap.length, 
                                 showTotal:(_, range) => `${range[0]}-${range[1]} of ${itemsData.length} items`,
-                                defaultPageSize:10,
-                                pageSizeOptions:[10,25,35,50,100]
+                                defaultPageSize:8,
+                                pageSizeOptions:[8,25,35,50,100]
                             }}
                             scroll={{ x: 'max-content' }} size='small'
                         /> 

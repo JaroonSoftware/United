@@ -35,28 +35,28 @@ let _nav = [
     type: "group",
   },
   {
-    title: "ใบเสนอราคา",
+    title: "ใบเสนอราคา (QT)",
     icon: <FileTextFilled className="nav-ico" />,
     // to: "/1",
     to: "/quotation",
   },
   {
-    title: "ใบขายสินค้า",
+    title: "ใบขายสินค้า (SO)",
     icon: <ReconciliationFilled className="nav-ico" />,
     to: "/sales-order",
   },
   {
-    title: "ใบส่งของ",
+    title: "ใบส่งของ (DN)",
     icon: <TfiTruck className="nav-ico" />,
     to: "/delivery-note",
   },
   {
-    title: "ใบเสร็จรับเงิน",
+    title: "ใบเสร็จรับเงิน (RE)",
     icon: <TbReportMoney className="nav-ico" />,
     to: "/receipt",
   },  
   {
-    title: "ใบวางบิล",
+    title: "ใบวางบิล (IV)",
     icon: <FaUserCircle className="nav-ico" />,
     to: "/invoice",
   },
@@ -70,12 +70,12 @@ let _nav = [
     type: "group",
   },
   {
-    title: "ใบสั่งซื้อ",
+    title: "ใบสั่งซื้อ (PO)",
     icon: <FileTextFilled className="nav-ico" />,
     to: "/purchase-order",
   },
   {
-    title: "ใบรับสินค้า",
+    title: "ใบรับสินค้า (GR)",
     icon: <FileDoneOutlined className="nav-ico" />,
     to: "/goods-receipt",
   },
@@ -83,6 +83,11 @@ let _nav = [
     title: "ข้อมูลผู้ขาย",
     icon: <BsShop className="nav-ico" />,
     to: "/supplier",
+  },
+  {
+    title: "ปรับสต๊อก Adjust",
+    icon: <FaUserCircle className="nav-ico" />,
+    to: "/adjust",
   },
   {
     title: "MASTER",
