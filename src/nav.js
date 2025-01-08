@@ -85,11 +85,6 @@ let _nav = [
     to: "/supplier",
   },
   {
-    title: "ปรับสต๊อก Adjust",
-    icon: <FaUserCircle className="nav-ico" />,
-    to: "/adjust",
-  },
-  {
     title: "MASTER",
     type: "group",
   },
@@ -97,6 +92,21 @@ let _nav = [
     title: "ข้อมูลสินค้า",
     icon: <GiDatabase className="nav-ico" />,
     to: "/items",
+  },
+  {
+    title: "แบบรถ",
+    icon: <MdFormatShapes className="nav-ico" />,
+    to: "/carmodel",
+  },
+  {
+    title: "ยี่ห้อ",
+    icon: <FaTag className="nav-ico" />,
+    to: "/brand",
+  },
+  {
+    title: "รุ่น",
+    icon: <IoLogoModelS className="nav-ico" />,
+    to: "/model",
   },
   {
     title: "ประเภทสินค้า",
@@ -117,26 +127,16 @@ let _nav = [
     title: "เขตขนส่ง",
     icon: <FaMapMarkedAlt className="nav-ico" />,
     to: "/county",
-  },
-  {
-    title: "แบบรถ",
-    icon: <MdFormatShapes className="nav-ico" />,
-    to: "/carmodel",
-  },
-  {
-    title: "ยี่ห้อ",
-    icon: <FaTag className="nav-ico" />,
-    to: "/brand",
-  },
-  {
-    title: "รุ่น",
-    icon: <IoLogoModelS className="nav-ico" />,
-    to: "/model",
-  },
+  },  
   {
     title: "หน่วยสินค้า",
     icon: <RiBox3Fill className="nav-ico" />,
     to: "/unit",
+  },
+  {
+    title: "ปรับสต๊อก Adjust",
+    icon: <FaUserCircle className="nav-ico" />,
+    to: "/adjust",
   },
   {
     title: "ผู้ใช้งาน",

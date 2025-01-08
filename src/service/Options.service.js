@@ -12,6 +12,7 @@ const API_URL = {
   OPTION_LOCATION: `/common/options-location.php`,
   OPTION_COUNTY: `/common/options-county.php`,
   OPTION_BRAND: `/common/options-brand.php`,
+  OPTION_TYPE: `/common/options-type.php`,
   OPTION_MODEL: `/common/options-model.php`,
   OPTION_CARMODEL: `/common/options-carmodel.php`,
   OPTION_SO: `/common/options-so.php`,
@@ -36,7 +37,8 @@ const OptionService = () => {
   const optionsCounty = () => api.get(`${API_URL.OPTION_COUNTY}`, { ignoreLoading : true });
   const optionsBrand = () => api.get(`${API_URL.OPTION_BRAND}`, { ignoreLoading : true });
   const optionsModel = () => api.get(`${API_URL.OPTION_MODEL}`, { ignoreLoading : true });
-  const optionsCarmodel = () => api.get(`${API_URL.OPTION_CARMODEL}`, { ignoreLoading : true });
+  const optionsType = () => api.get(`${API_URL.OPTION_TYPE}`, { ignoreLoading : true });
+  const optionsCarmodel = (parm = {}) => api.get(`${API_URL.OPTION_CARMODEL}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsSO = (parm = {}) => api.get(`${API_URL.OPTION_SO}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsReceipt = (parm = {}) => api.get(`${API_URL.OPTION_RECEIPT}?${getParmeter(parm)}`, { ignoreLoading : true });
   const optionsInvoice = (parm = {}) => api.get(`${API_URL.OPTION_INVOICE}?${getParmeter(parm)}`, { ignoreLoading : true });
@@ -57,6 +59,7 @@ const OptionService = () => {
     optionsCounty,
     optionsBrand,
     optionsModel,
+    optionsType,
     optionsCarmodel,
     optionsSO,
     optionsReceipt,

@@ -5,19 +5,12 @@ $conn = $db->connect();
 
 if ($_SERVER["REQUEST_METHOD"] == "GET"){
     extract($_GET, EXTR_OVERWRITE, "_"); 
-    // $car_model_code = !empty($type) ? "and i.car_model_code = '$type'" : "";
+    // $kind_code = !empty($type) ? "and i.kind_code = '$type'" : "";
     try { 
         $res = null;
         
-        $brand_name = $brand_name!== 'undefined' ? "and b.brand_name like '%$brand_name%'" : "";
-
-        $sql = "SELECT c.car_model_code,c.car_model_name,c.active_status 
-        FROM car_model c 
-        left join brand b on b.brand_code=c.brand_code
-        where c.active_status = 'Y' 
-        $brand_name
-        ";
-            // $car_model_code
+        $sql = "SELECT type_code,type_name,active_status FROM items_type where active_status = 'Y'";
+            // $kind_code
             $stmt = $conn->prepare($sql); 
             $stmt->execute();
             $res = $stmt->fetchAll(PDO::FETCH_ASSOC); 
