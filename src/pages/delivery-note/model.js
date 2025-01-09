@@ -55,6 +55,13 @@ export const accessColumn = ({handleEdit, handleDelete, handleView, handlePrints
     render: (v) => <Tooltip placement="topLeft" title={v}>{v}</Tooltip>, 
   },
   {
+    title: "เขตขนส่ง",
+    dataIndex: "county_name",
+    key: "county_name",
+    width: 120,
+    sorter: (a, b) => (a.county_name).localeCompare(b.county_name),
+  },
+  {
     title: "สถานะ",
     dataIndex: "doc_status",
     key: "doc_status", 

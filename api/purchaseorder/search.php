@@ -11,31 +11,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
     extract($_POST, EXTR_OVERWRITE, "_");  
     $pocode = !empty($pocode) ? "and a.pocode like '%$pocode%'" : "";
+    $stname = !empty($stname) ? "and i.stname like '%$stname%'" : "";
     $supcode = !empty($supcode) ? "and c.supcode like '%$supcode%'" : "";
     $supname = !empty($supname) ? "and c.supname like '%$supname%'" : "";
-    // $spcode_cdt = !empty($spcode) ? "and e.spcode like '%$spcode%'" : "";
-    // $spname_cdt = !empty($spname) ? "and e.spname like '%$spname%'" : "";
+    $type_name = !empty($type_name) ? "and t.type_name like '%$type_name%'" : "";
+    $kind_name = !empty($kind_name) ? "and k.kind_name like '%$kind_name%'" : "";
+    $brand_name = !empty($brand_name) ? "and b.brand_name like '%$brand_name%'" : "";
+    $car_model_name = !empty($car_model_name) ? "and cm.car_model_name like '%$car_model_name%'" : "";
+    $year = !empty($year) ? "and cm.year like '%$year%'" : "";    
+    $car_no = !empty($car_no) ? "and a.car_no like '%$car_no%'" : "";
     $created_by = !empty($created_by) ? "and ( u.firstname like '%$created_by%' or u.lastname like '%$created_by%' )" : "";
     $podate = "";
     if( !empty($podate_form) && !empty($podate_to) ) {
         $podate = "and date_format( a.podate, '%Y-%m-%d' ) >= '$podate_form' and date_format( a.podate, '%Y-%m-%d' ) <= '$podate_to' ";
     } 
+
+    $condition = "$pocode
+    $stname
+    $cuscode
+    $cusname
+    $type_name
+    $kind_name
+    $brand_name
+    $car_model_name
+    $year
+    $car_no
+    $created_by
+    $podate";
     
     try {   
         $sql = " 
-        select 
+        SELECT
+        DISTINCT a.pocode,
         a.*,
         c.*,
         concat(u.firstname, ' ', u.lastname) created_name
-        from pomaster a        
+        from pomaster a      
+        inner join podetail d on a.pocode = d.pocode
+        left join items i on i.stcode = d.stcode
+        left join items_type t on i.type_code = t.type_code
+        left join kind k on k.kind_code = i.kind_code
+        left join car_model cm on cm.car_model_code = i.car_model_code
+        left join brand b on cm.brand_code = b.brand_code  
         left join supplier c on a.supcode = c.supcode        
         left join user u on a.created_by = u.code
         where 1 = 1 
-        $pocode
-        $supcode
-        $supname
-        $created_by
-        $podate
+        $condition
         order by a.pocode desc ;";
 
 

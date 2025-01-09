@@ -25,7 +25,7 @@ export const componentsEditable = {
 /** get sample column */
 export const accessColumn = ({handleEdit, handleView, handlePrintsData}) => [
   {
-    title: "รหัสใบขายสินค้า",
+    title: "รหัสใบสั่งขายสินค้า",
     key: "socode",
     dataIndex: "socode",
     align: "left",
@@ -33,7 +33,7 @@ export const accessColumn = ({handleEdit, handleView, handlePrintsData}) => [
     width:140,
   },
   {
-    title: "วันที่ใบขายสินค้า",
+    title: "วันที่ใบสั่งขายสินค้า",
     dataIndex: "sodate",
     key: "sodate",
     width: 140,

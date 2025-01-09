@@ -99,6 +99,11 @@ const QuotationAccess = () => {
           </Form.Item>
         </Col>
         <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+          <Form.Item label="รหัสสินค้า" name="stcode" onChange={handleSearch}>
+            <Input placeholder="กรอกรหัสสินค้า" />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={8} md={8} lg={8} xl={8}>
           <Form.Item label="รหัสลูกค้า" name="cuscode" onChange={handleSearch}>
             <Input placeholder="กรอกรหัสลูกค้า" />
           </Form.Item>

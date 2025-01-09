@@ -13,6 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     // ทะเบียนรถ ชนิด ยี่ห้อ รุ่น ปี แบบ
     
     $qtcode = !empty($qtcode) ? "and a.qtcode like '%$qtcode%'" : "";
+    $stname = !empty($stname) ? "and i.stname like '%$stname%'" : "";
     $cuscode = !empty($cuscode) ? "and c.cuscode like '%$cuscode%'" : "";
     $cusname = !empty($cusname) ? "and c.cusname like '%$cusname%'" : "";
     $type_name = !empty($type_name) ? "and t.type_name like '%$type_name%'" : "";
@@ -27,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     } 
 
     $condition = "$qtcode
+    $stname
     $cuscode
     $cusname
     $type_name

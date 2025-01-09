@@ -398,11 +398,11 @@ function MyManage() {
       title: (
         <Flex align="center" gap={2} className="text-red-700">
           <TbExclamationCircle style={{ fontSize: "1.5rem" }} />
-          {"ยืนยันที่จะยกเลิกใบขายสินค้า"}
+          {"ยืนยันที่จะยกเลิกใบสั่งขายสินค้า"}
         </Flex>
       ),
       icon: <></>,
-      content: "ต้องการยกเลิกใบขายสินค้า ใช่หรือไม่",
+      content: "ต้องการยกเลิกใบสั่งขายสินค้า ใช่หรือไม่",
       okText: "ยืนยัน",
       okType: "danger",
       cancelText: "ยกเลิก",
@@ -411,7 +411,7 @@ function MyManage() {
           .deleted(formDetail.socode)
           .then((r) => {
             handleClose().then((r) => {
-              message.success("ยกเลิกใบขายสินค้าสำเร็จ");
+              message.success("ยกเลิกใบสั่งขายสินค้าสำเร็จ");
             });
           })
           .catch((err) => {
@@ -848,7 +848,7 @@ function MyManage() {
               <Popconfirm
                 placement="topRight"
                 title="ยืนยันการยกเลิก"
-                description="คุณแน่ใจที่จะยกเลิกใบขายสินค้า?"
+                description="คุณแน่ใจที่จะยกเลิกใบสั่งขายสินค้า?"
                 icon={<QuestionCircleOutlined style={{ color: "red" }} />}
                 onConfirm={() => handleCancleSO()}
               >
@@ -859,7 +859,7 @@ function MyManage() {
                   style={{ width: "9.5rem" }}
                   danger
                 >
-                  ยกเลิกใบขายสินค้า
+                  ยกเลิกใบสั่งขายสินค้า
                 </Button>
               </Popconfirm>
             )}
@@ -925,7 +925,7 @@ function MyManage() {
                   <Row className="m-0 py-3 sm:py-0" gutter={[12, 12]}>
                     <Col xs={24} sm={24} md={12} lg={12}>
                       <Typography.Title level={3} className="m-0">
-                        รหัสใบขายสินค้า : {soCode}
+                        รหัสใบสั่งขายสินค้า : {soCode}
                       </Typography.Title>
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12}>
@@ -935,7 +935,7 @@ function MyManage() {
                         className="justify-start sm:justify-end"
                       >
                         <Typography.Title level={3} className="m-0">
-                          วันที่ใบขายสินค้า :
+                          วันที่ใบสั่งขายสินค้า :
                         </Typography.Title>
                         <Form.Item name="sodate" className="!m-0">
                           <DatePicker

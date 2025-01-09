@@ -41,7 +41,7 @@ let _nav = [
     to: "/quotation",
   },
   {
-    title: "ใบขายสินค้า (SO)",
+    title: "ใบสั่งขายสินค้า (SO)",
     icon: <ReconciliationFilled className="nav-ico" />,
     to: "/sales-order",
   },
