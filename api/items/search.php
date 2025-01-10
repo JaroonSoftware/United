@@ -11,18 +11,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     extract($_POST, EXTR_OVERWRITE, "_");
 
 
-    $stcode = !empty($stcode) ? "and a.stcode like '%$stcode%'" : "";
-    $stname = !empty($stname) ? "and a.stname like '%$stname%'" : "";
-    $type_code = !empty($type_code) ? "and a.type_code like '%$type_code%'" : "";
+    $stcode = !empty($stcode) ? "and i.stcode like '%$stcode%'" : "";
+    $stname = !empty($stname) ? "and i.stname like '%$stname%'" : "";
+    $type_name = !empty($type_name) ? "and t.type_name like '%$type_name%'" : "";
+    $kind_name = !empty($kind_name) ? "and k.kind_name like '%$kind_name%'" : "";
+    $brand_name = !empty($brand_name) ? "and b.brand_name like '%$brand_name%'" : "";
+    $car_model_name = !empty($car_model_name) ? "and cm.car_model_name like '%$car_model_name%'" : "";
+    $year = !empty($year) ? "and cm.year like '%$year%'" : "";    
+
+    $condition = "$stcode
+    $stname
+    $cuscode
+    $cusname
+    $type_name
+    $kind_name
+    $brand_name
+    $car_model_name
+    $year";
+
     try {
-        $sql = "SELECT a.stcode, a.stname, b.type_name,a.price,a.min,s.qty ,a.active_status FROM `items` as a
-        left outer join `items_type` as b on (a.type_code=b.type_code)   
-        left outer join items_stock as s on (a.stcode=s.stcode)
-        where 1 = 1   
-        $stcode
-        $stname
-        $type_code
-        order by a.created_date desc";
+        $sql = "SELECT i.stcode, i.stname, t.type_name,i.price,i.min,s.qty ,i.active_status FROM `items` as i
+        left join items_type t on i.type_code = t.type_code
+        left join kind k on k.kind_code = i.kind_code
+        left join car_model cm on cm.car_model_code = i.car_model_code
+        left join brand b on cm.brand_code = b.brand_code 
+        left outer join items_stock as s on (i.stcode=s.stcode)
+        where 1 = 1 
+        $condition
+        order by i.created_date desc";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();

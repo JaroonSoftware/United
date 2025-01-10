@@ -24,7 +24,12 @@ const ItemsAccess = () => {
   const [form] = Form.useForm();
   const [accessData, setAccessData] = useState([]);
   const [activeSearch, setActiveSearch] = useState([]);
+
   const [optionType, setOptionType] = useState([]);
+  const [optionKind, setOptionKind] = useState([]);
+  const [optionBrand, setOptionBrand] = useState([]);
+  const [optionCarmodel, setOptionCarmodel] = useState([]);
+  const [optionsModel, setOptionModel] = useState([]);
   const handleSearch = () => {
     form.validateFields().then((v) => {
       const data = { ...v };
@@ -93,20 +98,62 @@ const ItemsAccess = () => {
     // });
   };
 
+  const init = async () => {
+    getData({});
+  };
+
   useEffect(() => {
-    GetItemsType();
-    getData();
-   
+    init();
+    GetType();
+    GetKind();
+    GetBrand();
+    GetCarmodel();
+    GetModel();
+    return async () => {
+      //console.clear();
+    };
   }, []);
-  const GetItemsType = () => {
-    opService.optionsItemstype().then((res) => {
+
+  const getData = () => {
+    handleSearch();
+  };
+
+  const GetType = () => {
+    opService.optionsType().then((res) => {
       let { data } = res.data;
       setOptionType(data);
     });
   };
-  const getData = () => {
-    handleSearch();
+
+  const GetKind = () => {
+    opService.optionsKind().then((res) => {
+      let { data } = res.data;
+      setOptionKind(data);
+    });
   };
+
+  const GetBrand = () => {
+    opService.optionsBrand().then((res) => {
+      let { data } = res.data;
+      setOptionBrand(data);
+    });
+  };
+
+  const GetCarmodel = () => {
+    let brand_name = form.getFieldValue("brand_name");
+    opService.optionsCarmodel({ brand_name: brand_name }).then((res) => {
+      let { data } = res.data;
+      setOptionCarmodel(data);
+    });
+  };
+
+  const GetModel = () => {
+    opService.optionsModel().then((res) => {
+      let { data } = res.data;
+      setOptionModel(data);
+    });
+  };
+
   const FormSearch = (
     <Collapse
       size="small"
@@ -118,7 +165,12 @@ const ItemsAccess = () => {
       items={[
         {
           key: "1",
-          label: <><SearchOutlined /><span> ค้นหา</span></>,  
+          label: (
+            <>
+              <SearchOutlined />
+              <span> ค้นหา</span>
+            </>
+          ),
           children: (
             <>
               <Form form={form} layout="vertical" autoComplete="off">
@@ -143,8 +195,8 @@ const ItemsAccess = () => {
                   </Col>
                   <Col xs={24} sm={8} md={8} lg={8} xl={8}>
                     <Form.Item
-                      label="ประเภทสินค้า"
-                      name="typecode"
+                      label="ประเภท"
+                      name="type_name"
                       onChange={handleSearch}
                     >
                       <Select
@@ -153,10 +205,87 @@ const ItemsAccess = () => {
                         placeholder="เลือกประเภทสินค้า"
                         onChange={handleSearch}
                         options={optionType.map((item) => ({
-                          value: item.typecode,
-                          label: item.typename,
+                          value: item.type_name,
+                          label: item.type_name,
                         }))}
                       />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Form.Item
+                      label="ชนิด"
+                      name="kind_name"
+                      onChange={handleSearch}
+                    >
+                      <Select
+                        size="large"
+                        showSearch
+                        placeholder="เลือกชนิดสินค้า"
+                        onChange={handleSearch}
+                        options={optionKind.map((item) => ({
+                          value: item.kind_name,
+                          label: item.kind_name,
+                        }))}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Form.Item
+                      label="ยี่ห้อ"
+                      name="brand_name"
+                      onChange={handleSearch}
+                    >
+                      <Select
+                        size="large"
+                        showSearch
+                        placeholder="เลือกยี่ห้อสินค้า"
+                        onChange={handleSearch}
+                        options={optionBrand.map((item) => ({
+                          value: item.brand_name,
+                          label: item.brand_name,
+                        }))}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Form.Item
+                      label="แบบ"
+                      name="car_model_name"
+                      onChange={handleSearch}
+                    >
+                      <Select
+                        size="large"
+                        showSearch
+                        placeholder="เลือกแบบสินค้า"
+                        onChange={handleSearch}
+                        options={optionCarmodel.map((item) => ({
+                          value: item.car_model_name,
+                          label: item.car_model_name,
+                        }))}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Form.Item
+                      label="รุ่น"
+                      name="model_name"
+                      onChange={handleSearch}
+                    >
+                      <Select
+                        size="large"
+                        showSearch
+                        placeholder="เลือกรุ่นสินค้า"
+                        onChange={handleSearch}
+                        options={optionsModel.map((item) => ({
+                          value: item.model_name,
+                          label: item.model_name,
+                        }))}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Form.Item label="ปี" name="year" onChange={handleSearch}>
+                      <Input placeholder="กรอกปี" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -230,7 +359,7 @@ const ItemsAccess = () => {
         size="middle"
         style={{ display: "flex", position: "relative" }}
       >
-        <Card >
+        <Card>
           {FormSearch}
           <br></br>
           <Row gutter={[8, 8]} className="m-0">
