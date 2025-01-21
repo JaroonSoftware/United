@@ -13,20 +13,24 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         if ($p == 'items') {
             ////ใช้เปิดSO QT
 
+            $stcode = $stcode!== 'undefined' ? "and i.stcode like '%$stcode%'" : "";
             $stname = $stname!== 'undefined' ? "and i.stname like '%$stname%'" : "";
             $type_name = $type_name!== 'undefined' ? "and t.type_name like '%$type_name%'" : "";
             $kind_name = $kind_name!== 'undefined' ? "and k.kind_name like '%$kind_name%'" : "";
             $brand_name = $brand_name!== 'undefined' ? "and b.brand_name like '%$brand_name%'" : "";
             $car_model_name = $car_model_name!== 'undefined' ? "and cm.car_model_name like '%$car_model_name%'" : "";
+            $model_name = $model_name!== 'undefined' ? "and m.model_name like '%$model_name%'" : "";
             $year = $year!== 'undefined' ? "and cm.year like '%$year%'" : "";
 
 
             $condition = "
+            $stcode
             $stname
             $type_name
             $kind_name
             $brand_name
             $car_model_name
+            $model_name
             $year";
 
             $sql = "
@@ -35,6 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             left join items_type t on i.type_code = t.type_code
             left join kind k on k.kind_code = i.kind_code
             left join car_model cm on cm.car_model_code = i.car_model_code
+            left join model_table m on m.model_code = cm.model_code
             left join brand b on cm.brand_code = b.brand_code
             where 1 = 1 and i.active_status = 'Y'
             $condition";

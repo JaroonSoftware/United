@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import { Modal, Card, Table, message, Form, Spin, Select } from "antd";
+import { Modal, Card, Table, message, Form, Spin, Select,Flex } from "antd";
 import { Row, Col, Space } from "antd";
 import { Input, Button } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined,ClearOutlined } from "@ant-design/icons";
 
 import { columns } from "./modal-items.model";
 // import ItemService from "../../service/ItemService";
@@ -63,7 +63,7 @@ export default function ModalItems({ show, close, values, selected }) {
 
   const getData = (data) => {
     setLoading(true);
-    let dataSource = { p: "items",...data}
+    let dataSource = { p: "items", ...data };
     opService
       .optionsItems(dataSource)
       .then((res) => {
@@ -99,6 +99,12 @@ export default function ModalItems({ show, close, values, selected }) {
     // console.log(newData);
 
     setItemsList([...itemsList, newData]);
+  };
+
+  const handleClear = () => {
+    form.resetFields();
+
+    handleSearch();
   };
 
   const handleCheckDuplicate = (itemCode) =>
@@ -288,15 +294,22 @@ export default function ModalItems({ show, close, values, selected }) {
                   gutter={[{ xs: 32, sm: 32, md: 32, lg: 12, xl: 12 }, 8]}
                   className="m-0"
                 >
-                  <Col span={12}>
-                    <Form.Item label="ค้นหา">
-                      <Input
-                        suffix={<SearchOutlined />}
-                        onChange={(e) => {
-                          handleSearch(e.target.value);
-                        }}
-                        placeholder="ค้นหาชื่อ หรือ รหัสสินค้า"
-                      />
+                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Form.Item
+                      label="รหัสสินค้า"
+                      name="stcode"
+                      onChange={handleSearch}
+                    >
+                      <Input placeholder="กรอกรหัสสินค้า" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={8} md={8} lg={8} xl={8}>
+                    <Form.Item
+                      label="ชื่อสินค้า"
+                      name="stname"
+                      onChange={handleSearch}
+                    >
+                      <Input placeholder="กรอกชื่อสินค้า" />
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={8} md={8} lg={8} xl={8}>
@@ -393,6 +406,25 @@ export default function ModalItems({ show, close, values, selected }) {
                     <Form.Item label="ปี" name="year" onChange={handleSearch}>
                       <Input placeholder="กรอกปี" />
                     </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={[8, 8]}>
+                  <Col xs={24} sm={8} md={12} lg={12} xl={12}>
+                    {/* Ignore */}
+                  </Col>
+                  <Col xs={24} sm={8} md={12} lg={12} xl={12}>
+                    <Flex justify="flex-end" gap={8}>
+                      <Button
+                        type="primary"
+                        size="small"
+                        className="bn-action"
+                        danger
+                        icon={<ClearOutlined />}
+                        onClick={() => handleClear()}
+                      >
+                        ล้าง
+                      </Button>
+                    </Flex>
                   </Col>
                 </Row>
               </Form>
