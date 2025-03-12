@@ -5,10 +5,10 @@
     // header("Access-Control-Allow-Headers: *");
     // header("Access-Control-Allow-Methods: *");
     
-    include '../conn.php';
+    include '../../conn.php';
 
     $uid = $_POST['uid'];
-    $targetDir = "../../uploads/";
+    $targetDir = "../../../uploads/";
 
     $targetFile = $targetDir . $uid . '_*';
 
