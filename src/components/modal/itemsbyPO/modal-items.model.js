@@ -10,6 +10,18 @@ export const columns = ()=>{
       dataIndex: "pocode", 
     },
     {
+      title: "เลขที่เครม",
+      key: "claim_no",
+      dataIndex: "claim_no", 
+      sorter: (a, b) => (a?.claim_no || "").localeCompare(b?.claim_no || ""),
+    },
+    {
+      title: "เลขที่เครม",
+      key: "car_no",
+      dataIndex: "car_no", 
+      sorter: (a, b) => (a?.car_no || "").localeCompare(b?.car_no || ""),
+    },
+    {
       title: "รูปประกอบ",
       dataIndex: "file",
       key: "file",

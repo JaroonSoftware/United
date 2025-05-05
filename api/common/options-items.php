@@ -34,8 +34,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $year";
 
             $sql = "
-			select i.*, k.kind_name
+			select i.*, k.kind_name,st.qty
             from items i
+            left join items_stock st on i.stcode = st.stcode
             left join items_type t on i.type_code = t.type_code
             left join kind k on k.kind_code = i.kind_code
             left join car_model cm on cm.car_model_code = i.car_model_code
@@ -89,9 +90,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             echo json_encode($apiResponse);
         } else if ($p == 'po') {
             $sql = "
-			SELECT a.code,a.pocode, a.stcode,i.stname, a.qty, a.price, a.unit, a.discount, a.recamount, k.kind_name
+			SELECT a.code,a.pocode,s.claim_no,s.car_no,a.stcode,i.stname, a.qty, a.price, a.unit, a.discount, a.recamount, k.kind_name
             FROM podetail a 
             inner join pomaster b on (a.pocode=b.pocode)
+            left join somaster s on (a.socode=s.socode)
             inner join items i on (a.stcode=i.stcode)
             left outer join kind k on (i.kind_code=k.kind_code)
             where b.doc_status != 'รับของครบแล้ว' and a.qty>IF(a.recamount IS NULL,0,a.recamount) ";
@@ -114,6 +116,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $nestedObject->recamount = $row['recamount'];
                 $nestedObject->pocode = $row['pocode'];
                 $nestedObject->kind_name = $row['kind_name'];
+                $nestedObject->claim_no = $row['claim_no'];
+                $nestedObject->car_no = $row['car_no'];
                 //echo $row['prod_id'];
                 $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
                 $stmt2->execute();

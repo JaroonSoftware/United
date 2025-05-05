@@ -8,6 +8,7 @@ export const columns = ()=>{
       title: "รหัสสินค้า",
       key: "stcode",
       dataIndex: "stcode", 
+      sorter: (a, b) => (a?.stcode || "").localeCompare(b?.stcode || ""),
     },
     {
       title: "รูปประกอบ",
@@ -39,6 +40,12 @@ export const columns = ()=>{
       title: "ราคา",
       dataIndex: "price",
       key: "price",
+    },
+    {
+      title: "สต๊อก",
+      dataIndex: "qty",
+      key: "qty",
+      sorter: (a, b) => (a?.qty.toString() || "").localeCompare(b?.qty.toString() || ""),
     },
     {
       title: "หน่วย",

@@ -26,7 +26,12 @@ export default function ModalItems({show, close, values, selected}) {
  
     const handleSearch = (value) => {
         if(!!value){    
-            const f = itemsData.filter( d => ( (d.stcode?.includes(value)) || (d.stname?.includes(value)) ) );
+            const f = itemsData.filter(
+                (d) => d.stcode?.toLowerCase().includes(value.toLowerCase()) || d.stname?.toLowerCase().includes(value.toLowerCase())
+                || d.pocode?.toLowerCase().includes(value.toLowerCase()) || d.claim_no?.toLowerCase().includes(value.toLowerCase())
+                || d.car_no?.toLowerCase().includes(value.toLowerCase()) || d.supcode?.toLowerCase().includes(value.toLowerCase())
+                || d.supname?.toLowerCase().includes(value.toLowerCase()) 
+              );
              
             setItemsDataWrap(f);            
         } else { 
@@ -156,7 +161,7 @@ export default function ModalItems({show, close, values, selected}) {
             footer={ButtonModal}
             maskClosable={false}
             style={{ top: 20 }}
-            width={1200}
+            width={1400}
             className='sample-request-modal-items'
         >
             <Spin spinning={loading} >

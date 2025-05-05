@@ -50,8 +50,8 @@ try {
         $code = $conn->lastInsertId();
         // var_dump($master); exit;
 
-        $sql = "insert into podetail (pocode,stcode,qty,price,unit,discount,recamount)
-        values (:pocode,:stcode,:qty,:price,:unit,:discount,0)";
+        $sql = "insert into podetail (pocode,socode,stcode,qty,price,unit,discount,recamount)
+        values (:pocode,:socode,:stcode,:qty,:price,:unit,:discount,0)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -59,6 +59,7 @@ try {
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
             $stmt->bindParam(":pocode", $header->pocode, PDO::PARAM_STR);
+            $stmt->bindParam(":socode", $val->socode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
             $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);
@@ -142,8 +143,8 @@ try {
             throw new PDOException("Remove data error => $error");
         }
 
-        $sql = "insert into podetail (pocode,stcode,unit,qty,price,discount,recamount)
-        values (:pocode,:stcode,:unit,:qty,:price,:discount,:recamount)";
+        $sql = "insert into podetail (pocode,socode,stcode,unit,qty,price,discount,recamount)
+        values (:pocode,:socode,:stcode,:unit,:qty,:price,:discount,:recamount)";
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
@@ -151,6 +152,7 @@ try {
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
             $stmt->bindParam(":pocode", $header->pocode, PDO::PARAM_STR);
+            $stmt->bindParam(":socode", $val->socode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":unit", $val->unit, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
