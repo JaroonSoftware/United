@@ -40,11 +40,19 @@ const CustomerManage = () => {
       .catch(() => message.error("Initail failed"));
 
     const { data: cuscode } = cuscodeRes.data;
-    const initForm = { ...formDetail, cuscode, cus_doc: "claim_no" };
+    const initForm = {
+      ...formDetail,
+      cuscode,
+      cus_doc: "claim_no",
+      pre_subdistrict: "ตำบล",
+      pre_district: "อำเภอ",
+      pre_delsubdistrict: "ตำบล",
+      pre_deldistrict: "อำเภอ",
+    };
     setFormDetail((state) => ({ ...state, ...initForm }));
     form.setFieldsValue(initForm);
   };
-  
+
   useEffect(() => {
     // setLoading(true);
     GetCounty();
@@ -94,6 +102,23 @@ const CustomerManage = () => {
     setFormDetail(addr);
     form.setFieldsValue(addr);
   };
+  const CopyAddress = () => {
+    const f = form.getFieldsValue();
+    const addr = {
+      ...f,
+      delidno: f.idno,
+      delroad: f.road,
+      delprovince: f.province,
+      delzipcode: f.zipcode,
+      pre_delsubdistrict: f.pre_subdistrict,
+      delsubdistrict: f.subdistrict,
+      pre_deldistrict: f.pre_district,
+      deldistrict: f.district,
+    };
+    setFormDetail(addr);
+    form.setFieldsValue(addr);
+    message.success("คัดลอกสำเร็จ.");
+  };
   const handleConfirm = () => {
     form.validateFields().then((v) => {
       const source = { ...formDetail, ...v };
@@ -114,6 +139,9 @@ const CustomerManage = () => {
           const data = err?.response?.data;
           message.error(data?.message || "บันทึกไม่สำเร็จ");
         });
+    }).catch((err) => {
+      console.warn(err);
+      message.error("กรุณากรอกข้อมูลให้ครบถ้วน");
     });
   };
 
@@ -182,6 +210,14 @@ const CustomerManage = () => {
               {
                 value: "หจก.",
                 label: "หจก.",
+              },
+              {
+                value: "อู่",
+                label: "อู่",
+              },
+              {
+                value: "ร้าน",
+                label: "ร้าน",
               },
             ]}
           ></Select>
@@ -319,18 +355,26 @@ const CustomerManage = () => {
 
   const AddressDetail = () => (
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
-      <Col xs={24} sm={24} md={24} lg={24} xl={6} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={24} xl={2} xxl={2}>
         <Form.Item label="เลขที่" name="idno">
           <Input placeholder="กรอกเลขที่อยู่" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
         <Form.Item label="ถนน" name="road">
           <Input placeholder="กรอกถนน" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
-        <Form.Item label="ตำบล" name="subdistrict">
+      <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
+        <Form.Item label="&nbsp;" name="pre_subdistrict">
+          <Select size="large" showSearch filterOption={filterOption}>
+            <Option value="ตำบล">ตำบล</Option>
+            <Option value="แขวง">แขวง</Option>
+          </Select>
+        </Form.Item>
+      </Col>
+      <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
+        <Form.Item label="&nbsp;" name="subdistrict">
           <InputThaiAddress.District
             onSelect={handleSelect}
             style={{ height: 40 }}
@@ -338,8 +382,16 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
-        <Form.Item label="อำเภอ" name="district">
+      <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
+        <Form.Item label="&nbsp;" name="pre_district">
+          <Select size="large" showSearch filterOption={filterOption}>
+            <Option value="อำเภอ">อำเภอ</Option>
+            <Option value="เขต">เขต</Option>
+          </Select>
+        </Form.Item>
+      </Col>
+      <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
+        <Form.Item label="&nbsp;" name="district">
           <InputThaiAddress.Amphoe
             onSelect={handleSelect}
             style={{ height: 40 }}
@@ -356,7 +408,7 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
         <Form.Item label="รหัสไปรษณีย์" name="zipcode">
           <InputThaiAddress.Zipcode
             onSelect={handleSelect}
@@ -370,18 +422,26 @@ const CustomerManage = () => {
 
   const DeliveryAddressDetail = () => (
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
-      <Col xs={24} sm={24} md={24} lg={24} xl={6} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={24} xl={2} xxl={2}>
         <Form.Item label="เลขที่" name="delidno">
           <Input placeholder="กรอกเลขที่อยู่" />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
         <Form.Item label="ถนน" name="delroad">
           <Input placeholder="กรอกถนน" />
         </Form.Item>
       </Col>
+      <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
+        <Form.Item label="&nbsp;" name="pre_delsubdistrict">
+          <Select size="large" showSearch filterOption={filterOption}>
+            <Option value="ตำบล">ตำบล</Option>
+            <Option value="แขวง">แขวง</Option>
+          </Select>
+        </Form.Item>
+      </Col>
       <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
-        <Form.Item label="ตำบล" name="delsubdistrict">
+        <Form.Item label="&nbsp;" name="delsubdistrict">
           <InputThaiAddress.District
             onSelect={handleDeliverySelect}
             style={{ height: 40 }}
@@ -389,8 +449,16 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
+      <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
+        <Form.Item label="&nbsp;" name="pre_deldistrict">
+          <Select size="large" showSearch filterOption={filterOption}>
+            <Option value="อำเภอ">อำเภอ</Option>
+            <Option value="เขต">เขต</Option>
+          </Select>
+        </Form.Item>
+      </Col>
       <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
-        <Form.Item label="อำเภอ" name="deldistrict">
+        <Form.Item label="&nbsp;" name="deldistrict">
           <InputThaiAddress.Amphoe
             onSelect={handleDeliverySelect}
             style={{ height: 40 }}
@@ -407,7 +475,7 @@ const CustomerManage = () => {
           />
         </Form.Item>
       </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
+      <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
         <Form.Item label="รหัสไปรษณีย์" name="delzipcode">
           <InputThaiAddress.Zipcode
             onSelect={handleDeliverySelect}
@@ -497,15 +565,35 @@ const CustomerManage = () => {
             >
               ที่อยู่
             </Divider>
+            <br />
             <AddressDetail />
 
-            <Divider
-              orientation="left"
-              plain
-              style={{ margin: 10, fontSize: 20, border: 20 }}
-            >
-              ที่อยู่จัดส่ง
-            </Divider>
+            <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
+              <Col xs={24} sm={24} md={24} lg={18} xl={20} xxl={20}>
+                <Divider
+                  orientation="left"
+                  plain
+                  style={{ margin: 0, fontSize: 20, border: 20 }}
+                >
+                  ที่อยู่จัดส่ง
+                </Divider>
+              </Col>
+              <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
+                <div align="right">
+                  <Button
+                    icon={<SaveFilled style={{ fontSize: "1rem" }} />}
+                    type="primary"
+                    style={{ width: "9.5rem" }}
+                    onClick={() => {
+                      CopyAddress();
+                    }}
+                  >
+                    คัดลอกที่อยู่
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+            <br />
             <DeliveryAddressDetail />
 
             <Divider

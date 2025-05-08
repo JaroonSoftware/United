@@ -60,6 +60,9 @@ const ItemsManage = () => {
     if (config?.action !== "create") {
       getsupData(config.code);
     }
+    else {
+      form.setFieldsValue('min' , 0);
+    }
     // console.log(config);
 
     return () => {
@@ -412,7 +415,7 @@ const ItemsManage = () => {
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
           <Form.Item label="สต๊อกขั้นต่ำ" name="min">
-            <Input placeholder="กรอกสต๊อกขั้นต่ำ" defaultValue={0} />
+            <Input placeholder="กรอกสต๊อกขั้นต่ำ"  />
           </Form.Item>
         </Col>
         <Col

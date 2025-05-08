@@ -18,11 +18,13 @@ try {
 
         // var_dump($_POST);
         
-        $sql = "INSERT INTO customer (`cuscode`, `prename`,`branch`,`branch_details`  , `cus_type` ,`cusname`, `taxnumber`, `idno`,`road`, `province`, cus_doc,
-        `subdistrict`,`district`,`zipcode`, `delidno`,`delroad`, `delprovince`, 
-        `delsubdistrict`,`deldistrict`,`delzipcode`, `tel`, `fax`,`contact`, `email`, `county_code` ,`remark`, `active_status`, created_by, created_date) 
-        values (:cuscode,:prename,:branch,:branch_details,:cus_type,:cusname,:taxnumber,:idno,:road,:province,:cus_doc,:subdistrict,:district,:zipcode,
-        :delidno,:delroad,:delprovince,:delsubdistrict,:deldistrict,:delzipcode,
+        $sql = "INSERT INTO customer (`cuscode`, `prename`,`branch`,`branch_details`, `cus_type` ,`cusname`, `taxnumber`, `idno`,`road`, `province`, cus_doc,
+        `pre_subdistrict`,`subdistrict`,pre_district,`district`,`zipcode`, `delidno`,`delroad`, `delprovince`, 
+        `pre_delsubdistrict`,`delsubdistrict`,`pre_deldistrict`,`deldistrict`,`delzipcode`, `tel`, `fax`,`contact`, `email`, `county_code` ,`remark`, `active_status`, created_by, created_date) 
+        values (:cuscode,:prename,:branch,:branch_details,:cus_type,:cusname,:taxnumber,:idno,:road,:province,:cus_doc,
+        :pre_subdistrict,:subdistrict,:pre_district,:district,:zipcode,
+        :delidno,:delroad,:delprovince,
+        :pre_delsubdistrict,:delsubdistrict,:pre_deldistrict,:deldistrict,:delzipcode,
         :tel,:fax,:contact,:email,:county_code,:remark,'Y',:action_user,:action_date)";
         
         $stmt = $conn->prepare($sql);
@@ -39,13 +41,17 @@ try {
         $stmt->bindParam(":road", $road, PDO::PARAM_STR);         
         $stmt->bindParam(":province", $province, PDO::PARAM_STR);   
         $stmt->bindParam(":cus_doc", $cus_doc, PDO::PARAM_STR);   
+        $stmt->bindParam(":pre_subdistrict", $pre_subdistrict, PDO::PARAM_STR);      
         $stmt->bindParam(":subdistrict", $subdistrict, PDO::PARAM_STR);   
+        $stmt->bindParam(":pre_district", $pre_district, PDO::PARAM_STR);      
         $stmt->bindParam(":district", $district, PDO::PARAM_STR);                
         $stmt->bindParam(":zipcode", $zipcode, PDO::PARAM_STR);
         $stmt->bindParam(":delidno", $delidno, PDO::PARAM_STR); 
         $stmt->bindParam(":delroad", $delroad, PDO::PARAM_STR);         
         $stmt->bindParam(":delprovince", $delprovince, PDO::PARAM_STR);   
+        $stmt->bindParam(":pre_delsubdistrict", $pre_delsubdistrict, PDO::PARAM_STR);      
         $stmt->bindParam(":delsubdistrict", $delsubdistrict, PDO::PARAM_STR);   
+        $stmt->bindParam(":pre_deldistrict", $pre_deldistrict, PDO::PARAM_STR);      
         $stmt->bindParam(":deldistrict", $deldistrict, PDO::PARAM_STR);                
         $stmt->bindParam(":delzipcode", $delzipcode, PDO::PARAM_STR);        
         $stmt->bindParam(":tel", $tel, PDO::PARAM_STR);
@@ -100,13 +106,17 @@ try {
         road = :road,
         province = :province,
         cus_doc = :cus_doc,
+        pre_subdistrict = :pre_subdistrict,
         subdistrict = :subdistrict,
+        pre_district = :pre_district,
         district = :district,
         zipcode = :zipcode,
         delidno = :delidno,
         delroad = :delroad,
         delprovince = :delprovince,
+        pre_delsubdistrict = :pre_delsubdistrict,
         delsubdistrict = :delsubdistrict,
+        pre_deldistrict = :pre_deldistrict,
         deldistrict = :deldistrict,
         delzipcode = :delzipcode,
         tel = :tel,
@@ -134,14 +144,18 @@ try {
         $stmt->bindParam(":idno", $idno, PDO::PARAM_STR); 
         $stmt->bindParam(":road", $road, PDO::PARAM_STR);         
         $stmt->bindParam(":province", $province, PDO::PARAM_STR);   
-        $stmt->bindParam(":cus_doc", $cus_doc, PDO::PARAM_STR);   
+        $stmt->bindParam(":cus_doc", $cus_doc, PDO::PARAM_STR);  
+        $stmt->bindParam(":pre_subdistrict", $pre_subdistrict, PDO::PARAM_STR); 
         $stmt->bindParam(":subdistrict", $subdistrict, PDO::PARAM_STR);   
+        $stmt->bindParam(":pre_district", $pre_district, PDO::PARAM_STR);
         $stmt->bindParam(":district", $district, PDO::PARAM_STR);                
         $stmt->bindParam(":zipcode", $zipcode, PDO::PARAM_STR);
         $stmt->bindParam(":delidno", $delidno, PDO::PARAM_STR); 
         $stmt->bindParam(":delroad", $delroad, PDO::PARAM_STR);         
         $stmt->bindParam(":delprovince", $delprovince, PDO::PARAM_STR);   
+        $stmt->bindParam(":pre_delsubdistrict", $pre_delsubdistrict, PDO::PARAM_STR);
         $stmt->bindParam(":delsubdistrict", $delsubdistrict, PDO::PARAM_STR);   
+        $stmt->bindParam(":pre_deldistrict", $pre_deldistrict, PDO::PARAM_STR);
         $stmt->bindParam(":deldistrict", $deldistrict, PDO::PARAM_STR);                
         $stmt->bindParam(":delzipcode", $delzipcode, PDO::PARAM_STR);        
         $stmt->bindParam(":tel", $tel, PDO::PARAM_STR);

@@ -292,8 +292,8 @@ try {
         echo json_encode(array("status"=> 1));
     } else  if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $code = $_GET["code"];
-        $sql = "SELECT a.dncode,a.dndate,x.socode,x.delcode,a.cuscode,x.claim_no,x.require_no,x.car_engineno,x.car_model_code,x.car_no,c.prename,c.cusname,CONCAT(COALESCE(c.idno, '') ,' ', COALESCE(c.road, ''),' ', COALESCE(c.subdistrict, ''),' ', COALESCE(c.district, ''),' ',COALESCE(c.zipcode, '') ) as address
-        ,c.zipcode,c.contact,c.tel,c.fax,c.contact,c.tel,CONCAT(COALESCE(d.idno, '') ,' ', COALESCE(d.road, ''),' ', COALESCE(d.subdistrict, ''),' ', COALESCE(d.district, ''),' ',COALESCE(d.zipcode, '') )  as deladdress
+        $sql = "SELECT a.dncode,a.dndate,x.socode,x.delcode,a.cuscode,x.claim_no,x.require_no,x.car_engineno,x.car_model_code,x.car_no,c.prename,c.cusname,CONCAT(COALESCE(c.idno, '') ,' ', COALESCE(c.road, ''),' ', COALESCE(c.subdistrict, ''),' ', COALESCE(c.district, ''),' ', COALESCE(d.province, ''),' ',COALESCE(c.zipcode, '') ) as address
+        ,c.zipcode,c.contact,c.tel,c.fax,c.contact,c.tel,CONCAT(COALESCE(d.idno, '') ,' ', COALESCE(d.road, ''),' ', COALESCE(d.subdistrict, ''),' ', COALESCE(d.district, ''),' ', COALESCE(d.province, ''),' ',COALESCE(d.zipcode, '') )  as deladdress
         ,d.contact as delcontact,d.tel as deltel,a.total_price,a.vat,a.grand_total_price,a.remark,CONCAT(d.prename,' ',d.cusname) as delname,
         CONCAT(d.tel) as deltel,a.doc_status ,m.car_model_code,m.brand_code,m.model_code,m.year,m.car_model_name,m.model_code,m.brand_code,k.model_name,j.brand_name";
         $sql .= " FROM `dnmaster` as a ";

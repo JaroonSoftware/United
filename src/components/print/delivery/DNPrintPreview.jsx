@@ -204,7 +204,8 @@ const authService = Authenticate();
               {hData?.delcode} - {hData?.delname}
               </Typography.Text>
               <Typography.Text className="tx-info" style={{ height: 35 }}>
-                {hData?.deladdress} โทร.{hData?.deltel}
+                {hData?.deladdress} 
+                {/* โทร.{hData?.deltel} */}
               </Typography.Text>
             </Flex>
           </div>
