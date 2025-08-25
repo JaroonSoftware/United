@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Card, Table, message, Form, Spin } from "antd";
-import { Row, Col, Space } from "antd";
-import { Input } from "antd";
+import { Row, Col, Space, Input, Typography,Drawer } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 import { customersColumn } from "./modal-customersInsurance.model.js";
 import OptionService from "../../../service/Options.service.js";
+import { ModalCustomersInsuranceManage } from './modal-customersInsurance.js';
+import CustomerService from '../../../service/Customer.Service.js';
+
+const cusService = CustomerService();
 const opservice = OptionService();
-export default function ModalCustomers({ show, close, values, selected }) {
+export default function ModalCustomersInsurance({ show, close, values, selected }) {
   const [form] = useForm();
 
   const [customersData, setCustomersData] = useState([]);
@@ -15,6 +18,9 @@ export default function ModalCustomers({ show, close, values, selected }) {
 
   const [openModal, setOpenModel] = useState(show);
   const [loading, setLoading] = useState(true);
+
+  const [openManage, setOpenManage] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   /** handle logic component */
   const handleClose = () => {
     setTimeout(() => {
@@ -43,7 +49,23 @@ export default function ModalCustomers({ show, close, values, selected }) {
     setOpenModel(false);
   };
 
-
+  const manageSubmit = ( v ) => {
+          setOpenManage(false);
+          setLoading(true); 
+          const action = cusService.createInsurance;
+  
+          action({...v}).then( _ =>  {
+              search();
+          }).catch( err => {
+              console.warn(err);
+              const data = err?.response?.data;
+              message.error( data?.message || "error request");
+          })
+          .finally( () => {
+              setTimeout( () => { setLoading(false) }, 300);
+          });
+          setOpenManage(false);
+      }
 
   /** setting initial component */
   const column = customersColumn({ handleChoose });
@@ -113,6 +135,23 @@ export default function ModalCustomers({ show, close, values, selected }) {
                     </Form.Item>
                   </Col>
                 </Row>
+                <Row
+                  gutter={[{ xs: 32, sm: 32, md: 32, lg: 12, xl: 12 }, 8]}
+                  className="m-0"
+                >
+                  <Col span={24}>
+                    <Typography.Link
+                      onClick={() => {
+                        setOpenManage(true);
+                      }}
+                      className="ps-1"
+                    >
+                      <span className="hover:underline underline-offset-1">
+                        สร้างบริษัทประกัน
+                      </span>
+                    </Typography.Link>
+                  </Col>
+                </Row>
               </Form>
             </Card>
             <Card style={{ minHeight: "60vh" }}>
@@ -132,6 +171,22 @@ export default function ModalCustomers({ show, close, values, selected }) {
                 size="small"
               />
             </Card>
+            {openManage && (
+              <Drawer
+                destroyOnClose={true}
+                title="สร้างบริษัทประกัน"
+                width={isSmallScreen ? "100%" : "50vw"}
+                className="custom-drawer-class"
+                onClose={() => {
+                  setOpenManage(false);
+                }}
+                open={openManage}
+                styles={{ body: { padding: "0px 24px 8px" } }}
+                getContainer={() => document.querySelector(".modal-supplier")}
+              >
+                <ModalCustomersInsuranceManage submit={(val) => manageSubmit(val)} />
+              </Drawer>
+            )}
           </Space>
         </Spin>
       </Modal>

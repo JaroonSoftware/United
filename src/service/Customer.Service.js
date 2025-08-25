@@ -2,6 +2,8 @@ import { requestService as api } from "./Request.service"
 
 const API_URL = {
   API_MANAGE: `/customer/manage.php`,
+  API_CREATE: `/customer/createGarage.php`,
+  API_CREATE_INSURANCE: `/customer/createInsurance.php`,
   API_SEARCH: `/customer/search.php`,
   API_GETCODE: `/customer/get_cuscode.php`,
 };
@@ -9,6 +11,8 @@ const API_URL = {
 const CustomerService = () => { 
  
   const create = (parm = {}) => api.post(`${API_URL.API_MANAGE}`, parm);
+  const createGarage  = (parm = {}) => api.post(`${API_URL.API_CREATE}`, parm, { ignoreLoading: true });
+  const createInsurance = (parm = {}) => api.post(`${API_URL.API_CREATE_INSURANCE}`, parm, { ignoreLoading: true });
   const update = (parm = {}) => api.put(`${API_URL.API_MANAGE}`, parm);
   const deleted = (code) => api.delete(`${API_URL.API_MANAGE}?code=${code}`);
   const get = (code) => api.get(`${API_URL.API_MANAGE}?code=${code}`);
@@ -17,6 +21,8 @@ const CustomerService = () => {
 
   return {
     create,
+    createGarage,
+    createInsurance,
     update,
     deleted,
     get,

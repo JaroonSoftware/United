@@ -41,7 +41,8 @@ try {
             }
         }
 
-        // var_dump($_POST);
+        $dncode = request_dncode($conn);
+
         $sql = "insert dnmaster (`dncode`, `dndate`, `cuscode`,`total_price`,`vat`,`grand_total_price`,`remark`,created_by,updated_by) 
         values (:dncode,:dndate,:cuscode,:total_price,:vat,:grand_total_price,:remark,:action_user,:action_user)";
 
@@ -49,7 +50,7 @@ try {
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         $header = (object)$header;
-        $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
+        $stmt->bindParam(":dncode", $dncode, PDO::PARAM_STR);
         $stmt->bindParam(":dndate", $header->dndate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
@@ -75,7 +76,7 @@ try {
         // $detail = $detail;  
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
-            $stmt->bindParam(":dncode", $header->dncode, PDO::PARAM_STR);
+            $stmt->bindParam(":dncode", $dncode, PDO::PARAM_STR);
             $stmt->bindParam(":socode", $val->socode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);

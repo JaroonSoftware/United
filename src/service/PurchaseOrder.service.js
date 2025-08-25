@@ -2,6 +2,7 @@ import { requestService as api } from "./Request.service"
 const API_URL = { 
   API_MANAGE: `/purchaseorder/manage.php`, 
   API_SEARCH: `/purchaseorder/search.php`, 
+  API_LIST: `/purchaseorder/list.php`, 
 
   API_GETCODE: `/purchaseorder/get-doc-code.php`, 
 };
@@ -12,6 +13,8 @@ const POService = () => {
   const update = (parm = {}) => api.put(`${API_URL.API_MANAGE}`, parm);
   const deleted = (code) => api.delete(`${API_URL.API_MANAGE}?code=${code}`);
   const get = (code) => api.get(`${API_URL.API_MANAGE}?code=${code}`);
+  
+    const getlist = (parm = {}) => api.post(`${API_URL.API_LIST}`, parm);
 
   const code = () => api.get(`${API_URL.API_GETCODE}`);
 
@@ -23,6 +26,7 @@ const POService = () => {
     update,
     deleted,
     get, 
+    getlist,
 
     code,
 

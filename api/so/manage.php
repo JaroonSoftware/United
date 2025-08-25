@@ -17,7 +17,8 @@ try {
         $_POST = json_decode($rest_json, true);
         extract($_POST, EXTR_OVERWRITE, "_");
 
-        // var_dump($_POST);
+        $socode = request_socode($conn);
+
         $sql = "insert somaster (`socode`,`delcode`,`qtcode`, `sodate`, `cuscode`,
        `total_price`, `vat`, `grand_total_price`,`claim_no`,`require_no`,`car_engineno`,`car_model_code`,`car_no`,`remark`,created_by,updated_by) 
         values (:socode,:delcode,:qtcode,:sodate,:cuscode,:total_price,:vat,:grand_total_price,:claim_no,:require_no,:car_engineno,:car_model_code,:car_no,
@@ -27,7 +28,7 @@ try {
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         $header = (object)$header;
-        $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR);
+        $stmt->bindParam(":socode", $socode, PDO::PARAM_STR);
         $stmt->bindParam(":delcode", $header->delcode, PDO::PARAM_STR);
         $stmt->bindParam(":qtcode", $header->qtcode, PDO::PARAM_STR);
         $stmt->bindParam(":sodate", $header->sodate, PDO::PARAM_STR);
@@ -84,7 +85,7 @@ try {
         // $detail = $detail;  
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
-            $stmt->bindParam(":socode", $header->socode, PDO::PARAM_STR);
+            $stmt->bindParam(":socode", $socode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
             $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);

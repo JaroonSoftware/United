@@ -17,7 +17,8 @@ try {
         $_POST = json_decode($rest_json, true); 
         extract($_POST, EXTR_OVERWRITE, "_");
 
-        // var_dump($_POST);
+        $qtcode = request_qtcode($conn);
+
         $sql = "insert qtmaster (`qtcode`, `qtdate`, `cuscode`,`deldate`,
         `payment`, `payment_term`, `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
         values (:qtcode,:qtdate,:cuscode,:deldate,:payment,:payment_term,:total_price,:vat,:grand_total_price,
@@ -27,7 +28,7 @@ try {
         if(!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}"); 
 
         $header = (object)$header;  
-        $stmt->bindParam(":qtcode", $header->qtcode, PDO::PARAM_STR);
+        $stmt->bindParam(":qtcode", $qtcode, PDO::PARAM_STR);
         $stmt->bindParam(":qtdate", $header->qtdate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":deldate", $header->deldate, PDO::PARAM_STR);
@@ -66,7 +67,7 @@ try {
        // $detail = $detail;  
         foreach( $detail as $ind => $val){
             $val = (object)$val;
-            $stmt->bindParam(":qtcode", $header->qtcode, PDO::PARAM_STR);
+            $stmt->bindParam(":qtcode", $qtcode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
             $stmt->bindParam(":price", $val->price, PDO::PARAM_INT);

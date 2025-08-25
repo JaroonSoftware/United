@@ -17,7 +17,8 @@ try {
         $_POST = json_decode($rest_json, true);
         extract($_POST, EXTR_OVERWRITE, "_");
 
-        // var_dump($_POST);
+        $pocode = request_pocode($conn);
+
         $sql = "insert pomaster (`pocode`, `podate`, `supcode`,
         `deldate`,`payment`,`poqua`, `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
         values (:pocode,:podate,:supcode,:deldate,:payment,:poqua,:total_price,:vat,:grand_total_price,
@@ -27,7 +28,7 @@ try {
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         $header = (object)$header;
-        $stmt->bindParam(":pocode", $header->pocode, PDO::PARAM_STR);
+        $stmt->bindParam(":pocode", $pocode, PDO::PARAM_STR);
         $stmt->bindParam(":podate", $header->podate, PDO::PARAM_STR);
         $stmt->bindParam(":supcode", $header->supcode, PDO::PARAM_STR);
         $stmt->bindParam(":deldate", $header->deldate, PDO::PARAM_STR);
@@ -58,7 +59,7 @@ try {
         // $detail = $detail;  
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
-            $stmt->bindParam(":pocode", $header->pocode, PDO::PARAM_STR);
+            $stmt->bindParam(":pocode", $pocode, PDO::PARAM_STR);
             $stmt->bindParam(":socode", $val->socode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);
@@ -79,6 +80,21 @@ try {
             $stmt3->bindParam(":qty", $val->qty, PDO::PARAM_STR);
             $stmt3->bindParam(":socode", $val->socode, PDO::PARAM_STR);
             $stmt3->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
+
+            if (!$stmt3->execute()) {
+                $error = $conn->errorInfo();
+                throw new PDOException("Insert data error => $error");
+                die;
+            }
+
+            $sql = "update somaster set pur_status = 'สั่งซื้อแล้ว' where socode = :socode ";
+
+            $stmt3 = $conn->prepare($sql);
+            if (!$stmt3) throw new PDOException("Insert data error => {$conn->errorInfo()}");
+
+            // $stmt3->bindParam(":qty", $val->qty, PDO::PARAM_STR);
+            $stmt3->bindParam(":socode", $val->socode, PDO::PARAM_STR);
+            // $stmt3->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
 
             if (!$stmt3->execute()) {
                 $error = $conn->errorInfo();

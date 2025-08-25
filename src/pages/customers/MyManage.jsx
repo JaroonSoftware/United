@@ -120,29 +120,32 @@ const CustomerManage = () => {
     message.success("คัดลอกสำเร็จ.");
   };
   const handleConfirm = () => {
-    form.validateFields().then((v) => {
-      const source = { ...formDetail, ...v };
-      const actions =
-        config?.action !== "create"
-          ? customerservice.update(source)
-          : customerservice.create(source);
+    form
+      .validateFields()
+      .then((v) => {
+        const source = { ...formDetail, ...v };
+        const actions =
+          config?.action !== "create"
+            ? customerservice.update(source)
+            : customerservice.create(source);
 
-      actions
-        .then(async (r) => {
-          message.success("Request success.");
-          navigate(from, { replace: true });
-          await delay(300);
-          console.clear();
-        })
-        .catch((err) => {
-          console.warn(err);
-          const data = err?.response?.data;
-          message.error(data?.message || "บันทึกไม่สำเร็จ");
-        });
-    }).catch((err) => {
-      console.warn(err);
-      message.error("กรุณากรอกข้อมูลให้ครบถ้วน");
-    });
+        actions
+          .then(async (r) => {
+            message.success("Request success.");
+            navigate(from, { replace: true });
+            await delay(300);
+            console.clear();
+          })
+          .catch((err) => {
+            console.warn(err);
+            const data = err?.response?.data;
+            message.error(data?.message || "บันทึกไม่สำเร็จ");
+          });
+      })
+      .catch((err) => {
+        console.warn(err);
+        message.error("กรุณากรอกข้อมูลให้ครบถ้วน");
+      });
   };
 
   const handleDeliverySelect = (address) => {
@@ -354,84 +357,91 @@ const CustomerManage = () => {
   );
 
   const AddressDetail = () => (
-    <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
-      <Col xs={24} sm={24} md={24} lg={24} xl={2} xxl={2}>
-        <Form.Item label="เลขที่" name="idno">
-          <Input placeholder="กรอกเลขที่อยู่" />
-        </Form.Item>
-      </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
-        <Form.Item label="ถนน" name="road">
-          <Input placeholder="กรอกถนน" />
-        </Form.Item>
-      </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
-        <Form.Item label="&nbsp;" name="pre_subdistrict">
-          <Select size="large" showSearch filterOption={filterOption}>
-            <Option value="ตำบล">ตำบล</Option>
-            <Option value="แขวง">แขวง</Option>
-          </Select>
-        </Form.Item>
-      </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
-        <Form.Item label="&nbsp;" name="subdistrict">
-          <InputThaiAddress.District
-            onSelect={handleSelect}
-            style={{ height: 40 }}
-            autoCompleteProps={{ placeholder: "กรอกตำบล" }}
-          />
-        </Form.Item>
-      </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
-        <Form.Item label="&nbsp;" name="pre_district">
-          <Select size="large" showSearch filterOption={filterOption}>
-            <Option value="อำเภอ">อำเภอ</Option>
-            <Option value="เขต">เขต</Option>
-          </Select>
-        </Form.Item>
-      </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
-        <Form.Item label="&nbsp;" name="district">
-          <InputThaiAddress.Amphoe
-            onSelect={handleSelect}
-            style={{ height: 40 }}
-            autoCompleteProps={{ placeholder: "กรอกอำเภอ" }}
-          />
-        </Form.Item>
-      </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
-        <Form.Item label="จังหวัด" name="province">
-          <InputThaiAddress.Province
-            onSelect={handleSelect}
-            style={{ height: 40 }}
-            autoCompleteProps={{ placeholder: "กรอกจังหวัด" }}
-          />
-        </Form.Item>
-      </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
-        <Form.Item label="รหัสไปรษณีย์" name="zipcode">
-          <InputThaiAddress.Zipcode
-            onSelect={handleSelect}
-            style={{ height: 40 }}
-            autoCompleteProps={{ placeholder: "กรอกรหัสไปรษณีย์" }}
-          />
-        </Form.Item>
-      </Col>
-    </Row>
+    <>
+      <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
+        <Col xs={24} sm={24} md={24} lg={24} xl={6} xxl={6}>
+          <Form.Item label="เลขที่" name="idno">
+            <Input placeholder="กรอกเลขที่อยู่" />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={24} xl={6} xxl={6}>
+          <Form.Item label="ถนน" name="road">
+            <Input placeholder="กรอกถนน" />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
+        <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
+          <Form.Item label="&nbsp;" name="pre_subdistrict">
+            <Select size="large" showSearch filterOption={filterOption}>
+              <Option value="ตำบล">ตำบล</Option>
+              <Option value="แขวง">แขวง</Option>
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
+          <Form.Item label="&nbsp;" name="subdistrict">
+            <InputThaiAddress.District
+              onSelect={handleSelect}
+              style={{ height: 40 }}
+              autoCompleteProps={{ placeholder: "กรอกตำบล" }}
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
+          <Form.Item label="&nbsp;" name="pre_district">
+            <Select size="large" showSearch filterOption={filterOption}>
+              <Option value="อำเภอ">อำเภอ</Option>
+              <Option value="เขต">เขต</Option>
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
+          <Form.Item label="&nbsp;" name="district">
+            <InputThaiAddress.Amphoe
+              onSelect={handleSelect}
+              style={{ height: 40 }}
+              autoCompleteProps={{ placeholder: "กรอกอำเภอ" }}
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={12} xl={6} xxl={4}>
+          <Form.Item label="จังหวัด" name="province">
+            <InputThaiAddress.Province
+              onSelect={handleSelect}
+              style={{ height: 40 }}
+              autoCompleteProps={{ placeholder: "กรอกจังหวัด" }}
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={12} xl={4} xxl={4}>
+          <Form.Item label="รหัสไปรษณีย์" name="zipcode">
+            <InputThaiAddress.Zipcode
+              onSelect={handleSelect}
+              style={{ height: 40 }}
+              autoCompleteProps={{ placeholder: "กรอกรหัสไปรษณีย์" }}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+    </>
   );
 
   const DeliveryAddressDetail = () => (
+    <>
     <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
-      <Col xs={24} sm={24} md={24} lg={24} xl={2} xxl={2}>
-        <Form.Item label="เลขที่" name="delidno">
-          <Input placeholder="กรอกเลขที่อยู่" />
-        </Form.Item>
-      </Col>
-      <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
-        <Form.Item label="ถนน" name="delroad">
-          <Input placeholder="กรอกถนน" />
-        </Form.Item>
-      </Col>
+        <Col xs={24} sm={24} md={24} lg={24} xl={6} xxl={6}>
+          <Form.Item label="เลขที่" name="delidno">
+            <Input placeholder="กรอกเลขที่อยู่" />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={24} xl={6} xxl={6}>
+          <Form.Item label="ถนน" name="delroad">
+            <Input placeholder="กรอกถนน" />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={[8, 8]} className="px-2 sm:px-4 md:px-4 lg:px-4">
       <Col xs={24} sm={24} md={24} lg={12} xl={2} xxl={2}>
         <Form.Item label="&nbsp;" name="pre_delsubdistrict">
           <Select size="large" showSearch filterOption={filterOption}>
@@ -485,6 +495,7 @@ const CustomerManage = () => {
         </Form.Item>
       </Col>
     </Row>
+    </>
   );
 
   const ContactDetail = () => (

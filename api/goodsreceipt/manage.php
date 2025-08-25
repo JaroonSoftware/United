@@ -17,7 +17,8 @@ try {
         $_POST = json_decode($rest_json, true);
         extract($_POST, EXTR_OVERWRITE, "_");
 
-        // var_dump($_POST);
+        $grcode = request_grcode($conn);
+
         $sql = "insert grmaster (`grcode`, `grdate`, `supcode`,
         `payment`, `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
         values (:grcode,:grdate,:supcode,:payment,:total_price,:vat,:grand_total_price,
@@ -27,7 +28,7 @@ try {
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         $header = (object)$header;
-        $stmt->bindParam(":grcode", $header->grcode, PDO::PARAM_STR);
+        $stmt->bindParam(":grcode", $grcode, PDO::PARAM_STR);
         $stmt->bindParam(":grdate", $header->grdate, PDO::PARAM_STR);
         $stmt->bindParam(":supcode", $header->supcode, PDO::PARAM_STR);
         $stmt->bindParam(":payment", $header->payment, PDO::PARAM_STR);
@@ -57,7 +58,7 @@ try {
         $qty=0;
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
-            $stmt->bindParam(":grcode", $header->grcode, PDO::PARAM_STR);
+            $stmt->bindParam(":grcode", $grcode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":pocode", $val->pocode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_STR);

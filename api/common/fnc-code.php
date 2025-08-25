@@ -108,7 +108,7 @@ function update_adcode($pdo){
 #endregion
  
 #region Request Code
-function request_pocode($pdo ){
+function request_pocode($pdo){
     $year = date("Y");
     $month = date("m");
 

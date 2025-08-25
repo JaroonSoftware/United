@@ -17,7 +17,7 @@ try {
         $_POST = json_decode($rest_json, true);
         extract($_POST, EXTR_OVERWRITE, "_");
 
-        // var_dump($_POST);
+        $ivcode = request_ivcode($conn);
         $sql = "insert iv_master (`ivcode`, `ivdate`, `cuscode`,total_price,total_pay,`remark`,created_by,updated_by) 
         values (:ivcode,:ivdate,:cuscode,:total_price,:total_pay,
         :remark,:action_user,:action_user)";
@@ -26,7 +26,7 @@ try {
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         $header = (object)$header;
-        $stmt->bindParam(":ivcode", $header->ivcode, PDO::PARAM_STR);
+        $stmt->bindParam(":ivcode", $ivcode, PDO::PARAM_STR);
         $stmt->bindParam(":ivdate", $header->ivdate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
         $stmt->bindParam(":total_price", $header->total_price, PDO::PARAM_STR);
@@ -73,7 +73,7 @@ try {
         // $detail = $detail;  
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
-            $stmt->bindParam(":ivcode", $header->ivcode, PDO::PARAM_STR);
+            $stmt->bindParam(":ivcode", $ivcode, PDO::PARAM_STR);
             $stmt->bindParam(":recode", $val->recode, PDO::PARAM_STR);
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();
@@ -111,7 +111,7 @@ try {
 
         foreach ($payment as $ind => $pay) {
             $pay = (object)$pay;
-            $stmt2->bindParam(":ivcode", $header->ivcode, PDO::PARAM_STR);
+            $stmt2->bindParam(":ivcode", $ivcode, PDO::PARAM_STR);
             $stmt2->bindParam(":paydate", $pay->paydate, PDO::PARAM_STR);
             $stmt2->bindParam(":price", $pay->price, PDO::PARAM_STR);
             $stmt2->bindParam(":payment_type", $pay->payment_type, PDO::PARAM_STR);
@@ -141,7 +141,7 @@ try {
             if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
             $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":ivcode", $header->ivcode, PDO::PARAM_STR);
+            $stmt->bindParam(":ivcode", $ivcode, PDO::PARAM_STR);
 
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();
@@ -161,7 +161,7 @@ try {
             if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
             $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":ivcode", $header->ivcode, PDO::PARAM_STR);
+            $stmt->bindParam(":ivcode", $ivcode, PDO::PARAM_STR);
 
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();
@@ -181,7 +181,7 @@ try {
             if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
             $stmt->bindParam(":action_user", $action_user, PDO::PARAM_INT);
-            $stmt->bindParam(":ivcode", $header->ivcode, PDO::PARAM_STR);
+            $stmt->bindParam(":ivcode", $ivcode, PDO::PARAM_STR);
 
             if (!$stmt->execute()) {
                 $error = $conn->errorInfo();

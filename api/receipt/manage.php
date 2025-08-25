@@ -17,7 +17,7 @@ try {
         $_POST = json_decode($rest_json, true);
         extract($_POST, EXTR_OVERWRITE, "_");
 
-        // var_dump($_POST);
+        $recode = request_recode($conn);
         $sql = "insert receipt (`recode`, `redate`, `duedate`, `cuscode`,
        `total_price`, `vat`, `grand_total_price`,`remark`,created_by,updated_by) 
         values (:recode,:redate,:duedate,:cuscode,:total_price,:vat,:grand_total_price,   :remark,:action_user,:action_user)";
@@ -26,7 +26,7 @@ try {
         if (!$stmt) throw new PDOException("Insert data error => {$conn->errorInfo()}");
 
         $header = (object)$header;
-        $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
+        $stmt->bindParam(":recode", $recode, PDO::PARAM_STR);
         $stmt->bindParam(":redate", $header->redate, PDO::PARAM_STR);
         $stmt->bindParam(":duedate", $header->duedate, PDO::PARAM_STR);
         $stmt->bindParam(":cuscode", $header->cuscode, PDO::PARAM_STR);
@@ -55,7 +55,7 @@ try {
         // $detail = $detail;  
         foreach ($detail as $ind => $val) {
             $val = (object)$val;
-            $stmt->bindParam(":recode", $header->recode, PDO::PARAM_STR);
+            $stmt->bindParam(":recode", $recode, PDO::PARAM_STR);
             $stmt->bindParam(":dncode", $val->dncode, PDO::PARAM_STR);
             $stmt->bindParam(":stcode", $val->stcode, PDO::PARAM_STR);
             $stmt->bindParam(":qty", $val->qty, PDO::PARAM_INT);

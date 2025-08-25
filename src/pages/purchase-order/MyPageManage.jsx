@@ -178,10 +178,23 @@ function PurchaseOrderManage() {
     form.setFieldsValue({ ...fvalue, ...supplier });
   };
 
-  const handleItemsChoosed = (value) => {
-    // console.log(value);
-    setListDetail(value);
+  // const handleItemsChoosed = (value) => {
+  //   // console.log(value);
+  //   setListDetail(value);
+  //   handleSummaryPrice();
+  // };
+
+  const handleItemsChoosed = async (val) => {
+    // console.log(val)
+    // alert('test')
+    const res = await poservice.getlist(val);
+    const {
+      data: { detail },
+    } = res.data;
+    console.log(detail)
+    setListDetail(detail);
     handleSummaryPrice();
+    // console.log(header.balance)
   };
 
   const handleConfirm = () => {
@@ -245,7 +258,7 @@ function PurchaseOrderManage() {
 
   const handleDelete = (code) => {
     const itemDetail = [...listDetail];
-    const newData = itemDetail.filter((item) => item?.code !== code);
+    const newData = itemDetail.filter((item) => item?.socode !== code);
     setListDetail([...newData]);
   };
 
@@ -259,9 +272,9 @@ function PurchaseOrderManage() {
         icon={
           <RiDeleteBin5Line style={{ fontSize: "1rem", marginTop: "3px" }} />
         }
-        onClick={() => handleDelete(record?.code)}
+        onClick={() => handleDelete(record?.socode)}
         disabled={
-          !record?.code || formDetail.doc_status !== "ยังไม่ได้รับของ"
+          !record?.socode || formDetail.doc_status !== "ยังไม่ได้รับของ"
         }
       />
     ) : null;

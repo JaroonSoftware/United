@@ -1,6 +1,6 @@
-import ModalCustomers from "./ModalCustomersSO.jsx";
-import ModalCustomersManage from "./ModalCustomersManageSO.jsx"
+import ModalCustomersInsurance from "./ModalCustomersInsurance.jsx";
+import ModalCustomersInsuranceManage from "./ModalCustomersInsuranceManage.jsx"
 
 
 
-export { ModalCustomers, ModalCustomersManage } 
+export { ModalCustomersInsurance, ModalCustomersInsuranceManage } 

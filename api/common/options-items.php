@@ -148,60 +148,84 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             http_response_code(200);
             echo json_encode($apiResponse);
         } else if ($p == 'so') {
+            // $sql = "
+			// SELECT a.code,a.socode, a.stcode,i.stname, a.qty, i.buyprice, a.unit, a.discount,IF(a.buyamount IS NULL,0,a.buyamount) as buyamount, k.kind_name
+            // FROM sodetail a 
+            // inner join somaster b on (a.socode=b.socode)
+            // inner join items i on (a.stcode=i.stcode)
+            // left outer join kind k on (i.kind_code=k.kind_code)
+            // where IF(a.buyamount IS NULL,0,a.buyamount) < a.qty and b.doc_status != 'ยกเลิก' ";
+
             $sql = "
-			SELECT a.code,a.socode, a.stcode,i.stname, a.qty, i.buyprice, a.unit, a.discount,IF(a.buyamount IS NULL,0,a.buyamount) as buyamount, k.kind_name
-            FROM sodetail a 
-            inner join somaster b on (a.socode=b.socode)
-            inner join items i on (a.stcode=i.stcode)
-            left outer join kind k on (i.kind_code=k.kind_code)
-            where IF(a.buyamount IS NULL,0,a.buyamount) < a.qty and b.doc_status != 'ยกเลิก' ";
+			SELECT
+            DISTINCT a.socode,
+            a.*,
+            c.*,
+            concat(u.firstname, ' ', u.lastname) created_name
+            from somaster a        
+            inner join sodetail d on a.socode = d.socode
+            left join items i on i.stcode = d.stcode
+            left join items_type t on i.type_code = t.type_code
+            left join kind k on k.kind_code = i.kind_code
+            left join car_model cm on cm.car_model_code = i.car_model_code
+            left join brand b on cm.brand_code = b.brand_code
+            left join customer c on a.cuscode = c.cuscode        
+            left join user u on a.created_by = u.code     
+            where a.pur_status = 'รอสั่งซื้อ' and a.doc_status = 'รอออกใบส่งของ' "; 
 
-            $stmt = $conn->prepare($sql);
+             $stmt = $conn->prepare($sql); 
             $stmt->execute();
-            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $dataArray = array();
-            //$dataFile = array();
-            foreach ($data as $row) {
-                $nestedObject = new stdClass();
-                $nestedObject->code = $row['code'];
-                $nestedObject->socode = $row['socode'];
-                $nestedObject->stcode = $row['stcode'];
-                $nestedObject->stname = $row['stname'];
-                $nestedObject->buyprice = $row['buyprice'];
-                $nestedObject->unit = $row['unit'];
-                $nestedObject->qty = $row['qty'];
-                $nestedObject->buyamount = $row['buyamount'];
-                $nestedObject->kind_name = $row['kind_name'];
-                //echo $row['prod_id'];
-                $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
-                $stmt2->execute();
-                if ($stmt2->rowCount() > 0) {
-                    $dataFile = array();
-                    while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-                        // $dataFile[] = $row2['file_name'];
-                        $nestedObject->img_id = $row2['img_id'];
-                        $nestedObject->uid = $row2['uid'];
-                        // $nestedObject->name = $row2['name'];
-                        $nestedObject->file_name = $row2['file_name'];
-                    }
-                } else {
-                    $nestedObject->file = [];
-                    $nestedObject->file_name = null;
-                }
-                $dataArray[] = $nestedObject;
-            }
-
-            $apiResponse = array(
-                "status" => "1",
-                "message" => "Get Product E-commerce",
-                "data" => $dataArray,
-                // "sql" => $sql,
-            );
-
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);  
 
             http_response_code(200);
-            echo json_encode($apiResponse);
+            echo json_encode(array("data"=>$res));
+
+            // $stmt = $conn->prepare($sql);
+            // $stmt->execute();
+            // $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // $dataArray = array();
+            // //$dataFile = array();
+            // foreach ($data as $row) {
+            //     $nestedObject = new stdClass();
+            //     $nestedObject->code = $row['code'];
+            //     $nestedObject->socode = $row['socode'];
+            //     $nestedObject->stcode = $row['stcode'];
+            //     $nestedObject->stname = $row['stname'];
+            //     $nestedObject->buyprice = $row['buyprice'];
+            //     $nestedObject->unit = $row['unit'];
+            //     $nestedObject->qty = $row['qty'];
+            //     $nestedObject->buyamount = $row['buyamount'];
+            //     $nestedObject->kind_name = $row['kind_name'];
+            //     //echo $row['prod_id'];
+            //     $stmt2 = $conn->prepare("SELECT * FROM `items_img` where stcode = '" . $row['stcode'] . "'");
+            //     $stmt2->execute();
+            //     if ($stmt2->rowCount() > 0) {
+            //         $dataFile = array();
+            //         while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+            //             // $dataFile[] = $row2['file_name'];
+            //             $nestedObject->img_id = $row2['img_id'];
+            //             $nestedObject->uid = $row2['uid'];
+            //             // $nestedObject->name = $row2['name'];
+            //             $nestedObject->file_name = $row2['file_name'];
+            //         }
+            //     } else {
+            //         $nestedObject->file = [];
+            //         $nestedObject->file_name = null;
+            //     }
+            //     $dataArray[] = $nestedObject;
+            // }
+
+            // $apiResponse = array(
+            //     "status" => "1",
+            //     "message" => "Get Product E-commerce",
+            //     "data" => $dataArray,
+            //     // "sql" => $sql,
+            // );
+
+
+            // http_response_code(200);
+            // echo json_encode($apiResponse);
         } else if ($p === 'gr') {
             $sql = "
 			SELECT a.code,a.pocode, a.stcode,i.stname, a.qty, a.price, a.unit, a.discount, a.recamount
